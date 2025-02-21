@@ -1,0 +1,982 @@
+{
+  "af":{
+    "country_name": "Afghanistan",
+    "advice":"Advisory against all travel"
+  },
+  "al":{
+    "country_name": "Albania",
+    "advice":"No advisory"
+  },
+  "dz":{
+    "country_name": "Algeria",
+    "advice":"None"
+  },
+  "as":{
+    "country_name": "American Samoa",
+    "advice":"None"
+  },
+  "ad":{
+    "country_name": "Andorra",
+    "advice":"None"
+  },
+  "ao":{
+    "country_name": "Angola",
+    "advice":"No advisory"
+    
+  },
+  "ai":{
+    "country_name": "Anguilla",
+    "advice":"None"
+  },
+  "aq":{
+    "country_name": "Antarctica",
+    "advice":"None"
+  },
+  "ag":{
+    "country_name": "Antigua and Barbuda",
+    "advice":"No advisory"
+  },
+  "ar":{
+    "country_name": "Argentina",
+    "advice":"No advisory"
+  },
+  "am":{
+    "country_name": "Armenia",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "aw":{
+    "country_name": "Aruba",
+    "advice":"No advisory"
+  },
+  "au":{
+    "country_name": "Australia",
+    "advice":"No advisory"
+  },
+  "at":{
+    "country_name": "Austria",
+    "advice":"No advisory"
+  },
+  "az":{
+    "country_name": "Azerbaijan",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "bs":{
+    "country_name": "Bahamas",
+    "advice":"No advisory"
+  },
+  "bh":{
+    "country_name": "Bahrain",
+    "advice":"No advisory"
+  },
+  "bd":{
+    "country_name": "Bangladesh",
+    "advice":"Advisory against non-essential travel"
+  },
+  "bb":{
+    "country_name": "Barbados",
+    "advice":"No advisory"
+  },
+  "by":{
+    "country_name": "Belarus",
+    "advice":"Advisory against all travel"
+  },
+  "be":{
+    "country_name": "Belgium",
+    "advice":"No advisory"
+  },
+  "bz":{
+    "country_name": "Belize",
+    "advice":"No advisory"
+  },
+  "bj":{
+    "country_name": "Benin",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "bm":{
+    "country_name": "Bermuda",
+    "advice":"No advisory"
+  },
+  "bt":{
+    "country_name": "Bhutan",
+    "advice":"No advisory"
+  },
+  "bo":{
+    "country_name": "Bolivia",
+    "advice":"No advisory"
+  },
+  "ba":{
+    "country_name": "Bosnia and Herzegovina",
+    "advice":"No advisory"
+  },
+  "bw":{
+    "country_name": "Botswana",
+    "advice":"No advisory"
+  },
+  "bv":{
+    "country_name": "Bouvet Island",
+    "advice":"None"
+  },
+  "br":{
+    "country_name": "Brazil",
+    "advice":"No advisory"
+  },
+  "io":{
+    "country_name": "British Indian Ocean Territory",
+    "advice":"None"
+  },
+  "bn":{
+    "country_name": "Brunei Darussalam",
+    "advice":"No advisory"
+  },
+  "bg":{
+    "country_name": "Bulgaria",
+    "advice":"No advisory"
+  },
+  "bf":{
+    "country_name": "Burkina Faso",
+    "advice":"Advisory against all travel"
+  },
+  "bi":{
+    "country_name": "Burundi",
+    "advice":"Advisory against non-essential travel"
+  },
+  "kh":{
+    "country_name": "Cambodia",
+    "advice":"No advisory"
+  },
+  "cm":{
+    "country_name": "Cameroon",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "ca":{
+    "country_name": "Canada",
+    "advice":"No advisory"
+  },
+  "cv":{
+    "country_name": "Cape Verde",
+    "advice":"None"
+  },
+  "ky":{
+    "country_name": "Cayman Islands",
+    "advice":"None"
+  },
+  "cf":{
+    "country_name": "Central African Republic",
+    "advice":"Advisory against all travel"
+  },
+  "td":{
+    "country_name": "Chad",
+    "advice":"Advisory against all travel"
+  },
+  "cl":{
+    "country_name": "Chile",
+    "advice":"No advisory"
+  },
+  "cn":{
+    "country_name": "China",
+    "advice":"No advisory"
+  },
+  "cx":{
+    "country_name": "Christmas Island",
+    "advice":"None"
+  },
+  "cc":{
+    "country_name": "Cocos (Keeling) Islands",
+    "advice":"None"
+  },
+  "co":{
+    "country_name": "Colombia",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "km":{
+    "country_name": "Comoros",
+    "advice":"None"
+  },
+  "cg":{
+    "country_name": "Congo",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "cd":{
+    "country_name": "Congo, the Democratic Republic of the",
+    "advice":"Advisory against non-essential travel"
+  },
+  "ck":{
+    "country_name": "Cook Islands",
+    "advice":"None"
+  },
+  "cr":{
+    "country_name": "Costa Rica",
+    "advice":"No advisory"
+  },
+  "ci":{
+    "country_name": "Cote D'ivoire",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "hr":{
+    "country_name": "Croatia",
+    "advice":"No advisory"
+  },
+  "cu":{
+    "country_name": "Cuba",
+    "advice":"No advisory"
+  },
+  "cy":{
+    "country_name": "Cyprus",
+    "advice":"No advisory"
+  },
+  "cz":{
+    "country_name": "Czech Republic",
+    "advice":"No advisory"
+  },
+  "dk":{
+    "country_name": "Denmark",
+    "advice":"No advisory"
+    
+  },
+  "dj":{
+    "country_name": "Djibouti",
+    "advice":"No advisory"
+  },
+  "dm":{
+    "country_name": "Dominica",
+    "advice":"No advisory"
+  },
+  "do":{
+    "country_name": "Dominican Republic",
+    "advice":"No advisory"
+  },
+  "ec":{
+    "country_name": "Ecuador",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "eg":{
+    "country_name": "Egypt",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "sv":{
+    "country_name": "El Salvador",
+    "advice":"No advisory"
+  },
+  "gq":{
+    "country_name": "Equatorial Guinea",
+    "advice":"No advisory"
+  },
+  "er":{
+    "country_name": "Eritrea",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "ee":{
+    "country_name": "Estonia",
+    "advice":"No advisory"
+  },
+  "et":{
+    "country_name": "Ethiopia",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "fk":{
+    "country_name": "Falkland Islands (Malvinas)",
+    "advice":"None"
+  },
+  "fo":{
+    "country_name": "Faroe Islands",
+    "advice":"None"
+  },
+  "fj":{
+    "country_name": "Fiji",
+    "advice":"No advisory"
+  },
+  "fi":{
+    "country_name": "Finland",
+    "advice":"No advisory"
+  },
+  "fr":{
+    "country_name": "France",
+    "advice":"No advisory"
+  },
+  "gf":{
+    "country_name": "French Guiana",
+    "advice":"None"
+  },
+  "pf":{
+    "country_name": "French Polynesia",
+    "advice":"None"
+  },
+  "tf":{
+    "country_name": "French Southern Territories",
+    "advice":"None"
+  },
+  "ga":{
+    "country_name": "Gabon",
+    "advice":"None"
+  },
+  "gm":{
+    "country_name": "Gambia",
+    "advice":"None"
+  },
+  "ge":{
+    "country_name": "Georgia",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "de":{
+    "country_name": "Germany",
+    "advice":"No advisory"
+  },
+  "gh":{
+    "country_name": "Ghana",
+    "advice":"No advisory"
+  },
+  "gi":{
+    "country_name": "Gibraltar",
+    "advice":"None"
+  },
+  "gr":{
+    "country_name": "Greece",
+    "advice":"No advisory"
+  },
+  "gl":{
+    "country_name": "Greenland",
+    "advice":"None"
+  },
+  "gd":{
+    "country_name": "Grenada",
+    "advice":"No advisory"
+  },
+  "gp":{
+    "country_name": "Guadeloupe",
+    "advice":"None"
+  },
+  "gu":{
+    "country_name": "Guam",
+    "advice":"None"
+  },
+  "gt":{
+    "country_name": "Guatemala",
+    "advice":"No advisory"
+  },
+  "gg":{
+    "country_name": "Guernsey",
+    "advice":"None"
+  },
+  "gn":{
+    "country_name": "Guinea",
+    "advice":"No advisory"
+  },
+  "gw":{
+    "country_name": "Guinea-Bissau",
+    "advice":"No advisory"
+  },
+  "gy":{
+    "country_name": "Guyana",
+    "advice":"No advisory"
+  },
+  "ht":{
+    "country_name": "Haiti",
+    "advice":"Advisory against all travel"
+  },
+  "hm":{
+    "country_name": "Heard Island and Mcdonald Islands",
+    "advice":"None"
+  },
+  "va":{
+    "country_name": "Holy See (Vatican City State)",
+    "advice":"None"
+  },
+  "hn":{
+    "country_name": "Honduras",
+    "advice":"No advisory"
+  },
+  "hk":{
+    "country_name": "Hong Kong",
+    "advice":"No advisory"
+  },
+  "hu":{
+    "country_name": "Hungary",
+    "advice":"No advisory"
+  },
+  "is":{
+    "country_name": "Iceland",
+    "advice":"No advisory"
+  },
+  "in":{
+    "country_name": "India",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "id":{
+    "country_name": "Indonesia",
+    "advice":"No advisory"
+  },
+  "ir":{
+    "country_name": "Iran, Islamic Republic of",
+    "advice":"Advisory against all travel"
+  },
+  "iq":{
+    "country_name": "Iraq",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "ie":{
+    "country_name": "Ireland",
+    "advice":"No advisory"
+  },
+  "im":{
+    "country_name": "Isle of Man",
+    "advice":"None"
+  },
+  "il":{
+    "country_name": "Israel",
+    "advice":"Advisory against all travel"
+  },
+  "it":{
+    "country_name": "Italy",
+    "advice":"No advisory"
+  },
+  "je":{
+    "country_name": "Jersey",
+    "advice":"None"
+  },
+  "jm":{
+    "country_name": "Jamaica",
+    "advice":"No advisory"
+  },
+  "jp":{
+    "country_name": "Japan",
+    "advice":"No advisory"
+  },
+  "jo":{
+    "country_name": "Jordan",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "kz":{
+    "country_name": "Kazakhstan",
+    "advice":"No advisory"
+  },
+  "ke":{
+    "country_name": "Kenya",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "ki":{
+    "country_name": "Kiribati",
+    "advice":"No advisory"
+  },
+  "kp":{
+    "country_name": "Korea, Democratic People's Republic of",
+    "advice":"Advisory against non-essential travel"
+  },
+  "kr":{
+    "country_name": "Korea, Republic of",
+    "advice":"No advisory"
+  },
+  "kw":{
+    "country_name": "Kuwait",
+    "advice":"Advisory against all travel"
+  },
+  "kg":{
+    "country_name": "Kyrgyzstan",
+    "advice":"No advisory"
+  },
+  "la":{
+    "country_name": "Lao People's Democratic Republic",
+    "advice":"No advisory"
+  },
+  "lv":{
+    "country_name": "Latvia",
+    "advice":"No advisory"
+  },
+  "lb":{
+    "country_name": "Lebanon",
+    "advice":"Advisory against all travel"
+  },
+  "ls":{
+    "country_name": "Lesotho",
+    "advice":"No advisory"
+  },
+  "lr":{
+    "country_name": "Liberia",
+    "advice":"No advisory"
+  },
+  "ly":{
+    "country_name": "Libyan Arab Jamahiriya",
+    "advice":"Advisory against all travel"
+  },
+  "li":{
+    "country_name": "Liechtenstein",
+    "advice":"No advisory"
+  },
+  "lt":{
+    "country_name": "Lithuania",
+    "advice":"No advisory"
+  },
+  "lu":{
+    "country_name": "Luxembourg",
+    "advice":"No advisory"
+  },
+  "mo":{
+    "country_name": "Macao",
+    "advice":"None"
+  },
+  "mk":{
+    "country_name": "Macedonia, the Former Yugosalv Republic of",
+    "advice":"No advisory"
+  },
+  "mg":{
+    "country_name": "Madagascar",
+    "advice":"No advisory"
+  },
+  "mw":{
+    "country_name": "Malawi",
+    "advice":"No advisory"
+  },
+  "my":{
+    "country_name": "Malaysia",
+    "advice":"No advisory"
+  },
+  "mv":{
+    "country_name": "Maldives",
+    "advice":"No advisory"
+  },
+  "ml":{
+    "country_name": "Mali",
+    "advice":"Advisory against non-essential travel"
+  },
+  "mt":{
+    "country_name": "Malta",
+    "advice":"No advisory"
+  },
+  "mh":{
+    "country_name": "Marshall Islands",
+    "advice":"No advisory"
+  },
+  "mq":{
+    "country_name": "Martinique",
+    "advice":"None"
+  },
+  "mr":{
+    "country_name": "Mauritania",
+    "advice":"Advisory against non-essential travel"
+  },
+  "mu":{
+    "country_name": "Mauritius",
+    "advice":"No advisory"
+  },
+  "yt":{
+    "country_name": "Mayotte",
+    "advice":"None"
+  },
+  "mx":{
+    "country_name": "Mexico",
+    "advice":"No advisory"
+    
+  },
+  "fm":{
+    "country_name": "Micronesia, Federated States of",
+    "advice":"No advisory"
+  },
+  "md":{
+    "country_name": "Moldova, Republic of",
+    "advice":"No advisory"
+  },
+  "mc":{
+    "country_name": "Monaco",
+    "advice":"No advisory"
+  },
+  "mn":{
+    "country_name": "Mongolia",
+    "advice":"No advisory"
+  },
+  "me":{
+    "country_name": "Montenegro",
+    "advice":"No advisory"
+  },
+  "ms":{
+    "country_name": "Montserrat",
+    "advice":"None"
+  },
+  "ma":{
+    "country_name": "Morocco",
+    "advice":"No advisory"
+  },
+  "mz":{
+    "country_name": "Mozambique",
+    "advice":"Advisory against non-essential travel"
+  },
+  "mm":{
+    "country_name": "Myanmar",
+    "advice":"Advisory against all travel"
+  },
+  "na":{
+    "country_name": "Namibia",
+    "advice":"No advisory"
+  },
+  "nr":{
+    "country_name": "Nauru",
+    "advice":"No advisory"
+  },
+  "np":{
+    "country_name": "Nepal",
+    "advice":"No advisory"
+  },
+  "nl":{
+    "country_name": "Netherlands",
+    "advice":"No advisory"
+  },
+  "an":{
+    "country_name": "Netherlands Antilles",
+    "advice":"None"
+  },
+  "nc":{
+    "country_name": "New Caledonia",
+    "advice":"None"
+  },
+  "nz":{
+    "country_name": "New Zealand",
+    "advice":"No advisory"
+  },
+  "ni":{
+    "country_name": "Nicaragua",
+    "advice":"No advisory"
+  },
+  "ne":{
+    "country_name": "Niger",
+    "advice":"Advisory against all travel"
+  },
+  "ng":{
+    "country_name": "Nigeria",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "nu":{
+    "country_name": "Niue",
+    "advice":"None"
+  },
+  "nf":{
+    "country_name": "Norfolk Island",
+    "advice":"None"
+  },
+  "mp":{
+    "country_name": "Northern Mariana Islands",
+    "advice":"None"
+  },
+  "no":{
+    "country_name": "Norway",
+    "advice":"No advisory"
+  },
+  "om":{
+    "country_name": "Oman",
+    "advice":"No advisory"
+  },
+  "pk":{
+    "country_name": "Pakistan",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "pw":{
+    "country_name": "Palau",
+    "advice":"No advisory"
+  },
+  "ps":{
+    "country_name": "Palestinian Territory, Occupied",
+    "advice":"Advisory against all travel"
+  },
+  "pa":{
+    "country_name": "Panama",
+    "advice":"No advisory"
+  },
+  "pg":{
+    "country_name": "Papua New Guinea",
+    "advice":"No advisory"
+  },
+  "py":{
+    "country_name": "Paraguay",
+    "advice":"No advisory"
+  },
+  "pe":{
+    "country_name": "Peru",
+    "advice":"No advisory"
+  },
+  "ph":{
+    "country_name": "Philippines",
+    "advice":"No advisory"
+  },
+  "pn":{
+    "country_name": "Pitcairn",
+    "advice":"None"
+  },
+  "pl":{
+    "country_code": "pl",
+    "country_name": "Poland",
+    "advice":"No advisory"
+  },
+  "pt":{
+    "country_name": "Portugal",
+    "advice":"No advisory"
+  },
+  "pr":{
+    "country_name": "Puerto Rico",
+    "advice":"No advisory"
+  },
+  "qa":{
+    "country_name": "Qatar",
+    "advice":"No advisory"
+  },
+  "re":{
+    "country_name": "Reunion",
+    "advice":"None"
+  },
+  "ro":{
+    "country_name": "Romania",
+    "advice":"No advisory"
+  },
+  "ru":{
+    "country_name": "Russian Federation",
+    "advice":"Advisory against all travel"
+  },
+  "rw":{
+    "country_name": "Rwanda",
+    "advice":"No advisory"
+  },
+  "sh":{
+    "country_name": "Saint Helena",
+    "advice":"None"
+  },
+  "kn":{
+    "country_name": "Saint Kitts and Nevis",
+    "advice":"No advisory"
+  },
+  "lc":{
+    "country_name": "Saint Lucia",
+    "advice":"No advisory"
+  },
+  "pm":{
+    "country_name": "Saint Pierre and Miquelon",
+    "advice":"None"
+  },
+  "vc":{
+    "country_name": "Saint Vincent and the Grenadines",
+    "advice":"No advisory"
+  },
+  "ws":{
+    "country_name": "Samoa",
+    "advice":"No advisory"
+  },
+  "sm":{
+    "country_name": "San Marino",
+    "advice":"No advisory"
+  },
+  "st":{
+    "country_name": "Sao Tome and Principe",
+    "advice":"No advisory"
+  },
+  "sa":{
+    "country_name": "Saudi Arabia",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "sn":{
+    "country_name": "Senegal",
+    "advice":"No advisory"
+  },
+  "rs":{
+    "country_name": "Serbia",
+    "advice":"No advisory"
+  },
+  "sc":{
+    "country_name": "Seychelles",
+    "advice":"No advisory"
+  },
+  "sl":{
+    "country_name": "Sierra Leone",
+    "advice":"No advisory"
+  },
+  "sg":{
+    "country_name": "Singapore",
+    "advice":"No advisory"
+  },
+  "sk":{
+    "country_name": "Slovakia",
+    "advice":"No advisory"
+  },
+  "si":{
+    "country_name": "Slovenia",
+    "advice":"No advisory"
+  },
+  "sb":{
+    "country_name": "Solomon Islands",
+    "advice":"No advisory"
+  },
+  "so":{
+    "country_name": "Somalia",
+    "advice":"Advisory against all travel"
+  },
+  "za":{
+    "country_name": "South Africa",
+    "advice":"No advisory"
+  },
+  "gs":{
+    "country_name": "South Georgia and the South Sandwich Islands",
+    "advice":"None"
+  },
+  "es":{
+    "country_name": "Spain",
+    "advice":"No advisory"
+  },
+  "lk":{
+    "country_name": "Sri Lanka",
+    "advice":"No advisory"
+  },
+  "sd":{
+    "country_name": "Sudan",
+    "advice":"Advisory against all travel"
+  },
+  "sr":{
+    "country_name": "Suriname",
+    "advice":"No advisory"
+  },
+  "sj":{
+    "country_name": "Svalbard and Jan Mayen",
+    "advice":"None"
+  },
+  "sz":{
+    "country_name": "Swaziland",
+    "advice":"No advisory"
+  },
+  "se":{
+    "country_name": "Sweden",
+    "advice":"No advisory"
+  },
+  "ch":{
+    "country_name": "Switzerland",
+    "advice":"No advisory"
+  },
+  "sy":{
+    "country_name": "Syrian Arab Republic",
+    "advice":"Advisory against all travel"
+  },
+  "tw":{
+    "country_name": "Taiwan, Province of China",
+    "advice":"No advisory"
+  },
+  "tj":{
+    "country_name": "Tajikistan",
+    "advice":"No advisory"
+  },
+  "tz":{
+    "country_name": "Tanzania, United Republic of",
+    "advice":"No advisory"
+  },
+  "th":{
+    "country_name": "Thailand",
+    "advice":"No advisory"
+  },
+  "tl":{
+    "country_name": "Timor-Leste",
+    "advice":"No advisory"
+  },
+  "tg":{
+    "country_name": "Togo",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "tk":{
+    "country_name": "Tokelau",
+    "advice":"None"
+  },
+  "to":{
+    "country_name": "Tonga",
+    "advice":"None"
+  },
+  "tt":{
+    "country_name": "Trinidad and Tobago",
+    "advice":"No advisory"
+  },
+  "tn":{
+    "country_name": "Tunisia",
+    "advice":"NoAdvisory against travel to certain areas"
+  },
+  "tr":{
+    "country_name": "Turkiye",
+    "advice":"Advisory against travel to certain areas"
+  },
+  "tm":{
+    "country_name": "Turkmenistan",
+    "advice":"No advisory"
+  },
+  "tc":{
+    "country_name": "Turks and Caicos Islands",
+    "advice":"None"
+  },
+  "tv":{
+    "country_name": "Tuvalu",
+    "advice":"No advisory"
+  },
+  "ug":{
+    "country_name": "Uganda",
+    "advice":"No advisory"
+  },
+  "ua":{
+    "country_name": "Ukraine",
+    "advice":"Advisory against all travel"
+  },
+  "ae":{
+    "country_name": "United Arab Emirates",
+    "advice":"No advisory"
+  },
+  "uk":{
+    "country_name": "United Kingdom",
+    "advice":"No advisory"
+  },
+  "gb":{
+    "country_name": "United Kingdom",
+    "advice":"No advisory"
+  },
+  "us":{
+    "country_name": "United States",
+    "advice":"No advisory"
+  },
+  "um":{
+    "country_name": "United States Minor Outlying Islands",
+    "advice":"None"
+  },
+  "uy":{
+    "country_name": "Uruguay",
+    "advice":"No advisory"
+  },
+  "uz":{
+    "country_name": "Uzbekistan",
+    "advice":"No advisory"
+  },
+  "vu":{
+    "country_name": "Vanuatu",
+    "advice":"No advisory"
+  },
+  "ve":{
+    "country_name": "Venezuela",
+    "advice":"Advisory against non-essential travel"
+  },
+  "vn":{
+    "country_name": "Viet Nam",
+    "advice":"No advisory"
+  },
+  "vg":{
+    "country_name": "Virgin Islands, British",
+    "advice":"None"
+  },
+  "vi":{
+    "country_name": "Virgin Islands, U.S.",
+    "advice":"None"
+  },
+  "wf":{
+    "country_name": "Wallis and Futuna",
+    "advice":"None"
+  },
+  "eh":{
+    "country_name": "Western Sahara",
+    "advice":"None"
+  },
+  "ye":{
+    "country_name": "Yemen",
+    "advice":"Advisory against all travel"  
+  },
+  "zm":{
+    "country_name": "Zambia",
+    "advice":"No advisory"
+  },
+  "zw":{
+    "country_name": "Zimbabwe",
+    "advice":"No advisory"
+  }
+}
