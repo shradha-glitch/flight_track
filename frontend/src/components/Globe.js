@@ -67,17 +67,6 @@ const Globe = () => {
     });
 
     svg.call(zoomBehavior);
-   
-    const updateFocus = (countryCode) => {
-      const country = countryGeoJSON.features.find(
-        (feature) => feature.properties.iso2 === countryCode
-      );
-      if (country) {
-        const centroid = d3.geoCentroid(country); // Get the centroid of the country
-        projection.rotate([-centroid[0], -centroid[1]]); // Rotate the globe to center on the country
-        svg.selectAll("path").attr("d", path);
-      }
-    };
 
   }, []);
 
