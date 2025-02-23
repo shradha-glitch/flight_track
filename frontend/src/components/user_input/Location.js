@@ -16,7 +16,7 @@ const location_options = [
 
 const DeparturePicker = ({ onSelect }) => {
   const [inputValue, setInputValue] = useState(""); 
-  const [selectedCity, setSelectedCity] = useState(null); 
+  const [selectedCity, setSelectedCity] = useState(null);
 
   return (
     <Box sx={{ flex: 1, minWidth: "200px" }}>
@@ -25,7 +25,7 @@ const DeparturePicker = ({ onSelect }) => {
         freeSolo 
         inputValue={inputValue} 
         onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
-        value={selectedCity}
+        value={selectedCity} 
         onChange={(event, newCity) => {
           if (newCity) {
             setSelectedCity(newCity);
