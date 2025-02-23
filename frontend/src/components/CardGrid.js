@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Container } from "@mui/material";
 import CustomCard from "./Card"; 
+import GlobeCard from "./Globe"; 
 
 const CardGrid = () => {
   return (
@@ -19,7 +20,7 @@ const CardGrid = () => {
           <CustomCard title="Middle Card containing parallel coordinates" />
         </Box>
 
-        <CustomCard title="Bottom Card 1" />
+        <GlobeCard/>
         <CustomCard title="Bottom Card 2" />
         <CustomCard title="Bottom Card 3" />
       </Box>
