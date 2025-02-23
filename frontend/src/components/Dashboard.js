@@ -1,7 +1,7 @@
-import React from "react";
 import { Box, Container } from "@mui/material";
-import CustomCard from "./Card"; 
-import GlobeCard from "./Globe"; 
+import CustomCard from "./card/Card"; 
+import GlobeCard from "./card/GlobeCard"; 
+import SearchCard from "./card/SearchCard";
 
 const CardGrid = () => {
   return (
@@ -14,7 +14,7 @@ const CardGrid = () => {
         }}
       >
         <Box sx={{ gridColumn: "1 / -1" }}> 
-          <CustomCard title="Top Card containing search info" />
+          <SearchCard setSelectedCountry={("")}/>
         </Box>
         <Box sx={{ gridColumn: "1 / -1" }}> 
           <CustomCard title="Middle Card containing parallel coordinates" />
