@@ -66,6 +66,10 @@ Make sure you run this command in the backend folder where the main.py file is p
 so it would be flight_track\backend\
 You can change the port if you face any issue.
 
+### `http://127.0.0.1:8001/docs`
+
+Run this in browser and you will see all the available apis for the project. Fastapi comes with the ability to use swagger documentation.
+
 
 
 
