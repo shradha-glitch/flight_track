@@ -7,7 +7,7 @@ Amanda Arbinge aarbinge@kth.se
 Kristín Hafsteinsdóttir khaf@kth.se
 Laieh Jwella laieh@kth.se
 Amina-Kamra Maglić maglic@kth.se
-Shradha shradha@kth.se
+Shradha Retharekar shradha@kth.se
 
 
 
@@ -48,5 +48,24 @@ You don't have to ever use `eject`. The curated feature set is suitable for smal
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+## How to run Backend
+
+**Note: Make sure that you are using python version > 3.7. for this project we used python 3.9**
+
+### `pip3 install -r requirements.txt`
+
+Fetches the packages that are required for this project. 
+Preferable to not use .venv as fastapi has some issue with it.
+Install the remaining packages by hovering on them which will suggest download missing packages
+
+### `py -3 -m uvicorn main:app --reload --port 8001`
+
+Make sure you run this command in the backend folder where the main.py file is present.
+so it would be flight_track\backend\
+You can change the port if you face any issue.
+
+
 
 

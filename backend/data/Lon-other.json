@@ -1,0 +1,1097 @@
+{
+    "data": [
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "CPH",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-12",
+            "price": {
+                "total": "97.27"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=CPH&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=CPH&departureDate=2025-03-02&returnDate=2025-03-12&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "STN",
+            "destination": "SAW",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-03",
+            "price": {
+                "total": "111.26"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=SAW&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=SAW&departureDate=2025-03-02&returnDate=2025-03-03&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "DUB",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-12",
+            "price": {
+                "total": "113.37"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=DUB&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=DUB&departureDate=2025-03-02&returnDate=2025-03-12&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "ALC",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-13",
+            "price": {
+                "total": "121.67"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=ALC&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=ALC&departureDate=2025-03-02&returnDate=2025-03-13&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "CDG",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-09",
+            "price": {
+                "total": "130.02"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=CDG&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=CDG&departureDate=2025-03-02&returnDate=2025-03-09&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "LIN",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-15",
+            "price": {
+                "total": "135.22"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=LIN&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=LIN&departureDate=2025-03-02&returnDate=2025-03-15&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "AGP",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-07",
+            "price": {
+                "total": "135.67"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=AGP&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=AGP&departureDate=2025-03-02&returnDate=2025-03-07&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "LIS",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-12",
+            "price": {
+                "total": "139.72"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=LIS&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=LIS&departureDate=2025-03-02&returnDate=2025-03-12&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "EDI",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-13",
+            "price": {
+                "total": "149.74"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=EDI&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=EDI&departureDate=2025-03-02&returnDate=2025-03-13&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "FAO",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-05",
+            "price": {
+                "total": "153.27"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=FAO&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=FAO&departureDate=2025-03-02&returnDate=2025-03-05&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "ATH",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-10",
+            "price": {
+                "total": "155.37"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=ATH&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=ATH&departureDate=2025-03-02&returnDate=2025-03-10&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "BUD",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-15",
+            "price": {
+                "total": "160.42"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=BUD&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=BUD&departureDate=2025-03-02&returnDate=2025-03-15&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "MAD",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-05",
+            "price": {
+                "total": "164.17"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=MAD&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=MAD&departureDate=2025-03-02&returnDate=2025-03-05&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "STN",
+            "destination": "AMS",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-08",
+            "price": {
+                "total": "176.26"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=AMS&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=AMS&departureDate=2025-03-02&returnDate=2025-03-08&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "PMI",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-09",
+            "price": {
+                "total": "177.47"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=PMI&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=PMI&departureDate=2025-03-02&returnDate=2025-03-09&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "FCO",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-15",
+            "price": {
+                "total": "178.02"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=FCO&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=FCO&departureDate=2025-03-02&returnDate=2025-03-15&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "RAK",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-03",
+            "price": {
+                "total": "179.37"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=RAK&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=RAK&departureDate=2025-03-02&returnDate=2025-03-03&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "TFS",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-05",
+            "price": {
+                "total": "190.67"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=TFS&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=TFS&departureDate=2025-03-02&returnDate=2025-03-05&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "BER",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-09",
+            "price": {
+                "total": "193.27"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=BER&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=BER&departureDate=2025-03-02&returnDate=2025-03-09&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "BCN",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-10",
+            "price": {
+                "total": "233.57"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=BCN&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=BCN&departureDate=2025-03-02&returnDate=2025-03-10&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "VCE",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-05",
+            "price": {
+                "total": "246.22"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=VCE&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=VCE&departureDate=2025-03-02&returnDate=2025-03-05&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LTN",
+            "destination": "TLV",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-03",
+            "price": {
+                "total": "262.56"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=TLV&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=TLV&departureDate=2025-03-02&returnDate=2025-03-03&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "STN",
+            "destination": "CAI",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-04",
+            "price": {
+                "total": "316.66"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=CAI&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=CAI&departureDate=2025-03-02&returnDate=2025-03-04&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "HKG",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-09",
+            "price": {
+                "total": "339.37"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=HKG&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=HKG&departureDate=2025-03-02&returnDate=2025-03-09&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "JFK",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-12",
+            "price": {
+                "total": "368.32"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=JFK&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=JFK&departureDate=2025-03-02&returnDate=2025-03-12&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "STN",
+            "destination": "DXB",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-05",
+            "price": {
+                "total": "385.16"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=DXB&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=DXB&departureDate=2025-03-02&returnDate=2025-03-05&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "JFK",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-09",
+            "price": {
+                "total": "385.32"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=JFK&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=JFK&departureDate=2025-03-02&returnDate=2025-03-09&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "BOM",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-04",
+            "price": {
+                "total": "395.62"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=BOM&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=BOM&departureDate=2025-03-02&returnDate=2025-03-04&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "YYZ",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-16",
+            "price": {
+                "total": "404.32"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=YYZ&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=YYZ&departureDate=2025-03-02&returnDate=2025-03-16&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "SHA",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-06",
+            "price": {
+                "total": "405.72"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=SHA&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=SHA&departureDate=2025-03-02&returnDate=2025-03-06&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "MNL",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-07",
+            "price": {
+                "total": "410.47"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=MNL&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=MNL&departureDate=2025-03-02&returnDate=2025-03-07&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "LAX",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-09",
+            "price": {
+                "total": "410.52"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=LAX&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=LAX&departureDate=2025-03-02&returnDate=2025-03-09&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "BOS",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-09",
+            "price": {
+                "total": "428.32"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=BOS&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=BOS&departureDate=2025-03-02&returnDate=2025-03-09&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "NRT",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-03",
+            "price": {
+                "total": "430.27"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=NRT&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=NRT&departureDate=2025-03-02&returnDate=2025-03-03&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "SFO",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-12",
+            "price": {
+                "total": "432.62"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=SFO&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=SFO&departureDate=2025-03-02&returnDate=2025-03-12&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "DPS",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-05",
+            "price": {
+                "total": "434.67"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=DPS&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=DPS&departureDate=2025-03-02&returnDate=2025-03-05&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "YVR",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-06",
+            "price": {
+                "total": "436.62"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=YVR&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=YVR&departureDate=2025-03-02&returnDate=2025-03-06&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "KUL",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-04",
+            "price": {
+                "total": "439.87"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=KUL&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=KUL&departureDate=2025-03-02&returnDate=2025-03-04&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "SIN",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-11",
+            "price": {
+                "total": "440.72"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=SIN&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=SIN&departureDate=2025-03-02&returnDate=2025-03-11&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "PEK",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-03",
+            "price": {
+                "total": "442.12"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=PEK&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=PEK&departureDate=2025-03-02&returnDate=2025-03-03&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "BKK",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-03",
+            "price": {
+                "total": "442.57"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=BKK&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=BKK&departureDate=2025-03-02&returnDate=2025-03-03&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "MIA",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-10",
+            "price": {
+                "total": "444.77"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=MIA&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=MIA&departureDate=2025-03-02&returnDate=2025-03-10&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "DEL",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-06",
+            "price": {
+                "total": "448.52"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=DEL&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=DEL&departureDate=2025-03-02&returnDate=2025-03-06&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "MCO",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-09",
+            "price": {
+                "total": "448.72"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=MCO&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=MCO&departureDate=2025-03-02&returnDate=2025-03-09&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "JNB",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-10",
+            "price": {
+                "total": "455.07"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=JNB&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=JNB&departureDate=2025-03-02&returnDate=2025-03-10&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "HKT",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-03",
+            "price": {
+                "total": "472.57"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=HKT&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=HKT&departureDate=2025-03-02&returnDate=2025-03-03&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "LAS",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-11",
+            "price": {
+                "total": "490.97"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=LAS&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=LAS&departureDate=2025-03-02&returnDate=2025-03-11&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "LOS",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-10",
+            "price": {
+                "total": "496.17"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=LOS&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=LOS&departureDate=2025-03-02&returnDate=2025-03-10&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "ISB",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-11",
+            "price": {
+                "total": "528.12"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=ISB&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=ISB&departureDate=2025-03-02&returnDate=2025-03-11&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "LHE",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-04",
+            "price": {
+                "total": "529.32"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=LHE&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=LHE&departureDate=2025-03-02&returnDate=2025-03-04&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "MEL",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-09",
+            "price": {
+                "total": "541.67"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=MEL&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=MEL&departureDate=2025-03-02&returnDate=2025-03-09&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "CPT",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-17",
+            "price": {
+                "total": "550.07"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=CPT&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=CPT&departureDate=2025-03-02&returnDate=2025-03-17&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "GOI",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-17",
+            "price": {
+                "total": "554.82"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=GOI&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=GOI&departureDate=2025-03-02&returnDate=2025-03-17&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "CUN",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-10",
+            "price": {
+                "total": "558.92"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=CUN&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=CUN&departureDate=2025-03-02&returnDate=2025-03-10&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "SYD",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-09",
+            "price": {
+                "total": "586.22"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=SYD&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=SYD&departureDate=2025-03-02&returnDate=2025-03-09&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "CMB",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-12",
+            "price": {
+                "total": "613.32"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=CMB&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=CMB&departureDate=2025-03-02&returnDate=2025-03-12&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "BNE",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-10",
+            "price": {
+                "total": "744.67"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=BNE&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=BNE&departureDate=2025-03-02&returnDate=2025-03-10&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LGW",
+            "destination": "AKL",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-04",
+            "price": {
+                "total": "884.07"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=AKL&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=AKL&departureDate=2025-03-02&returnDate=2025-03-04&adults=1&nonStop=false"
+            }
+        },
+        {
+            "type": "flight-destination",
+            "origin": "LHR",
+            "destination": "PER",
+            "departureDate": "2025-03-02",
+            "returnDate": "2025-03-09",
+            "price": {
+                "total": "895.02"
+            },
+            "links": {
+                "flightDates": "https://test.api.amadeus.com/v1/shopping/flight-dates?origin=LON&destination=PER&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DURATION",
+                "flightOffers": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LON&destinationLocationCode=PER&departureDate=2025-03-02&returnDate=2025-03-09&adults=1&nonStop=false"
+            }
+        }
+    ],
+    "dictionaries": {
+        "currencies": {
+            "GBP": "POUND STERLING"
+        },
+        "locations": {
+            "LAX": {
+                "subType": "AIRPORT",
+                "detailedName": "LOS ANGELES INTL"
+            },
+            "CPT": {
+                "subType": "AIRPORT",
+                "detailedName": "CAPE TOWN INTL"
+            },
+            "CDG": {
+                "subType": "AIRPORT",
+                "detailedName": "CHARLES DE GAULLE"
+            },
+            "EDI": {
+                "subType": "AIRPORT",
+                "detailedName": "AIRPORT"
+            },
+            "STN": {
+                "subType": "AIRPORT",
+                "detailedName": "STANSTED"
+            },
+            "SHA": {
+                "subType": "AIRPORT",
+                "detailedName": "HONGQIAO INTL"
+            },
+            "JFK": {
+                "subType": "AIRPORT",
+                "detailedName": "JOHN F KENNEDY INTL"
+            },
+            "NRT": {
+                "subType": "AIRPORT",
+                "detailedName": "NARITA INTL"
+            },
+            "CMB": {
+                "subType": "AIRPORT",
+                "detailedName": "BANDARANAIKE INTL"
+            },
+            "CUN": {
+                "subType": "AIRPORT",
+                "detailedName": "INTERNATIONAL"
+            },
+            "SYD": {
+                "subType": "AIRPORT",
+                "detailedName": "KINGSFORD SMITH"
+            },
+            "TFS": {
+                "subType": "AIRPORT",
+                "detailedName": "TENERIFE SUR"
+            },
+            "BOM": {
+                "subType": "AIRPORT",
+                "detailedName": "CHHATRAPATI S MAHARAJ"
+            },
+            "BKK": {
+                "subType": "AIRPORT",
+                "detailedName": "SUVARNABHUMI INTL"
+            },
+            "KUL": {
+                "subType": "AIRPORT",
+                "detailedName": "KUALA LUMPUR INTL"
+            },
+            "MIA": {
+                "subType": "AIRPORT",
+                "detailedName": "MIAMI INTL"
+            },
+            "HKG": {
+                "subType": "AIRPORT",
+                "detailedName": "INTERNATIONAL"
+            },
+            "AMS": {
+                "subType": "AIRPORT",
+                "detailedName": "SCHIPHOL AIRPORT"
+            },
+            "BOS": {
+                "subType": "AIRPORT",
+                "detailedName": "EDWARD L LOGAN INTL"
+            },
+            "CAI": {
+                "subType": "AIRPORT",
+                "detailedName": "CAIRO INTL"
+            },
+            "BCN": {
+                "subType": "AIRPORT",
+                "detailedName": "AIRPORT"
+            },
+            "DXB": {
+                "subType": "AIRPORT",
+                "detailedName": "DUBAI INTL"
+            },
+            "HKT": {
+                "subType": "AIRPORT",
+                "detailedName": "PHUKET INTL"
+            },
+            "LOS": {
+                "subType": "AIRPORT",
+                "detailedName": "MURTALA MUHAMMED INTL"
+            },
+            "MAD": {
+                "subType": "AIRPORT",
+                "detailedName": "ADOLFO SUAREZ BARAJAS"
+            },
+            "FCO": {
+                "subType": "AIRPORT",
+                "detailedName": "FIUMICINO"
+            },
+            "MEL": {
+                "subType": "AIRPORT",
+                "detailedName": "MELBOURNE AIRPORT"
+            },
+            "VCE": {
+                "subType": "AIRPORT",
+                "detailedName": "MARCO POLO"
+            },
+            "SIN": {
+                "subType": "AIRPORT",
+                "detailedName": "CHANGI"
+            },
+            "YYZ": {
+                "subType": "AIRPORT",
+                "detailedName": "LESTER B. PEARSON INTL"
+            },
+            "LGW": {
+                "subType": "AIRPORT",
+                "detailedName": "GATWICK"
+            },
+            "DPS": {
+                "subType": "AIRPORT",
+                "detailedName": "NGURAH RAI"
+            },
+            "LTN": {
+                "subType": "AIRPORT",
+                "detailedName": "LUTON"
+            },
+            "SAW": {
+                "subType": "AIRPORT",
+                "detailedName": "SABIHA GOKCEN"
+            },
+            "LHE": {
+                "subType": "AIRPORT",
+                "detailedName": "ALLAMA IQBAL INTL"
+            },
+            "MNL": {
+                "subType": "AIRPORT",
+                "detailedName": "NINOY AQUINO INTL"
+            },
+            "DUB": {
+                "subType": "AIRPORT",
+                "detailedName": "DUBLIN INTERNATIONAL"
+            },
+            "BUD": {
+                "subType": "AIRPORT",
+                "detailedName": "LISZT FERENC INTL"
+            },
+            "YVR": {
+                "subType": "AIRPORT",
+                "detailedName": "INTERNATIONAL"
+            },
+            "LHR": {
+                "subType": "AIRPORT",
+                "detailedName": "HEATHROW"
+            },
+            "ISB": {
+                "subType": "AIRPORT",
+                "detailedName": "INTERNATIONAL"
+            },
+            "SFO": {
+                "subType": "AIRPORT",
+                "detailedName": "SAN FRANCISCO INTL"
+            },
+            "TLV": {
+                "subType": "AIRPORT",
+                "detailedName": "BEN GURION INTL"
+            },
+            "GOI": {
+                "subType": "AIRPORT",
+                "detailedName": "DABOLIM"
+            },
+            "AKL": {
+                "subType": "AIRPORT",
+                "detailedName": "AUCKLAND INTERNATIONAL"
+            },
+            "DEL": {
+                "subType": "AIRPORT",
+                "detailedName": "INDIRA GANDHI INTL"
+            },
+            "AGP": {
+                "subType": "AIRPORT",
+                "detailedName": "MALAGA AIRPORT"
+            },
+            "PMI": {
+                "subType": "AIRPORT",
+                "detailedName": "PALMA DE MALLORCA"
+            },
+            "BER": {
+                "subType": "AIRPORT",
+                "detailedName": "BRANDENBURG"
+            },
+            "LIN": {
+                "subType": "AIRPORT",
+                "detailedName": "LINATE"
+            },
+            "FAO": {
+                "subType": "AIRPORT",
+                "detailedName": "AIRPORT"
+            },
+            "ATH": {
+                "subType": "AIRPORT",
+                "detailedName": "ATHENS INT E VENIZELOS"
+            },
+            "PEK": {
+                "subType": "AIRPORT",
+                "detailedName": "CAPITAL INTL"
+            },
+            "LIS": {
+                "subType": "AIRPORT",
+                "detailedName": "AIRPORT"
+            },
+            "MCO": {
+                "subType": "AIRPORT",
+                "detailedName": "ORLANDO INTL"
+            },
+            "ALC": {
+                "subType": "AIRPORT",
+                "detailedName": "ALICANTE AIRPORT"
+            },
+            "BNE": {
+                "subType": "AIRPORT",
+                "detailedName": "BRISBANE"
+            },
+            "CPH": {
+                "subType": "AIRPORT",
+                "detailedName": "KASTRUP"
+            },
+            "PER": {
+                "subType": "AIRPORT",
+                "detailedName": "PERTH"
+            },
+            "RAK": {
+                "subType": "AIRPORT",
+                "detailedName": "MENARA"
+            },
+            "JNB": {
+                "subType": "AIRPORT",
+                "detailedName": "O.R. TAMBO INTL"
+            },
+            "LAS": {
+                "subType": "AIRPORT",
+                "detailedName": "HARRY REID INTL"
+            }
+        }
+    },
+    "meta": {
+        "currency": "GBP",
+        "links": {
+            "self": "https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=LON&departureDate=2025-03-02&oneWay=false&duration=1,15&nonStop=false&viewBy=DESTINATION"
+        },
+        "defaults": {
+            "oneWay": false,
+            "duration": "1,15",
+            "nonStop": false,
+            "viewBy": "DESTINATION"
+        }
+    }
+}
