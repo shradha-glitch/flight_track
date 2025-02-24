@@ -1,32 +1,3 @@
-# from fastapi import APIRouter, HTTPException
-# from .flight_service import load_flight_data
-# import json
-
-# router = APIRouter()
-# # print(flight_service)
-
-# @router.get("/flights/forlondon")
-# async def get_flights_by_origin():
-#     print("Endpoint called!")  # Debug line
-#     try:
-#         print("About to load flight data")
-#         flights = load_flight_data()
-#         print(f"Data loaded: {bool(flights)}")
-#         if not flights:
-#             raise HTTPException(status_code=404, detail="No flight data found")
-#         return flights
-#     except FileNotFoundError:
-#         raise HTTPException(status_code=404, detail="Flight data file not found")
-#     except json.JSONDecodeError:
-#         raise HTTPException(status_code=500, detail="Error parsing flight data")
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))/
-
-
-
-
-
-
 
 from fastapi import APIRouter, HTTPException
 from .flight_service import load_flight_data, load_advisory_data, load_visa_data
