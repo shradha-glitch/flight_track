@@ -4,7 +4,9 @@ import { geoOrthographic, geoPath, geoGraticule } from "d3-geo";
 import { drag } from "d3-drag";
 import CustomCard from "./Card";
 
-const Globe = () => { 
+const iso2CodesToHighlight = ["US", "SE", "IN"];
+
+const GlobeCard = () => {
   const globeRef = useRef();
 
   useEffect(() => {
@@ -20,15 +22,13 @@ const Globe = () => {
     const path = geoPath().projection(projection);
     const graticule = geoGraticule();
 
-    const svg = container
-      .append("svg")
-      .attr("width", "100%")
-      .attr("height", "100%");
+    const svg = container.append("svg")
+    .attr("width", "100%").attr("height", "100%");
 
     svg.append("path")
       .datum({ type: "Sphere" })
       .attr("d", path)
-      .attr("fill", "#1a1a1a") 
+      .attr("fill", "#1a1a1a")
       .attr("stroke", "#fff");
 
     svg.append("path")
@@ -39,22 +39,20 @@ const Globe = () => {
 
     d3.json("world.json").then((worldData) => {
       const countries = worldData.features;
+
       svg.selectAll(".country")
         .data(countries)
         .enter()
         .append("path")
         .attr("class", "country")
         .attr("d", path)
-        .attr("fill", "#4CAF50")
+        .attr("fill", (d) => (iso2CodesToHighlight.includes(d.id) ? "#FF6347" : "#4CAF50"))
         .attr("stroke", "#222");
     });
 
     const dragBehavior = drag().on("drag", (event) => {
       const rotate = projection.rotate();
-      projection.rotate([
-        rotate[0] + event.dx * 0.3,
-        rotate[1] - event.dy * 0.3,
-      ]);
+      projection.rotate([rotate[0] + event.dx * 0.3, rotate[1] - event.dy * 0.3]);
       svg.selectAll("path").attr("d", path);
     });
 
@@ -67,8 +65,7 @@ const Globe = () => {
     });
 
     svg.call(zoomBehavior);
-
-  }, );
+  }, []);
 
   return (
     <CustomCard title="Globe" sx={{ minHeight: 400 }}>
@@ -77,4 +74,4 @@ const Globe = () => {
   );
 };
 
-export default Globe;
+export default GlobeCard;
