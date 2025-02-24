@@ -6,12 +6,12 @@ const PassportSearchInput = () => {
   const [countries, setCountries] = useState([]);
 
   useEffect(() => {
-    fetch('/country_list.json')
+    fetch('/world.json')
       .then((response) => response.json())
       .then((data) => {
-        const countryData = data.map((country) => ({
-          label: country.name,
-          iso2: country.code,
+        const countryData = data.features.map((country) => ({
+          label: country.properties.name,
+          iso2: country.id,
         }));
         setCountries(countryData);
       })
