@@ -2,6 +2,7 @@ import { Box, Container } from "@mui/material";
 import CustomCard from "./card/Card"; 
 import GlobeCard from "./card/GlobeCard"; 
 import SearchCard from "./card/SearchCard"; 
+import PcpCard from "./card/PcpCard";
 
 const Dashboard = () => {
   const handleCity = (city) => {
@@ -20,7 +21,7 @@ const Dashboard = () => {
           <SearchCard onSelect={handleCity} />
         </Box>
         <Box sx={{ gridColumn: "1 / -1" }}>
-          <CustomCard title="Middle Card containing parallel coordinates" />
+       <PcpCard/>
         </Box>
         <GlobeCard />
         <CustomCard title="Bottom Card 2" />
