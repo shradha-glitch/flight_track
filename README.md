@@ -62,6 +62,10 @@ Install the remaining packages by hovering on them which will suggest download m
 
 ### `py -3 -m uvicorn main:app --reload --port 8001`
 
+for mac user 
+### `python3 -m uvicorn main:app --reload --port 8001`
+
+
 Make sure you run this command in the backend folder where the main.py file is present.
 so it would be flight_track\backend\
 You can change the port if you face any issue.
