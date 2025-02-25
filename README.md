@@ -57,9 +57,9 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 ### `pip3 install -r requirements.txt`
 
 Fetches the packages that are required for this project. 
-Preferable to not use .venv as fastapi has some issue with it.
+Preferable do not use .venv as fastapi has some issue with it.
 Install the remaining packages by hovering on them which will suggest download missing packages
-
+py -3 -m uvicorn main:app --reload --port 8001
 ### `py -3 -m uvicorn main:app --reload --port 8001`
 
 Make sure you run this command in the backend folder where the main.py file is present.
