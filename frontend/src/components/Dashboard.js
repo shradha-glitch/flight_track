@@ -23,7 +23,7 @@ const Dashboard = () => {
         <Box sx={{ gridColumn: "1 / -1" }}>
        <PcpCard/>
         </Box>
-        <GlobeCard />
+        <GlobeCard/>
         <CustomCard title="Bottom Card 2" />
         <CustomCard title="Bottom Card 3" />
       </Box>
