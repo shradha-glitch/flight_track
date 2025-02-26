@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from app.flight_controller import router as flight_router
 from typing import Optional
@@ -9,6 +9,7 @@ from retry_requests import retry
 import matplotlib.pyplot as plt
 import requests
 import os
+import numpy as np
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -51,7 +52,7 @@ retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
 openmeteo = openmeteo_requests.Client(session=retry_session)
 
 @app.get("/weather/{iata_code}")
-async def get_weather(iata_code: str):
+async def get_weather(iata_code: str, departure_date: str = Query(...), return_date: str = Query(...)):
     """
     Get weather forecast for an airport by IATA code.
     """
@@ -66,11 +67,13 @@ async def get_weather(iata_code: str):
     params = {
         "latitude": latitude,
         "longitude": longitude,
-        "start_date": "2024-01-01",
-        "end_date": "2024-12-31",
+        "start_date": departure_date,
+        "end_date": return_date,
         "daily": "temperature_2m_mean"
     }
+    print("params", params)
     responses = openmeteo.weather_api(url, params=params)
+    
 
     if not responses:
         raise HTTPException(status_code=500, detail="Failed to fetch weather data")
@@ -78,16 +81,26 @@ async def get_weather(iata_code: str):
     response = responses[0]
     daily = response.Daily()
     daily_temperature_2m_mean = daily.Variables(0).ValuesAsNumpy()
+    
+    # Calculate the average temperature over the date range
+    average_temperature = float(np.mean(daily_temperature_2m_mean))
+    print("#################average_temperature##################", average_temperature)
+
 
     # Prepare weather data
+    # weather_data = {
+    #     "dates": pd.date_range(
+    #         start=pd.to_datetime(daily.Time(), unit="s", utc=True),
+    #         end=pd.to_datetime(daily.TimeEnd(), unit="s", utc=True),
+    #         freq=pd.Timedelta(seconds=daily.Interval()),
+    #         inclusive="left"
+    #     ).tolist(),
+    #     "temperature_2m_mean": daily_temperature_2m_mean.tolist()
+    # }
+
+    #Prepare weather data
     weather_data = {
-        "dates": pd.date_range(
-            start=pd.to_datetime(daily.Time(), unit="s", utc=True),
-            end=pd.to_datetime(daily.TimeEnd(), unit="s", utc=True),
-            freq=pd.Timedelta(seconds=daily.Interval()),
-            inclusive="left"
-        ).tolist(),
-        "temperature_2m_mean": daily_temperature_2m_mean.tolist()
+        "average_temperature": average_temperature
     }
 
     return weather_data

@@ -23,7 +23,40 @@ const ParallelCoordinates = () => {
             try {
                 const response = await fetch(`http://127.0.0.1:8001/api/flights/forlondon?origin=${source_country}`);
                 const result = await response.json();
-                console.log("REsults", result);   
+                
+                // Extract destination IATA codes and dates
+                const iataCodes = result.map(item => item.destination);
+                const departureDates = result.map(item => item.departureDate);
+                const returnDates = result.map(item => item.returnDate);
+
+                 // Fetch weather data for each destination
+                 const weatherPromises = iataCodes.map(async (iataCode, index) => {
+                    const weatherResponse = await fetch(`http://127.0.0.1:8001/weather/${iataCode}?departure_date=${departureDates[index]}&return_date=${returnDates[index]}`);
+                    
+                    const weatherData = await weatherResponse.json();
+                    return {
+                        iataCode,
+                        temperature: weatherData.average_temperature
+                    };
+                })
+
+                const weatherData = await Promise.all(weatherPromises);
+
+                console.log("Weather Data", weatherData);
+            
+                const updatedData = result.map(item => {
+                    const weather = weatherData.find(w => w.iataCode === item.destination);
+                    return {
+                        name: item.destination,
+                        A: parseFloat(item.price.total), // Extract and parse the price
+                        B: weather ? weather.temperature : Math.random() * 40, // Use fetched temperature data or fake data
+                        C: Math.random() * 100, // Fake weather data (0 to 100)
+                        D: Math.random() * 10, // Fake safety data (0 to 10)
+                        E: Math.random() > 0.5 ? 1 : 0, // Fake visa requirements data (0 or 1)
+                        F: Math.random() * 15 // Fake flight duration data (0 to 15 hours)
+                    };
+                });
+                setData(updatedData);
             } catch (error) {
                 console.error("Error fetching data: ", error);
             }
