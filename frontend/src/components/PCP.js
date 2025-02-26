@@ -1,19 +1,38 @@
-import { useEffect, useRef } from "react"; // Import hooks for managing side effects and references
+import { use, useEffect, useRef, useState } from "react"; // Import hooks for managing side effects and references
 import * as d3 from "d3"; // Import D3.js for data visualization
 
 const ParallelCoordinates = () => {
     const chartRef = useRef(); // Reference to the div container where the chart will be drawn
+    const [data, setData] = useState([]); // State to store data from the API
+    const [source_country, setSourceCountry] = useState("LGW"); // State to store the source country
+
+    // useEffect(() => {
+        // // ----------------------
+        // // 1. Sample Data
+        // // ----------------------
+        // const data = [
+        //     { name: "Sarajevo, BA", A: 10, B: 20, C: 30, D: 50, E: 0, F: 3 },
+        //     { name: "Delhi, IN",A: 20, B: 30, C: 40, D: 70, E: 1, F: 27 },
+        //     { name: "Stockholm, SE",A: 30, B: 10, C: 45, D: 65, E: 1, F: 13 },
+        //     { name: "Madrid, ES",A: 40, B: 20, C: 60, D: 35, E: 0, F: 20 },
+        // ];
 
     useEffect(() => {
-        // ----------------------
-        // 1. Sample Data
-        // ----------------------
-        const data = [
-            { name: "Sarajevo, BA", A: 10, B: 20, C: 30, D: 50, E: 0, F: 3 },
-            { name: "Delhi, IN",A: 20, B: 30, C: 40, D: 70, E: 1, F: 27 },
-            { name: "Stockholm, SE",A: 30, B: 10, C: 45, D: 65, E: 1, F: 13 },
-            { name: "Madrid, ES",A: 40, B: 20, C: 60, D: 35, E: 0, F: 20 },
-        ];
+        // fetch data from the API
+        const fetchSourceCountry = async (source_country) => {
+            try {
+                const response = await fetch(`http://127.0.0.1:8001/api/flights/forlondon?origin=${source_country}`);
+                const result = await response.json();
+                console.log("REsults", result);   
+            } catch (error) {
+                console.error("Error fetching data: ", error);
+            }
+        };
+        fetchSourceCountry(source_country);
+    }, [source_country]);
+
+    useEffect(() => {
+        if (data.length === 0) return; // Do nothing if data is not loaded yet
 
         // ----------------------
         // 2. Chart Dimensions (Balanced Margins for Centering)
@@ -142,7 +161,7 @@ const ParallelCoordinates = () => {
             .style("font-weight", "bold") // Make labels bold for better visibility
             .text(d => customLabels[d] || d); // Use custom label if available
 
-    }, []); // Empty dependency array ensures this runs only once when the component mounts
+    }, [data]); // Re-run effect when data changes
 
     // ----------------------
     // 11. Return JSX (Chart Container)

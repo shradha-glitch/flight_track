@@ -114,6 +114,20 @@ async def get_advisory(country_code: str):
     else:
         raise HTTPException(status_code=404, detail="No advisory data found for this country code.")
 
+@app.get("/api/flights/forlondon")
+async def get_flights_for_london():
+    """
+    Get flight data for London.
+    """
+    # Make a request to your local backend API
+    url = "http://127.0.0.1:8001/api/flights/forlondon?origin=LGW"
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch flight data: {e}")
+        
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Flight Data and Weather API!"}
