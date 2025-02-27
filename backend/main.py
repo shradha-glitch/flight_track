@@ -15,8 +15,6 @@ async def root():
     return {"message": "Welcome to the Flight Data and Weather API!"}
 
 
-# Initialize FastAPI app
-app = FastAPI()
 
 # Enable CORS to allow requests from your frontend
 app.add_middleware(

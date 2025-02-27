@@ -6,7 +6,7 @@ const ParallelCoordinates = () => {
     const [data, setData] = useState([]); // State to store data from the API
     const [screenDimensions, setScreenDimensions] = useState({
       width: window.innerWidth * 0.9,  // 90% of screen width
-      height: window.innerHeight * 0.2 // 20% of screen height
+      height: window.innerHeight * 0.6 // 20% of screen height
   });
     
     // useEffect(() => {
@@ -210,7 +210,7 @@ const ParallelCoordinates = () => {
                         A: parseFloat(item.price.total), // Extract and parse the price
                         B: weather ? weather.temperature : Math.random() * 40, // Use fetched temperature data or fake data
                         C: Math.random() * 100, // Fake weather data (0 to 100)
-                        D: advisoryDummieData.find(a => a.iataCode === item.destination)?.advisory || "None",  // Use fetched advisory data or default value
+                        D: advisoryDummieData.find(a => a.iataCode === item.destination)?.advisory || "No advisory",  // Use fetched advisory data or default value
                         E: Math.random() > 0.5 ? 1 : 0, // Fake visa requirements data (0 or 1)
                         F: Math.random() * 15 // Fake flight duration data (0 to 15 hours)
                     };
@@ -325,6 +325,13 @@ const ParallelCoordinates = () => {
         // ----------------------
         // 9. Draw Axes for Each Dimension
         // ----------------------
+
+        // Define brush for each axis
+        const brush = d3.brushY()
+        .extent([[ -20, margin.top], [20, height - margin.bottom]]) // Define the brushing area
+        .on("brush end", brushed); // Call `brushed` function on interaction
+
+
         svg.selectAll("g.axis")
             .data(dimensions) // Bind dimension names to axis groups
             .enter()
@@ -337,8 +344,53 @@ const ParallelCoordinates = () => {
                 } else {
                     d3.select(this).call(d3.axisLeft(yScales[d]));
                 }
-            }
-            ); // Draw each axis
+            }) // Draw each axis
+            .append("g") // Add brush to each axis
+            .attr("class", "brush")
+            .call(brush);
+
+
+          const activeFilters = {}; // Stores selected brush ranges
+          console.log(activeFilters);
+
+          function brushed(event, dim) {
+              if (event.selection === null) {
+                  delete activeFilters[dim]; // Remove filter if no selection
+              } else {
+                if (dim === "D") {
+                    const [y0, y1] = event.selection;
+                    const selectedCategories = yScales[dim].domain().filter(category => {
+                        const pos = yScales[dim](category);
+                        return pos >= y0 && pos <= y1;
+                    });
+                    activeFilters[dim] = selectedCategories;
+                } else {
+                  const [y0, y1] = event.selection;
+                  activeFilters[dim] = [yScales[dim].invert(y1), yScales[dim].invert(y0)]; // Store inverted values
+              }
+          
+              updateHighlight(); // Apply filter to the lines
+          }
+
+          function updateHighlight() {
+            svg.selectAll("path")
+                .attr("opacity", d => {
+                    if (!d) return 0.1; // Skip null or undefined data points
+        
+                    return Object.keys(activeFilters).every(dim => {
+                        if (!d.hasOwnProperty(dim) || d[dim] == null) return false; // Avoid null errors
+                        if (dim === "D") {
+                            return activeFilters[dim].includes(d[dim]);
+                        } else {
+                            const [min, max] = activeFilters[dim];
+                            return d[dim] >= min && d[dim] <= max;
+                        }
+                    }) ? 1 : 0.1; // Highlight matched lines, dim others
+                });
+              }
+        }
+        
+            
 
         // ----------------------
         // 10. Axis Labels (Properly Positioned)
