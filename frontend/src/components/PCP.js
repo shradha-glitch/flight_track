@@ -16,6 +16,147 @@ const ParallelCoordinates = () => {
         //     { name: "Stockholm, SE",A: 30, B: 10, C: 45, D: 65, E: 1, F: 13 },
         //     { name: "Madrid, ES",A: 40, B: 20, C: 60, D: 35, E: 0, F: 20 },
         // ];
+        const advisoryDummieData = [
+            {
+              "iataCode": "AKL",
+              "iso2Code": "NZ",
+              "advisory": "Advisory against all travel"
+            },
+            {
+              "iataCode": "BNE",
+              "iso2Code": "AU",
+              "advisory": "Advisory against non-essential travel"
+            },
+            {
+              "iataCode": "CPT",
+              "iso2Code": "ZA",
+              "advisory": "Advisory against travel to certain areas"
+            },
+            {
+              "iataCode": "MEL",
+              "iso2Code": "AU",
+              "advisory": "No advisory"
+            },
+            {
+              "iataCode": "LOS",
+              "iso2Code": "NG",
+              "advisory": "None"
+            },
+            {
+              "iataCode": "LAS",
+              "iso2Code": "US",
+              "advisory": "Advisory against all travel"
+            },
+            {
+              "iataCode": "HKT",
+              "iso2Code": "TH",
+              "advisory": "Advisory against non-essential travel"
+            },
+            {
+              "iataCode": "JNB",
+              "iso2Code": "ZA",
+              "advisory": "Advisory against travel to certain areas"
+            },
+            {
+              "iataCode": "MIA",
+              "iso2Code": "US",
+              "advisory": "No advisory"
+            },
+            {
+              "iataCode": "DPS",
+              "iso2Code": "ID",
+              "advisory": "None"
+            },
+            {
+              "iataCode": "NRT",
+              "iso2Code": "JP",
+              "advisory": "Advisory against all travel"
+            },
+            {
+              "iataCode": "MNL",
+              "iso2Code": "PH",
+              "advisory": "Advisory against non-essential travel"
+            },
+            {
+              "iataCode": "BKK",
+              "iso2Code": "TH",
+              "advisory": "Advisory against travel to certain areas"
+            },
+            {
+              "iataCode": "KUL",
+              "iso2Code": "MY",
+              "advisory": "No advisory"
+            },
+            {
+              "iataCode": "NRT",
+              "iso2Code": "JP",
+              "advisory": "None"
+            },
+            {
+              "iataCode": "HKG",
+              "iso2Code": "HK",
+              "advisory": "Advisory against all travel"
+            },
+            {
+              "iataCode": "BCN",
+              "iso2Code": "ES",
+              "advisory": "Advisory against non-essential travel"
+            },
+            {
+              "iataCode": "TFS",
+              "iso2Code": "ES",
+              "advisory": "Advisory against travel to certain areas"
+            },
+            {
+              "iataCode": "RAK",
+              "iso2Code": "MA",
+              "advisory": "No advisory"
+            },
+            {
+              "iataCode": "PMI",
+              "iso2Code": "ES",
+              "advisory": "None"
+            },
+            {
+              "iataCode": "FAO",
+              "iso2Code": "PT",
+              "advisory": "Advisory against all travel"
+            },
+            {
+              "iataCode": "ATH",
+              "iso2Code": "GR",
+              "advisory": "Advisory against non-essential travel"
+            },
+            {
+              "iataCode": "CPH",
+              "iso2Code": "DK",
+              "advisory": "Advisory against travel to certain areas"
+            },
+            {
+              "iataCode": "ALC",
+              "iso2Code": "ES",
+              "advisory": "No advisory"
+            },
+            {
+              "iataCode": "AGP",
+              "iso2Code": "ES",
+              "advisory": "None"
+            },
+            {
+              "iataCode": "MAD",
+              "iso2Code": "ES",
+              "advisory": "Advisory against all travel"
+            }
+          ];
+
+        // Map advisory categories to numbers
+    const advisoryMapping = {
+        "Advisory against all travel": 4,
+        "Advisory against non-essential travel": 3,
+        "Advisory against travel to certain areas": 2,
+        "No advisory": 1,
+        "None": 0
+    };
 
     useEffect(() => {
         // fetch data from the API
@@ -28,6 +169,7 @@ const ParallelCoordinates = () => {
                 const iataCodes = result.map(item => item.destination);
                 const departureDates = result.map(item => item.departureDate);
                 const returnDates = result.map(item => item.returnDate);
+                
 
                  // Fetch weather data for each destination
                  const weatherPromises = iataCodes.map(async (iataCode, index) => {
@@ -42,16 +184,16 @@ const ParallelCoordinates = () => {
 
                 const weatherData = await Promise.all(weatherPromises);
 
-                console.log("Weather Data", weatherData);
             
                 const updatedData = result.map(item => {
+
                     const weather = weatherData.find(w => w.iataCode === item.destination);
                     return {
                         name: item.destination,
                         A: parseFloat(item.price.total), // Extract and parse the price
                         B: weather ? weather.temperature : Math.random() * 40, // Use fetched temperature data or fake data
                         C: Math.random() * 100, // Fake weather data (0 to 100)
-                        D: Math.random() * 10, // Fake safety data (0 to 10)
+                        D: advisoryDummieData.find(a => a.iataCode === item.destination)?.advisory || "None",  // Use fetched advisory data or default value
                         E: Math.random() > 0.5 ? 1 : 0, // Fake visa requirements data (0 or 1)
                         F: Math.random() * 15 // Fake flight duration data (0 to 15 hours)
                     };
@@ -96,9 +238,16 @@ const ParallelCoordinates = () => {
         const yScales = {}; // Object to store y-scales for each dimension
 
         dimensions.forEach(dim => {
-            yScales[dim] = d3.scaleLinear()
-                .domain(d3.extent(data, d => d[dim])) // Get min/max values for each dimension
-                .range([height - margin.bottom, margin.top]); // Scale to fit within the SVG
+            if (dim === "D") {
+                // Use ordinal scale for advisory category
+                yScales[dim] = d3.scalePoint()
+                    .domain(["None", "No advisory", "Advisory against travel to certain areas", "Advisory against non-essential travel", "Advisory against all travel"])
+                    .range([height - margin.bottom, margin.top]); // Flip so higher numbers are at the top
+            } else {
+                yScales[dim] = d3.scaleLinear()
+                    .domain(d3.extent(data, d => d[dim])) // Get min/max values
+                    .range([height - margin.bottom, margin.top]);
+            }
         });
 
         // ----------------------
@@ -167,7 +316,14 @@ const ParallelCoordinates = () => {
             .append("g")
             .attr("class", "axis")
             .attr("transform", d => `translate(${xScale(d)},0)`) // Position axes
-            .each(function (d) { d3.select(this).call(d3.axisLeft(yScales[d])); }); // Draw each axis
+            .each(function (d) {
+                 if (d === "D") {
+                    d3.select(this).call(d3.axisLeft(yScales[d]).tickFormat(d => d)); 
+                } else {
+                    d3.select(this).call(d3.axisLeft(yScales[d]));
+                }
+            }
+            ); // Draw each axis
 
         // ----------------------
         // 10. Axis Labels (Properly Positioned)
