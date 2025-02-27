@@ -4,6 +4,10 @@ import * as d3 from "d3"; // Import D3.js for data visualization
 const ParallelCoordinates = () => {
     const chartRef = useRef(); // Reference to the div container where the chart will be drawn
     const [data, setData] = useState([]); // State to store data from the API
+    const [screenDimensions, setScreenDimensions] = useState({
+      width: window.innerWidth * 0.9,  // 90% of screen width
+      height: window.innerHeight * 0.2 // 20% of screen height
+  });
     
     // useEffect(() => {
         // // ----------------------
@@ -15,6 +19,20 @@ const ParallelCoordinates = () => {
         //     { name: "Stockholm, SE",A: 30, B: 10, C: 45, D: 65, E: 1, F: 13 },
         //     { name: "Madrid, ES",A: 40, B: 20, C: 60, D: 35, E: 0, F: 20 },
         // ];
+
+
+        useEffect(() => {
+          const handleResize = () => {
+              setScreenDimensions({
+                  width: window.innerWidth * 0.9,
+                  height: window.innerHeight * 0.6
+              });
+          };
+
+          window.addEventListener("resize", handleResize);
+          return () => window.removeEventListener("resize", handleResize);
+      }, []);
+
         const advisoryDummieData = [
             {
               "iataCode": "AKL",
@@ -209,12 +227,10 @@ const ParallelCoordinates = () => {
         if (data.length === 0) return; // Do nothing if data is not loaded yet
 
         // ----------------------
-        // 2. Chart Dimensions (Balanced Margins for Centering)
+        // 2. Chart Screen Dimensions (Balanced Margins for Centering)
         // ----------------------
-        const width = 1400, // Increased width slightly for better spacing
-            height = 400,  // Increased height for readability
-            margin = { top: 40, right: 80, bottom: 50, left: 45 }; // Balanced margins
-
+        const { width, height } = screenDimensions; // Container dimensions
+        const margin = { top: 40, right: 80, bottom: 50, left: 45 }; // Space around the chart
         // ----------------------
         // 3. Clear Existing Chart Before Redrawing
         // ----------------------
@@ -349,12 +365,12 @@ const ParallelCoordinates = () => {
             .style("font-weight", "bold") // Make labels bold for better visibility
             .text(d => customLabels[d] || d); // Use custom label if available
 
-    }, [data]); // Re-run effect when data changes
+    }, [data, screenDimensions]); // Re-run effect when data changes
 
     // ----------------------
     // 11. Return JSX (Chart Container)
     // ----------------------
-    return <div ref={chartRef} />; // A div where the D3 chart will be drawn
+    return <div ref={chartRef} className="w-full h-full" />; // A div where the D3 chart will be drawn
 };
 
 export default ParallelCoordinates;
