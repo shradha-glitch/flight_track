@@ -172,7 +172,7 @@ const ParallelCoordinates = () => {
 
                  // Fetch weather data for each destination
                  const weatherPromises = iataCodes.map(async (iataCode, index) => {
-                    const weatherResponse = await fetch(`http://127.0.0.1:8001/weather/${iataCode}?departure_date=${departureDates[index]}&return_date=${returnDates[index]}`);
+                    const weatherResponse = await fetch(`http://127.0.0.1:8001/api/weather/${iataCode}?departure_date=${departureDates[index]}&return_date=${returnDates[index]}`);
                     
                     const weatherData = await weatherResponse.json();
                     return {
