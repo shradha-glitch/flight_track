@@ -4,8 +4,7 @@ import * as d3 from "d3"; // Import D3.js for data visualization
 const ParallelCoordinates = () => {
     const chartRef = useRef(); // Reference to the div container where the chart will be drawn
     const [data, setData] = useState([]); // State to store data from the API
-    const [source_country, setSourceCountry] = useState("LGW"); // State to store the source country
-
+    
     // useEffect(() => {
         // // ----------------------
         // // 1. Sample Data
@@ -160,9 +159,9 @@ const ParallelCoordinates = () => {
 
     useEffect(() => {
         // fetch data from the API
-        const fetchSourceCountry = async (source_country) => {
+        const fetchSourceCountry = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8001/api/flights/forlondon?origin=${source_country}`);
+                const response = await fetch(`http://127.0.0.1:8001/api/flights/forlondon`);
                 const result = await response.json();
                 
                 // Extract destination IATA codes and dates
@@ -203,8 +202,8 @@ const ParallelCoordinates = () => {
                 console.error("Error fetching data: ", error);
             }
         };
-        fetchSourceCountry(source_country);
-    }, [source_country]);
+        fetchSourceCountry();
+    }, []);
 
     useEffect(() => {
         if (data.length === 0) return; // Do nothing if data is not loaded yet
