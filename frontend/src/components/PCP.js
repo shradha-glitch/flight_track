@@ -1,428 +1,393 @@
-import { use, useEffect, useRef, useState } from "react"; // Import hooks for managing side effects and references
-import * as d3 from "d3"; // Import D3.js for data visualization
+import { useEffect, useRef, useState } from "react";
+import * as d3 from "d3";
 
 const ParallelCoordinates = () => {
-    const chartRef = useRef(); // Reference to the div container where the chart will be drawn
-    const [data, setData] = useState([]); // State to store data from the API
-    const [screenDimensions, setScreenDimensions] = useState({
-      width: window.innerWidth * 0.9,  // 90% of screen width
-      height: window.innerHeight * 0.6 // 20% of screen height
+  const chartRef = useRef();
+  const [data, setData] = useState([]);
+  const [screenDimensions, setScreenDimensions] = useState({
+    width: window.innerWidth * 0.9,
+    height: window.innerHeight * 0.6,
   });
-    
-    // useEffect(() => {
-        // // ----------------------
-        // // 1. Sample Data
-        // // ----------------------
-        // const data = [
-        //     { name: "Sarajevo, BA", A: 10, B: 20, C: 30, D: 50, E: 0, F: 3 },
-        //     { name: "Delhi, IN",A: 20, B: 30, C: 40, D: 70, E: 1, F: 27 },
-        //     { name: "Stockholm, SE",A: 30, B: 10, C: 45, D: 65, E: 1, F: 13 },
-        //     { name: "Madrid, ES",A: 40, B: 20, C: 60, D: 35, E: 0, F: 20 },
-        // ];
 
-
-        useEffect(() => {
-          const handleResize = () => {
-              setScreenDimensions({
-                  width: window.innerWidth * 0.9,
-                  height: window.innerHeight * 0.6
-              });
-          };
-
-          window.addEventListener("resize", handleResize);
-          return () => window.removeEventListener("resize", handleResize);
-      }, []);
-
-        const advisoryDummieData = [
-            {
-              "iataCode": "AKL",
-              "iso2Code": "NZ",
-              "advisory": "Advisory against all travel"
-            },
-            {
-              "iataCode": "BNE",
-              "iso2Code": "AU",
-              "advisory": "Advisory against non-essential travel"
-            },
-            {
-              "iataCode": "CPT",
-              "iso2Code": "ZA",
-              "advisory": "Advisory against travel to certain areas"
-            },
-            {
-              "iataCode": "MEL",
-              "iso2Code": "AU",
-              "advisory": "No advisory"
-            },
-            {
-              "iataCode": "LOS",
-              "iso2Code": "NG",
-              "advisory": "None"
-            },
-            {
-              "iataCode": "LAS",
-              "iso2Code": "US",
-              "advisory": "Advisory against all travel"
-            },
-            {
-              "iataCode": "HKT",
-              "iso2Code": "TH",
-              "advisory": "Advisory against non-essential travel"
-            },
-            {
-              "iataCode": "JNB",
-              "iso2Code": "ZA",
-              "advisory": "Advisory against travel to certain areas"
-            },
-            {
-              "iataCode": "MIA",
-              "iso2Code": "US",
-              "advisory": "No advisory"
-            },
-            {
-              "iataCode": "DPS",
-              "iso2Code": "ID",
-              "advisory": "None"
-            },
-            {
-              "iataCode": "NRT",
-              "iso2Code": "JP",
-              "advisory": "Advisory against all travel"
-            },
-            {
-              "iataCode": "MNL",
-              "iso2Code": "PH",
-              "advisory": "Advisory against non-essential travel"
-            },
-            {
-              "iataCode": "BKK",
-              "iso2Code": "TH",
-              "advisory": "Advisory against travel to certain areas"
-            },
-            {
-              "iataCode": "KUL",
-              "iso2Code": "MY",
-              "advisory": "No advisory"
-            },
-            {
-              "iataCode": "NRT",
-              "iso2Code": "JP",
-              "advisory": "None"
-            },
-            {
-              "iataCode": "HKG",
-              "iso2Code": "HK",
-              "advisory": "Advisory against all travel"
-            },
-            {
-              "iataCode": "BCN",
-              "iso2Code": "ES",
-              "advisory": "Advisory against non-essential travel"
-            },
-            {
-              "iataCode": "TFS",
-              "iso2Code": "ES",
-              "advisory": "Advisory against travel to certain areas"
-            },
-            {
-              "iataCode": "RAK",
-              "iso2Code": "MA",
-              "advisory": "No advisory"
-            },
-            {
-              "iataCode": "PMI",
-              "iso2Code": "ES",
-              "advisory": "None"
-            },
-            {
-              "iataCode": "FAO",
-              "iso2Code": "PT",
-              "advisory": "Advisory against all travel"
-            },
-            {
-              "iataCode": "ATH",
-              "iso2Code": "GR",
-              "advisory": "Advisory against non-essential travel"
-            },
-            {
-              "iataCode": "CPH",
-              "iso2Code": "DK",
-              "advisory": "Advisory against travel to certain areas"
-            },
-            {
-              "iataCode": "ALC",
-              "iso2Code": "ES",
-              "advisory": "No advisory"
-            },
-            {
-              "iataCode": "AGP",
-              "iso2Code": "ES",
-              "advisory": "None"
-            },
-            {
-              "iataCode": "MAD",
-              "iso2Code": "ES",
-              "advisory": "Advisory against all travel"
-            }
-          ];
-
-        // Map advisory categories to numbers
-    const advisoryMapping = {
-        "Advisory against all travel": 4,
-        "Advisory against non-essential travel": 3,
-        "Advisory against travel to certain areas": 2,
-        "No advisory": 1,
-        "None": 0
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenDimensions({
+        width: window.innerWidth * 0.9,
+        height: window.innerHeight * 0.6,
+      });
     };
 
-    useEffect(() => {
-        // fetch data from the API
-        const fetchSourceCountry = async () => {
-            try {
-                const response = await fetch(`http://127.0.0.1:8001/api/flights/forlondon`);
-                const result = await response.json();
-                
-                // Extract destination IATA codes and dates
-                const iataCodes = result.map(item => item.destination);
-                const departureDates = result.map(item => item.departureDate);
-                const returnDates = result.map(item => item.returnDate);
-                
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-                 // Fetch weather data for each destination
-                 const weatherPromises = iataCodes.map(async (iataCode, index) => {
-                    const weatherResponse = await fetch(`http://127.0.0.1:8001/api/weather/${iataCode}?departure_date=${departureDates[index]}&return_date=${returnDates[index]}`);
-                    
-                    const weatherData = await weatherResponse.json();
-                    return {
-                        iataCode,
-                        temperature: weatherData.average_temperature
-                    };
-                })
+  const advisoryDummieData = [
+    {
+      iataCode: "AKL",
+      iso2Code: "NZ",
+      advisory: "Advisory against all travel",
+    },
+    {
+      iataCode: "BNE",
+      iso2Code: "AU",
+      advisory: "Advisory against non-essential travel",
+    },
+    {
+      iataCode: "CPT",
+      iso2Code: "ZA",
+      advisory: "Advisory against travel to certain areas",
+    },
+    {
+      iataCode: "MEL",
+      iso2Code: "AU",
+      advisory: "No advisory",
+    },
+    {
+      iataCode: "LOS",
+      iso2Code: "NG",
+      advisory: "None",
+    },
+    {
+      iataCode: "LAS",
+      iso2Code: "US",
+      advisory: "Advisory against all travel",
+    },
+    {
+      iataCode: "HKT",
+      iso2Code: "TH",
+      advisory: "Advisory against non-essential travel",
+    },
+    {
+      iataCode: "JNB",
+      iso2Code: "ZA",
+      advisory: "Advisory against travel to certain areas",
+    },
+    {
+      iataCode: "MIA",
+      iso2Code: "US",
+      advisory: "No advisory",
+    },
+    {
+      iataCode: "DPS",
+      iso2Code: "ID",
+      advisory: "None",
+    },
+    {
+      iataCode: "NRT",
+      iso2Code: "JP",
+      advisory: "Advisory against all travel",
+    },
+    {
+      iataCode: "MNL",
+      iso2Code: "PH",
+      advisory: "Advisory against non-essential travel",
+    },
+    {
+      iataCode: "BKK",
+      iso2Code: "TH",
+      advisory: "Advisory against travel to certain areas",
+    },
+    {
+      iataCode: "KUL",
+      iso2Code: "MY",
+      advisory: "No advisory",
+    },
+    {
+      iataCode: "NRT",
+      iso2Code: "JP",
+      advisory: "None",
+    },
+    {
+      iataCode: "HKG",
+      iso2Code: "HK",
+      advisory: "Advisory against all travel",
+    },
+    {
+      iataCode: "BCN",
+      iso2Code: "ES",
+      advisory: "Advisory against non-essential travel",
+    },
+    {
+      iataCode: "TFS",
+      iso2Code: "ES",
+      advisory: "Advisory against travel to certain areas",
+    },
+    {
+      iataCode: "RAK",
+      iso2Code: "MA",
+      advisory: "No advisory",
+    },
+    {
+      iataCode: "PMI",
+      iso2Code: "ES",
+      advisory: "None",
+    },
+    {
+      iataCode: "FAO",
+      iso2Code: "PT",
+      advisory: "Advisory against all travel",
+    },
+    {
+      iataCode: "ATH",
+      iso2Code: "GR",
+      advisory: "Advisory against non-essential travel",
+    },
+    {
+      iataCode: "CPH",
+      iso2Code: "DK",
+      advisory: "Advisory against travel to certain areas",
+    },
+    {
+      iataCode: "ALC",
+      iso2Code: "ES",
+      advisory: "No advisory",
+    },
+    {
+      iataCode: "AGP",
+      iso2Code: "ES",
+      advisory: "None",
+    },
+    {
+      iataCode: "MAD",
+      iso2Code: "ES",
+      advisory: "Advisory against all travel",
+    },
+  ];
 
-                const weatherData = await Promise.all(weatherPromises);
+  const advisoryMapping = {
+    "Advisory against all travel": 4,
+    "Advisory against non-essential travel": 3,
+    "Advisory against travel to certain areas": 2,
+    "No advisory": 1,
+    None: 0,
+  };
 
-            
-                const updatedData = result.map(item => {
+  useEffect(() => {
+    const fetchSourceCountry = async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8001/api/flights/forlondon`
+        );
+        const result = await response.json();
 
-                    const weather = weatherData.find(w => w.iataCode === item.destination);
-                    return {
-                        name: item.destination,
-                        A: parseFloat(item.price.total), // Extract and parse the price
-                        B: weather ? weather.temperature : Math.random() * 40, // Use fetched temperature data or fake data
-                        C: Math.random() * 100, // Fake weather data (0 to 100)
-                        D: advisoryDummieData.find(a => a.iataCode === item.destination)?.advisory || "No advisory",  // Use fetched advisory data or default value
-                        E: Math.random() > 0.5 ? 1 : 0, // Fake visa requirements data (0 or 1)
-                        F: Math.random() * 15 // Fake flight duration data (0 to 15 hours)
-                    };
-                });
-                setData(updatedData);
-            } catch (error) {
-                console.error("Error fetching data: ", error);
-            }
-        };
-        fetchSourceCountry();
-    }, []);
+        const iataCodes = result.map((item) => item.destination);
+        const departureDates = result.map((item) => item.departureDate);
+        const returnDates = result.map((item) => item.returnDate);
 
-    useEffect(() => {
-        if (data.length === 0) return; // Do nothing if data is not loaded yet
+        const weatherPromises = iataCodes.map(async (iataCode, index) => {
+          const weatherResponse = await fetch(
+            `http://127.0.0.1:8001/api/weather/${iataCode}?departure_date=${departureDates[index]}&return_date=${returnDates[index]}`
+          );
 
-        // ----------------------
-        // 2. Chart Screen Dimensions (Balanced Margins for Centering)
-        // ----------------------
-        const { width, height } = screenDimensions; // Container dimensions
-        const margin = { top: 40, right: 80, bottom: 50, left: 45 }; // Space around the chart
-        // ----------------------
-        // 3. Clear Existing Chart Before Redrawing
-        // ----------------------
-        d3.select(chartRef.current).selectAll("*").remove(); // Remove previous chart if it exists
-
-        // ----------------------
-        // 4. Create SVG Element
-        // ----------------------
-        const svg = d3.select(chartRef.current) // Select the container div
-            .append("svg") // Append an SVG element
-            .attr("width", width) // Set width
-            .attr("height", height) // Set height
-            .append("g") // Append a group element for margins
-            .attr("transform", `translate(${margin.left},${margin.top})`); // Adjust for margins
-
-        // ----------------------
-        // 5. Define Scales for Each Axis
-        // ----------------------
-        const dimensions = Object.keys(data[0]).filter(d => d !== "name"); // Exclude "name" field
-        const yScales = {}; // Object to store y-scales for each dimension
-
-        dimensions.forEach(dim => {
-            if (dim === "D") {
-                // Use ordinal scale for advisory category
-                yScales[dim] = d3.scalePoint()
-                    .domain(["None", "No advisory", "Advisory against travel to certain areas", "Advisory against non-essential travel", "Advisory against all travel"])
-                    .range([height - margin.bottom, margin.top]); // Flip so higher numbers are at the top
-            } else {
-                yScales[dim] = d3.scaleLinear()
-                    .domain(d3.extent(data, d => d[dim])) // Get min/max values
-                    .range([height - margin.bottom, margin.top]);
-            }
+          const weatherData = await weatherResponse.json();
+          return {
+            iataCode,
+            temperature: weatherData.average_temperature,
+          };
         });
 
-        // ----------------------
-        // 6. Define X-Axis Scale for Dimension Placement
-        // ----------------------
-        const xScale = d3.scalePoint()
-            .domain(dimensions)
-            .range([margin.left + 30, width - margin.right - 30]); // Add padding on both sides
+        const weatherData = await Promise.all(weatherPromises);
+        const updatedData = result.map((item) => {
+          const weather = weatherData.find(
+            (w) => w.iataCode === item.destination
+          );
+          return {
+            name: item.destination,
+            A: parseFloat(item.price.total),
+            B: weather ? weather.temperature : Math.random() * 40,
+            C: Math.random() * 100,
+            D:
+              advisoryDummieData.find((a) => a.iataCode === item.destination)
+                ?.advisory || "No advisory",
+            E: Math.random() > 0.5 ? 1 : 0,
+            F: Math.random() * 15,
+          };
+        });
+        setData(updatedData);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+    fetchSourceCountry();
+  }, []);
 
-        // ----------------------
-        // 7. Tooltip for Hover Effect
-        // ----------------------
-        const tooltip = d3.select(chartRef.current)
-            .append("div")
-            .style("position", "absolute")
-            .style("visibility", "hidden")
-            .style("background", "#e0e0e0") // Light gray background
-            .style("color", "black") // Black text
-            .style("border", "1px solid black")
-            .style("padding", "8px")
-            .style("border-radius", "4px")
-            .style("font-size", "14px")
-            .style("box-shadow", "2px 2px 10px rgba(0,0,0,0.2)");
+  useEffect(() => {
+    if (data.length === 0) return;
+    const { width, height } = screenDimensions;
+    const margin = { top: 40, right: 80, bottom: 50, left: 45 };
+    d3.select(chartRef.current).selectAll("*").remove();
+    const svg = d3
+      .select(chartRef.current)
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        // ----------------------
-        // 8. Draw Lines (Paths) for Each Data Entry
-        // ----------------------
-        const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-        svg.selectAll("path")
-            .data(data)
-            .enter()
-            .append("path")
-            .attr("fill", "none")
-            .attr("stroke", (d, i) => colorScale(i))
-            .attr("opacity", 0.75)
-            .attr("stroke-width", 2) // Slightly thicker lines for better visibility
-            .attr("d", d => d3.line()(dimensions.map(dim => [xScale(dim), yScales[dim](d[dim])])))
-            .on("mouseover", function (event, d) {
-                d3.select(this)
-                    .attr("stroke-width", 4) // Highlight on hover
-                    .attr("opacity", 1);
+    const dimensions = Object.keys(data[0]).filter((d) => d !== "name");
+    const yScales = {};
 
-                    tooltip.style("visibility", "visible")
-                    .html(`<strong>${d.name}</strong>`) // Show only the name, no numbers
-                    .style("top", `${event.pageY - 10}px`)
-                    .style("left", `${event.pageX + 10}px`);
-            })
-            .on("mousemove", function (event) {
-                tooltip.style("top", `${event.pageY - 10}px`)
-                    .style("left", `${event.pageX + 10}px`);
-            })
-            .on("mouseout", function () {
-                d3.select(this)
-                    .attr("stroke-width", 2) // Reset thickness
-                    .attr("opacity", 0.75);
+    dimensions.forEach((dim) => {
+      if (dim === "D") {
+        yScales[dim] = d3
+          .scalePoint()
+          .domain([
+            "None",
+            "No advisory",
+            "Advisory against travel to certain areas",
+            "Advisory against non-essential travel",
+            "Advisory against all travel",
+          ])
+          .range([height - margin.bottom, margin.top]);
+      } else {
+        yScales[dim] = d3
+          .scaleLinear()
+          .domain(d3.extent(data, (d) => d[dim]))
+          .range([height - margin.bottom, margin.top]);
+      }
+    });
+    const xScale = d3
+      .scalePoint()
+      .domain(dimensions)
+      .range([margin.left + 30, width - margin.right - 30]);
+    const tooltip = d3
+      .select(chartRef.current)
+      .append("div")
+      .style("position", "absolute")
+      .style("visibility", "hidden")
+      .style("background", "#e0e0e0")
+      .style("color", "black")
+      .style("border", "1px solid black")
+      .style("padding", "8px")
+      .style("border-radius", "4px")
+      .style("font-size", "14px")
+      .style("box-shadow", "2px 2px 10px rgba(0,0,0,0.2)");
 
-                tooltip.style("visibility", "hidden");
-            });
+    const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+    svg
+      .selectAll("path")
+      .data(data)
+      .enter()
+      .append("path")
+      .attr("fill", "none")
+      .attr("stroke", (d, i) => colorScale(i))
+      .attr("opacity", 0.75)
+      .attr("stroke-width", 2)
+      .attr("d", (d) =>
+        d3.line()(dimensions.map((dim) => [xScale(dim), yScales[dim](d[dim])]))
+      )
+      .on("mouseover", function (event, d) {
+        d3.select(this).attr("stroke-width", 4).attr("opacity", 1);
 
-        // ----------------------
-        // 9. Draw Axes for Each Dimension
-        // ----------------------
+        tooltip
+          .style("visibility", "visible")
+          .html(`<strong>${d.name}</strong>`)
+          .style("top", `${event.pageY - 10}px`)
+          .style("left", `${event.pageX + 10}px`);
+      })
+      .on("mousemove", function (event) {
+        tooltip
+          .style("top", `${event.pageY - 10}px`)
+          .style("left", `${event.pageX + 10}px`);
+      })
+      .on("mouseout", function () {
+        d3.select(this).attr("stroke-width", 2).attr("opacity", 0.75);
 
-        // Define brush for each axis
-        const brush = d3.brushY()
-        .extent([[ -20, margin.top], [20, height - margin.bottom]]) // Define the brushing area
-        .on("brush end", brushed); // Call `brushed` function on interaction
+        tooltip.style("visibility", "hidden");
+      });
 
+    const brush = d3
+      .brushY()
+      .extent([
+        [-20, margin.top],
+        [20, height - margin.bottom],
+      ])
+      .on("brush end", brushed);
 
-        svg.selectAll("g.axis")
-            .data(dimensions) // Bind dimension names to axis groups
-            .enter()
-            .append("g")
-            .attr("class", "axis")
-            .attr("transform", d => `translate(${xScale(d)},0)`) // Position axes
-            .each(function (d) {
-                 if (d === "D") {
-                    d3.select(this).call(d3.axisLeft(yScales[d]).tickFormat(d => d)); 
-                } else {
-                    d3.select(this).call(d3.axisLeft(yScales[d]));
-                }
-            }) // Draw each axis
-            .append("g") // Add brush to each axis
-            .attr("class", "brush")
-            .call(brush);
-
-
-          const activeFilters = {}; // Stores selected brush ranges
-          console.log(activeFilters);
-
-          function brushed(event, dim) {
-              if (event.selection === null) {
-                  delete activeFilters[dim]; // Remove filter if no selection
-              } else {
-                if (dim === "D") {
-                    const [y0, y1] = event.selection;
-                    const selectedCategories = yScales[dim].domain().filter(category => {
-                        const pos = yScales[dim](category);
-                        return pos >= y0 && pos <= y1;
-                    });
-                    activeFilters[dim] = selectedCategories;
-                } else {
-                  const [y0, y1] = event.selection;
-                  activeFilters[dim] = [yScales[dim].invert(y1), yScales[dim].invert(y0)]; // Store inverted values
-              }
-          
-              updateHighlight(); // Apply filter to the lines
-          }
-
-          function updateHighlight() {
-            svg.selectAll("path")
-                .attr("opacity", d => {
-                    if (!d) return 0.1; // Skip null or undefined data points
-        
-                    return Object.keys(activeFilters).every(dim => {
-                        if (!d.hasOwnProperty(dim) || d[dim] == null) return false; // Avoid null errors
-                        if (dim === "D") {
-                            return activeFilters[dim].includes(d[dim]);
-                        } else {
-                            const [min, max] = activeFilters[dim];
-                            return d[dim] >= min && d[dim] <= max;
-                        }
-                    }) ? 1 : 0.1; // Highlight matched lines, dim others
-                });
-              }
+    svg
+      .selectAll("g.axis")
+      .data(dimensions)
+      .enter()
+      .append("g")
+      .attr("class", "axis")
+      .attr("transform", (d) => `translate(${xScale(d)},0)`)
+      .each(function (d) {
+        if (d === "D") {
+          d3.select(this).call(d3.axisLeft(yScales[d]).tickFormat((d) => d));
+        } else {
+          d3.select(this).call(d3.axisLeft(yScales[d]));
         }
-        
-            
+      })
+      .append("g")
+      .attr("class", "brush")
+      .call(brush);
 
-        // ----------------------
-        // 10. Axis Labels (Properly Positioned)
-        // ----------------------
-        const customLabels = {
-            A: "Price",
-            B: "Temperature",
-            C: "Weather",
-            D: "Safety",
-            E: "Visa Requirements",
-            F: "Flight Duration"
-        };
+    const activeFilters = {};
+    console.log(activeFilters);
 
-        svg.selectAll(".axis-label")
-            .data(dimensions)
-            .enter()
-            .append("text")
-            .attr("class", "axis-label")
-            .attr("x", d => xScale(d)) // Center labels on axes
-            .attr("y", margin.top - 25) // Higher positioning for readability
-            .attr("text-anchor", "middle")
-            .style("font-size", "14px")
-            .style("fill", "#333") // Dark gray text
-            .style("font-weight", "bold") // Make labels bold for better visibility
-            .text(d => customLabels[d] || d); // Use custom label if available
+    function brushed(event, dim) {
+      if (event.selection === null) {
+        delete activeFilters[dim];
+      } else {
+        if (dim === "D") {
+          const [y0, y1] = event.selection;
+          const selectedCategories = yScales[dim]
+            .domain()
+            .filter((category) => {
+              const pos = yScales[dim](category);
+              return pos >= y0 && pos <= y1;
+            });
+          activeFilters[dim] = selectedCategories;
+        } else {
+          const [y0, y1] = event.selection;
+          activeFilters[dim] = [
+            yScales[dim].invert(y1),
+            yScales[dim].invert(y0),
+          ];
+        }
+        updateHighlight();
+      }
 
-    }, [data, screenDimensions]); // Re-run effect when data changes
+      function updateHighlight() {
+        svg.selectAll("path").attr("opacity", (d) => {
+          if (!d) return 0.1;
+          return Object.keys(activeFilters).every((dim) => {
+            if (!d.hasOwnProperty(dim) || d[dim] == null) return false;
+            if (dim === "D") {
+              return activeFilters[dim].includes(d[dim]);
+            } else {
+              const [min, max] = activeFilters[dim];
+              return d[dim] >= min && d[dim] <= max;
+            }
+          })
+            ? 1
+            : 0.1;
+        });
+      }
+    }
 
-    // ----------------------
-    // 11. Return JSX (Chart Container)
-    // ----------------------
-    return <div ref={chartRef} className="w-full h-full" />; // A div where the D3 chart will be drawn
+    const customLabels = {
+      A: "Price",
+      B: "Temperature",
+      C: "Weather",
+      D: "Safety",
+      E: "Visa Requirements",
+      F: "Flight Duration",
+    };
+    svg
+      .selectAll(".axis-label")
+      .data(dimensions)
+      .enter()
+      .append("text")
+      .attr("class", "axis-label")
+      .attr("x", (d) => xScale(d))
+      .attr("y", margin.top - 25)
+      .attr("text-anchor", "middle")
+      .style("font-size", "14px")
+      .style("fill", "#333")
+      .style("font-weight", "bold")
+      .text((d) => customLabels[d] || d);
+  }, [data, screenDimensions]);
+  return <div ref={chartRef} className="w-full h-full" />;
 };
-
 export default ParallelCoordinates;

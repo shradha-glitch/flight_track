@@ -3,7 +3,6 @@ import { Box } from "@mui/material";
 import Departure from "../user_input/Location";
 import PassportInput from "../user_input/Passport";
 import DatePicker from "../user_input/Date";
-import PassengerPicker from "../user_input/Passenger";
 
 const SearchCard = ({ onSelect }) => {
   return (
@@ -21,7 +20,6 @@ const SearchCard = ({ onSelect }) => {
       <Departure onSelect={onSelect} />
       <DatePicker label={"Departure"} />
       <DatePicker label={"Return"} />
-      <PassengerPicker />
       <PassportInput />
     </Box>
   );

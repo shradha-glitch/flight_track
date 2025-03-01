@@ -4,7 +4,7 @@ import ParallelCoordinates from "../PCP";
 const PcpCard = () => {
     return (
         <CustomCard>
-            <ParallelCoordinates/> {/* Chart is now inside the card */}
+            <ParallelCoordinates/>
         </CustomCard>
     );
 };

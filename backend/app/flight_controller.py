@@ -63,30 +63,25 @@ async def get_travel_advisory():
     """
     Get travel advisories for destinations in Lon-other.json
     """
-    # Load flight data
     flights_data = load_flight_data()
     if not flights_data:
         raise HTTPException(status_code=404, detail="Flight data not found")
 
-    # Load advisory data
     advisories = load_advisory_data()
     if not advisories:
         raise HTTPException(status_code=404, detail="Advisory data not found")
 
-    # Get unique destinations
     destinations = {flight["destination"] for flight in flights_data}
 
-    # Map destinations to advisories
     destination_advisories = {}
     unmatched = []
 
     for iata in destinations:
-        # Convert IATA to ISO country code
         country_code = iata_to_iso(iata)
         if country_code and country_code.lower() in advisories:
             destination_advisories[iata] = {
                 "iata": iata,
-                "iso": country_code.lower(),  # Add ISO code
+                "iso": country_code.lower(), 
                 "advisory": advisories[country_code.lower()]
             }
         else:
@@ -99,8 +94,6 @@ async def get_travel_advisory():
         "matched_destinations": len(destination_advisories)
     }
 
-
-# Setup Open-Meteo API client with cache and retry
 cache_session = requests_cache.CachedSession('.cache', expire_after=3600)
 retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
 openmeteo = openmeteo_requests.Client(session=retry_session)
@@ -117,7 +110,6 @@ async def get_weather(iata_code: str, departure_date: str = Query(...), return_d
 
     latitude, longitude = coords
 
-    # Fetch weather data from Open-Meteo API
     url = "https://climate-api.open-meteo.com/v1/climate"
     params = {
         "latitude": latitude,
@@ -135,10 +127,8 @@ async def get_weather(iata_code: str, departure_date: str = Query(...), return_d
     daily = response.Daily()
     daily_temperature_2m_mean = daily.Variables(0).ValuesAsNumpy()
 
-    # Calculate the average temperature over the date range
     average_temperature = float(np.mean(daily_temperature_2m_mean))
 
-    # Prepare weather data
     weather_data = {
         "average_temperature": average_temperature
     }
