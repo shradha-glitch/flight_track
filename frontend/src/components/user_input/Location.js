@@ -19,7 +19,7 @@ const DeparturePicker = ({ onSelect }) => {
   const [selectedCity, setSelectedCity] = useState(null);
 
   return (
-    <Box sx={{ flex: 1, minWidth: "200px" }}>
+    <Box sx={{ flex: 1, minWidth: "150px" }}>
       <Autocomplete
         options={location_options} 
         freeSolo 
