@@ -1,11 +1,12 @@
 import * as React from "react";
-import { Box, Container,Typography } from "@mui/material";
+import { Box, Container } from "@mui/material";
+import Logo from "./logo";
 
 export default function Header() {
   return (
     <Container maxWidth="100%" sx={{ mt: 4, mb: 4, px: 0 }}>
       <Box>
-      <Typography variant="h2">{"Journey"}</Typography>
+      <Logo fillcolor="#1B1B1B"></Logo>
     </Box> 
     
     </Container>     

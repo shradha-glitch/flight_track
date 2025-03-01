@@ -1,7 +1,6 @@
 import { Box, Container } from "@mui/material";
 import CustomCard from "./card/Card"; 
 import GlobeCard from "./card/GlobeCard"; 
-import SearchCard from "./card/SearchCard"; 
 import PcpCard from "./card/PcpCard";
 
 const Dashboard = () => {
@@ -18,10 +17,7 @@ const Dashboard = () => {
           gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" }, 
         }}>
         <Box sx={{ gridColumn: "1 / -1" }}>
-          <SearchCard onSelect={handleCity} />
-        </Box>
-        <Box sx={{ gridColumn: "1 / -1" }}>
-       <PcpCard/>
+       <PcpCard onSelect={handleCity}/>
         </Box>
         <GlobeCard/>
         <CustomCard title="Bottom Card 2" />

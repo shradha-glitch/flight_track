@@ -19,7 +19,7 @@ const PassportSearchInput = () => {
   }, []);
 
   return (
-    <Box sx={{ flex: 1, minWidth: "200px" }}>
+    <Box sx={{ flex: 1, minWidth: "150px" }}>
       <Autocomplete
         freeSolo
         options={countries}

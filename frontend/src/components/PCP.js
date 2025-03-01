@@ -1,4 +1,4 @@
-import { use, useEffect, useRef, useState } from "react"; // Import hooks for managing side effects and references
+import { useEffect, useRef, useState } from "react"; // Import hooks for managing side effects and references
 import * as d3 from "d3"; // Import D3.js for data visualization
 
 const ParallelCoordinates = () => {
