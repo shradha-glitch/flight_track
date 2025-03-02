@@ -19,7 +19,7 @@ const DeparturePicker = ({ onSelect }) => {
   const [selectedCity, setSelectedCity] = useState(null);
 
   return (
-    <Box sx={{ flex: 1, minWidth: "150px" }}>
+    <Box sx={{ flex: 1, minWidth: "150px",flexDirection: "column", display: "flex" }}>
       <Autocomplete
         options={location_options} 
         freeSolo 
@@ -32,7 +32,7 @@ const DeparturePicker = ({ onSelect }) => {
             onSelect(newCity); 
           }
         }}
-        renderInput={(params) => <TextField {...params} label="Departure Location" />}
+        renderInput={(params) => <TextField {...params} required label="Departure Location" />}
       />
     </Box>
   );
