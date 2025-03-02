@@ -20,8 +20,8 @@ const Dashboard = () => {
        <PcpCard onSelect={handleCity}/>
         </Box>
         <GlobeCard/>
-        <CustomCard title="Bottom Card 2" />
-        <CustomCard title="Bottom Card 3" />
+        <CustomCard/>
+        <CustomCard/>
       </Box>
     </Container>
   );
