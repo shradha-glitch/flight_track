@@ -6,11 +6,25 @@ import PassportInput from "../user_input/Passport";
 import DatePicker from "../user_input/Date";
 import Header from "../Header";
 import SearchIcon from "@mui/icons-material/Search";
+import React, { useState } from "react";
 
 const PcpCard = ({ onSelect }) => {
+  const [isFormValid, setIsFormValid] = useState(false);
+  
+  const handleSubmit = (e) => {
+    e.preventDefault(); 
+    const form = e.target;
+
+    if (form.checkValidity()) {
+      setIsFormValid(true);
+    } else {
+      setIsFormValid(false); 
+    }
+  };
   return (
     <CustomCard>
       <Header></Header>
+      <form onSubmit={handleSubmit}>
       <Box
         sx={{
           mb: 4,
@@ -23,11 +37,12 @@ const PcpCard = ({ onSelect }) => {
           flexWrap: "wrap"
         }}
       >
-        <Departure onSelect={onSelect} />
-        <DatePicker label={"Departure"} text={"Dates of Travel"} />
-        <DatePicker label={"Return"} text={" fef"}/>
+        <Departure onSelect={onSelect} required/>
+        <DatePicker label={"Departure"} text={"Dates of Travel"} required />
+        <DatePicker label={"Return"} text={" fef"} required/>
         <PassportInput />
         <Button
+          type="submit" 
           variant="contained"
           startIcon={<SearchIcon />}
           sx={{
@@ -47,8 +62,12 @@ const PcpCard = ({ onSelect }) => {
           Search
         </Button>
       </Box>
+      </form>
       <Box sx={{ px: 4 }}>
+      <hr style={{ border: 'none', borderTop: '1px solid #D3D3D3' }} /> 
+      {isFormValid && (
         <ParallelCoordinates />
+      )}
       </Box>
     </CustomCard>
   );
