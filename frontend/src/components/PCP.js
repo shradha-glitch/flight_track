@@ -8,6 +8,7 @@ const ParallelCoordinates = ( {onFilterChange}) => {
       width: window.innerWidth * 0.9,  // 90% of screen width
       height: window.innerHeight * 0.6 // 20% of screen height
   });
+    const [originalFlightData, setOriginalFlightData] = useState([]);
     
     // useEffect(() => {
         // // ----------------------
@@ -181,6 +182,7 @@ const ParallelCoordinates = ( {onFilterChange}) => {
             try {
                 const response = await fetch(`http://127.0.0.1:8001/api/flights/forlondon`);
                 const result = await response.json();
+                setOriginalFlightData(result);
                 
                 // Extract destination IATA codes and dates
                 const iataCodes = result.map(item => item.destination);
@@ -212,7 +214,8 @@ const ParallelCoordinates = ( {onFilterChange}) => {
                         C: Math.random() * 100, // Fake weather data (0 to 100)
                         D: advisoryDummieData.find(a => a.iataCode === item.destination)?.advisory || "No advisory",  // Use fetched advisory data or default value
                         E: Math.random() > 0.5 ? 1 : 0, // Fake visa requirements data (0 or 1)
-                        F: Math.random() * 15 // Fake flight duration data (0 to 15 hours)
+                        F: Math.random() * 15, // Fake flight duration data (0 to 15 hours)
+                        originalFlight: item
                     };
                 });
                 setData(updatedData);
@@ -392,7 +395,16 @@ const ParallelCoordinates = ( {onFilterChange}) => {
         
                     // If the line is highlighted, add its destination to the filtered list
                     if (isHighlighted) {
-                        filteredDestinations.push(d.name);
+                        filteredDestinations.push({
+                          ...d.originalFlight,
+                          pcp: {
+                            temp: d.B,
+                            weather: d.C,
+                            safety: d.D,
+                            visa: d.E,
+                            duration: d.F
+                          }
+                        });
                     }
         
                     return isHighlighted ? 1 : 0.1;
