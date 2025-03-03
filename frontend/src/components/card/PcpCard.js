@@ -8,7 +8,7 @@ import Header from "../Header";
 import SearchIcon from "@mui/icons-material/Search";
 import React, { useState } from "react";
 
-const PcpCard = ({ onSelect }) => {
+const PcpCard = ({ onSelect, onFilterChange }) => {
   const [isFormValid, setIsFormValid] = useState(false);
   
   const handleSubmit = (e) => {
@@ -66,7 +66,7 @@ const PcpCard = ({ onSelect }) => {
       <Box sx={{ px: 4 }}>
       <hr style={{ border: 'none', borderTop: '1px solid #D3D3D3' }} /> 
       {isFormValid && (
-        <ParallelCoordinates />
+        <ParallelCoordinates onFilterChange={onFilterChange}/>
       )}
       </Box>
     </CustomCard>

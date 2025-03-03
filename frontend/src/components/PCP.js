@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"; // Import hooks for managing side effects and references
 import * as d3 from "d3"; // Import D3.js for data visualization
 
-const ParallelCoordinates = () => {
+const ParallelCoordinates = ( {onFilterChange}) => {
     const chartRef = useRef(); // Reference to the div container where the chart will be drawn
     const [data, setData] = useState([]); // State to store data from the API
     const [screenDimensions, setScreenDimensions] = useState({
@@ -372,12 +372,15 @@ const ParallelCoordinates = () => {
               updateHighlight(); // Apply filter to the lines
           }
 
+          
           function updateHighlight() {
+            const filteredDestinations = []; // Create array to store filtered destinations
+            
             svg.selectAll("path")
                 .attr("opacity", d => {
                     if (!d) return 0.1; // Skip null or undefined data points
         
-                    return Object.keys(activeFilters).every(dim => {
+                    const isHighlighted = Object.keys(activeFilters).every(dim => {
                         if (!d.hasOwnProperty(dim) || d[dim] == null) return false; // Avoid null errors
                         if (dim === "D") {
                             return activeFilters[dim].includes(d[dim]);
@@ -385,8 +388,16 @@ const ParallelCoordinates = () => {
                             const [min, max] = activeFilters[dim];
                             return d[dim] >= min && d[dim] <= max;
                         }
-                    }) ? 1 : 0.1; // Highlight matched lines, dim others
+                    });
+        
+                    // If the line is highlighted, add its destination to the filtered list
+                    if (isHighlighted) {
+                        filteredDestinations.push(d.name);
+                    }
+        
+                    return isHighlighted ? 1 : 0.1;
                 });
+                onFilterChange(filteredDestinations);
               }
         }
         
