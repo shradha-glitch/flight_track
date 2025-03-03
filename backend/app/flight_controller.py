@@ -45,7 +45,7 @@ router = APIRouter()
     - Filtered: curl http://localhost:8000/api/flights/forlondon?origin=LHR&destination=JFK
 """
 @router.get("/flights/forlondon")
-async def get_flights_by_origin(origin: str = None, destination: str = None):
+async def get_flights_by_origin(origin: str = None, destination: str = None, departure_date: str = None):
     """
     Get flights data. Optionally filter by origin and destination.
     """
@@ -57,6 +57,8 @@ async def get_flights_by_origin(origin: str = None, destination: str = None):
         flights = [f for f in flights if f["origin"] == origin]
     if destination:
         flights = [f for f in flights if f["destination"] == destination]
+    if departure_date:
+        flights = [f for f in flights if f["departureDate"] == departure_date]
 
     # Add location information for each flight's destination
     for flight in flights:
