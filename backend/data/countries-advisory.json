@@ -465,6 +465,10 @@
     "country_name": "Korea, Republic of",
     "advice":"No advisory"
   },
+  "xk":{
+     "country_name": "Kosovo",
+    "advice":"None"
+  },
   "kw":{
     "country_name": "Kuwait",
     "advice":"Advisory against all travel"
@@ -823,6 +827,10 @@
     "country_name": "Sudan",
     "advice":"Advisory against all travel"
   },
+  "ss":{
+    "country_name": "South Sudan",
+    "advice":"Advisory against all travel"
+  },
   "sr":{
     "country_name": "Suriname",
     "advice":"No advisory"
@@ -885,7 +893,7 @@
   },
   "tn":{
     "country_name": "Tunisia",
-    "advice":"NoAdvisory against travel to certain areas"
+    "advice":"Advisory against travel to certain areas"
   },
   "tr":{
     "country_name": "Turkiye",
