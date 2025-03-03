@@ -1,1 +1,11 @@
 node_modules
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore SQLite cache files
+*.sqlite
+
+# Ignore virtual environment directories
+venv/
