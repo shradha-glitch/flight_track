@@ -294,6 +294,7 @@ const ParallelCoordinates = ( {onFilterChange}) => {
         // 8. Draw Lines (Paths) for Each Data Entry
         // ----------------------
         const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+        // Modify the mouseover, mouseout events in the path creation section
         svg.selectAll("path")
             .data(data)
             .enter()
@@ -301,28 +302,35 @@ const ParallelCoordinates = ( {onFilterChange}) => {
             .attr("fill", "none")
             .attr("stroke", (d, i) => colorScale(i))
             .attr("opacity", 0.75)
-            .attr("stroke-width", 2) // Slightly thicker lines for better visibility
+            .attr("stroke-width", 2)
             .attr("d", d => d3.line()(dimensions.map(dim => [xScale(dim), yScales[dim](d[dim])])))
             .on("mouseover", function (event, d) {
-                d3.select(this)
-                    .attr("stroke-width", 4) // Highlight on hover
-                    .attr("opacity", 1);
-
+                // Only highlight if the line is already visible (part of filtered results)
+                if (this.getAttribute("opacity") === "1") {
+                    d3.select(this)
+                        .attr("stroke-width", 4)
+                        .attr("opacity", 1);
+    
                     tooltip.style("visibility", "visible")
-                    .html(`<strong>${d.name}</strong>`) // Show only the name, no numbers
+                    .html(`<strong>${d.name}</strong>`)
                     .style("top", `${event.pageY - 10}px`)
                     .style("left", `${event.pageX + 10}px`);
+                }
             })
             .on("mousemove", function (event) {
-                tooltip.style("top", `${event.pageY - 10}px`)
-                    .style("left", `${event.pageX + 10}px`);
+                if (this.getAttribute("opacity") === "1") {
+                    tooltip.style("top", `${event.pageY - 10}px`)
+                        .style("left", `${event.pageX + 10}px`);
+                }
             })
             .on("mouseout", function () {
-                d3.select(this)
-                    .attr("stroke-width", 2) // Reset thickness
-                    .attr("opacity", 0.75);
-
-                tooltip.style("visibility", "hidden");
+                if (this.getAttribute("opacity") === "1") {
+                    d3.select(this)
+                        .attr("stroke-width", 2)
+                        .attr("opacity", 1);
+    
+                    tooltip.style("visibility", "hidden");
+                }
             });
 
         // ----------------------
