@@ -1,4 +1,4 @@
-import { use, useEffect, useRef, useState, useContext } from "react"; // Import hooks for managing side effects and references
+import { useEffect, useRef, useState } from "react"; // Import hooks for managing side effects and references
 import * as d3 from "d3"; // Import D3.js for data visualization
 
 const ParallelCoordinates = () => {
@@ -8,16 +8,17 @@ const ParallelCoordinates = () => {
       width: window.innerWidth * 0.9,  // 90% of screen width
       height: window.innerHeight * 0.6 // 20% of screen height
   });
-
-  const { setFilteredFlights, setFlightInfo } = useContext(FlightContext); // Use the context to set filtered flights and the flight info
-
-  const advisoryCategories = [
-    "None", 
-    "No advisory",
-    "Advisory against travel to certain areas", 
-    "Advisory against non-essential travel", 
-    "Advisory against all travel"
-  ];
+    
+    // useEffect(() => {
+        // // ----------------------
+        // // 1. Sample Data
+        // // ----------------------
+        // const data = [
+        //     { name: "Sarajevo, BA", A: 10, B: 20, C: 30, D: 50, E: 0, F: 3 },
+        //     { name: "Delhi, IN",A: 20, B: 30, C: 40, D: 70, E: 1, F: 27 },
+        //     { name: "Stockholm, SE",A: 30, B: 10, C: 45, D: 65, E: 1, F: 13 },
+        //     { name: "Madrid, ES",A: 40, B: 20, C: 60, D: 35, E: 0, F: 20 },
+        // ];
 
 
         useEffect(() => {
@@ -165,7 +166,14 @@ const ParallelCoordinates = () => {
             }
           ];
 
-
+        // Map advisory categories to numbers
+    const advisoryMapping = {
+        "Advisory against all travel": 4,
+        "Advisory against non-essential travel": 3,
+        "Advisory against travel to certain areas": 2,
+        "No advisory": 1,
+        "None": 0
+    };
 
     useEffect(() => {
         // fetch data from the API
@@ -204,7 +212,7 @@ const ParallelCoordinates = () => {
                         C: Math.random() * 100, // Fake weather data (0 to 100)
                         D: advisoryDummieData.find(a => a.iataCode === item.destination)?.advisory || "No advisory",  // Use fetched advisory data or default value
                         E: Math.random() > 0.5 ? 1 : 0, // Fake visa requirements data (0 or 1)
-                        F: Math.random() * 15, // Fake flight duration data (0 to 15 hours)
+                        F: Math.random() * 15 // Fake flight duration data (0 to 15 hours)
                     };
                 });
                 setData(updatedData);
@@ -248,7 +256,7 @@ const ParallelCoordinates = () => {
             if (dim === "D") {
                 // Use ordinal scale for advisory category
                 yScales[dim] = d3.scalePoint()
-                    .domain(advisoryCategories) // Get unique advisory categories
+                    .domain(["None", "No advisory", "Advisory against travel to certain areas", "Advisory against non-essential travel", "Advisory against all travel"])
                     .range([height - margin.bottom, margin.top]); // Flip so higher numbers are at the top
             } else {
                 yScales[dim] = d3.scaleLinear()
