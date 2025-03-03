@@ -2,16 +2,7 @@ import React, { useState } from "react";
 import { TextField, Autocomplete, Box } from "@mui/material";
 
 const location_options = [
-  "Stockholm, Sweden",
-  "Berlin, Germany",
-  "Tokyo, Japan",
-  "New York, USA",
-  "Paris, France",
-  "London, UK",
-  "Sydney, Australia",
-  "Cairo, Egypt",
-  "Beijing, China",
-  "São Paulo, Brazil"
+  "London, UK"
 ];
 
 const DeparturePicker = ({ onSelect }) => {
