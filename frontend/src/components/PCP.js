@@ -45,6 +45,7 @@ const ParallelCoordinates = () => {
                 const iataCodes = result.map(item => item.destination);
                 const departureDates = result.map(item => item.departureDate);
                 const returnDates = result.map(item => item.returnDate);
+
                 
 
                  // Fetch weather data for each destination
@@ -97,7 +98,7 @@ const ParallelCoordinates = () => {
                         C: Math.random() * 100, // Fake weather data (0 to 100)
                         D: advisory ? advisory.advisory : "None",
                         E: Math.random() > 0.5 ? 1 : 0, // Fake visa requirements data (0 or 1)
-                        F: Math.random() * 15 // Fake flight duration data (0 to 15 hours)
+                        F: item.destination_info.travel_days
                     };
                 });
                 setData(updatedData);
