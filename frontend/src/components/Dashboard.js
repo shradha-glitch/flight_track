@@ -28,7 +28,6 @@ const Dashboard = () => {
         <Box sx={{ gridColumn: "1 / -1" }}>
        <PcpCard onSelect={handleCity} onFilterChange={handleFilterChange}/>
         </Box>
-        {/* <GlobeCard/> */}
         <GlobeResultsCard destinations={filteredDestinations}/>
         <ResultsCard destinations={filteredDestinations} />
         <CustomCard/>
