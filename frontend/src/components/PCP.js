@@ -34,15 +34,6 @@ const ParallelCoordinates = () => {
       }, []);
 
 
-        // Map advisory categories to numbers
-    const advisoryMapping = {
-        "Advisory against all travel": 4,
-        "Advisory against non-essential travel": 3,
-        "Advisory against travel to certain areas": 2,
-        "No advisory": 1,
-        "None": 0
-    };
-
     useEffect(() => {
         // fetch data from the API
         const fetchSourceCountry = async () => {
@@ -184,7 +175,7 @@ const ParallelCoordinates = () => {
         // ----------------------
         // 8. Draw Lines (Paths) for Each Data Entry
         // ----------------------
-        const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+        const colorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, data.length - 1]); // Color scale for lines
         svg.selectAll("path")
             .data(data)
             .enter()
@@ -192,7 +183,7 @@ const ParallelCoordinates = () => {
             .attr("fill", "none")
             .attr("stroke", (d, i) => colorScale(i))
             .attr("opacity", 0.75)
-            .attr("stroke-width", 2) // Slightly thicker lines for better visibility
+            .attr("stroke-width", 1) // Slightly thicker lines for better visibility
             .attr("d", d => d3.line()(dimensions.map(dim => [xScale(dim), yScales[dim](d[dim])])))
             .on("mouseover", function (event, d) {
                 d3.select(this)
