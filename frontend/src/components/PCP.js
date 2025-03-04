@@ -252,7 +252,7 @@ const ParallelCoordinates = ( {onFilterChange}) => {
         // ----------------------
         // 5. Define Scales for Each Axis
         // ----------------------
-        const dimensions = Object.keys(data[0]).filter(d => d !== "name"); // Exclude "name" field
+        const dimensions = Object.keys(data[0]).filter(d => d !== "name" && d !== "originalFlight"); // Exclude "name" field
         const yScales = {}; // Object to store y-scales for each dimension
 
         dimensions.forEach(dim => {
