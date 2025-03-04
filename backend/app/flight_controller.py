@@ -29,7 +29,7 @@ import requests_cache
 import openmeteo_requests
 from retry_requests import retry
 import numpy as np
-
+from datetime import datetime
 
 router = APIRouter()
 
@@ -45,10 +45,11 @@ router = APIRouter()
     - Filtered: curl http://localhost:8000/api/flights/forlondon?origin=LHR&destination=JFK
 """
 @router.get("/flights/forlondon")
-async def get_flights_by_origin(origin: str = None, destination: str = None):
+async def get_flights_by_origin(origin: str = None, destination: str = None, departure_date: str = None):
     """
     Get flights data. Optionally filter by origin and destination.
     """
+
     flights = load_flight_data()
     if not flights:
         raise HTTPException(status_code=404, detail="No flight data found")
@@ -57,10 +58,20 @@ async def get_flights_by_origin(origin: str = None, destination: str = None):
         flights = [f for f in flights if f["origin"] == origin]
     if destination:
         flights = [f for f in flights if f["destination"] == destination]
+    if departure_date:
+        flights = [f for f in flights if f["departureDate"] == departure_date]
 
-    # Add location information for each flight's destination
+    # Add location information and calculate travel days for each flight's destination
     for flight in flights:
         location_info = iata_to_location_info(flight["destination"])
+
+        # Calculate travel days
+        departure = datetime.strptime(flight["departureDate"], "%Y-%m-%d")
+        return_date = datetime.strptime(flight["returnDate"], "%Y-%m-%d")
+        travel_days = (return_date - departure).days
+
+        # Add travel days to destination_info
+        location_info["travel_days"] = travel_days
         flight["destination_info"] = location_info
 
     return flights
