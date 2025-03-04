@@ -33,138 +33,6 @@ const ParallelCoordinates = () => {
           return () => window.removeEventListener("resize", handleResize);
       }, []);
 
-        const advisoryDummieData = [
-            {
-              "iataCode": "AKL",
-              "iso2Code": "NZ",
-              "advisory": "Advisory against all travel"
-            },
-            {
-              "iataCode": "BNE",
-              "iso2Code": "AU",
-              "advisory": "Advisory against non-essential travel"
-            },
-            {
-              "iataCode": "CPT",
-              "iso2Code": "ZA",
-              "advisory": "Advisory against travel to certain areas"
-            },
-            {
-              "iataCode": "MEL",
-              "iso2Code": "AU",
-              "advisory": "No advisory"
-            },
-            {
-              "iataCode": "LOS",
-              "iso2Code": "NG",
-              "advisory": "None"
-            },
-            {
-              "iataCode": "LAS",
-              "iso2Code": "US",
-              "advisory": "Advisory against all travel"
-            },
-            {
-              "iataCode": "HKT",
-              "iso2Code": "TH",
-              "advisory": "Advisory against non-essential travel"
-            },
-            {
-              "iataCode": "JNB",
-              "iso2Code": "ZA",
-              "advisory": "Advisory against travel to certain areas"
-            },
-            {
-              "iataCode": "MIA",
-              "iso2Code": "US",
-              "advisory": "No advisory"
-            },
-            {
-              "iataCode": "DPS",
-              "iso2Code": "ID",
-              "advisory": "None"
-            },
-            {
-              "iataCode": "NRT",
-              "iso2Code": "JP",
-              "advisory": "Advisory against all travel"
-            },
-            {
-              "iataCode": "MNL",
-              "iso2Code": "PH",
-              "advisory": "Advisory against non-essential travel"
-            },
-            {
-              "iataCode": "BKK",
-              "iso2Code": "TH",
-              "advisory": "Advisory against travel to certain areas"
-            },
-            {
-              "iataCode": "KUL",
-              "iso2Code": "MY",
-              "advisory": "No advisory"
-            },
-            {
-              "iataCode": "NRT",
-              "iso2Code": "JP",
-              "advisory": "None"
-            },
-            {
-              "iataCode": "HKG",
-              "iso2Code": "HK",
-              "advisory": "Advisory against all travel"
-            },
-            {
-              "iataCode": "BCN",
-              "iso2Code": "ES",
-              "advisory": "Advisory against non-essential travel"
-            },
-            {
-              "iataCode": "TFS",
-              "iso2Code": "ES",
-              "advisory": "Advisory against travel to certain areas"
-            },
-            {
-              "iataCode": "RAK",
-              "iso2Code": "MA",
-              "advisory": "No advisory"
-            },
-            {
-              "iataCode": "PMI",
-              "iso2Code": "ES",
-              "advisory": "None"
-            },
-            {
-              "iataCode": "FAO",
-              "iso2Code": "PT",
-              "advisory": "Advisory against all travel"
-            },
-            {
-              "iataCode": "ATH",
-              "iso2Code": "GR",
-              "advisory": "Advisory against non-essential travel"
-            },
-            {
-              "iataCode": "CPH",
-              "iso2Code": "DK",
-              "advisory": "Advisory against travel to certain areas"
-            },
-            {
-              "iataCode": "ALC",
-              "iso2Code": "ES",
-              "advisory": "No advisory"
-            },
-            {
-              "iataCode": "AGP",
-              "iso2Code": "ES",
-              "advisory": "None"
-            },
-            {
-              "iataCode": "MAD",
-              "iso2Code": "ES",
-              "advisory": "Advisory against all travel"
-            }
-          ];
 
         // Map advisory categories to numbers
     const advisoryMapping = {
@@ -201,16 +69,42 @@ const ParallelCoordinates = () => {
 
                 const weatherData = await Promise.all(weatherPromises);
 
+                const advisoryPromises = iataCodes.map(async (iataCode) => {
+                    const advisoryResponse = await fetch(`http://127.0.0.1:8001/api/destinations/travel-advisory/`);
+                    const advisoryData = await advisoryResponse.json();
+
+                    if (!advisoryData.advisories || !advisoryData.advisories[iataCode]) {
+                      console.error(`No advisory found for ${iataCode}`);
+                      return null;
+                  }
+
+              
+                  const advisoryInfo = advisoryData.advisories[iataCode];
+
+                    return {
+                        iataCode: advisoryInfo.iata,
+                        iso: advisoryInfo.iso,
+                        countryName: advisoryInfo.advisory.country_name,
+                        advisory: advisoryInfo.advisory.advice,
+
+                    };
+                });
+
+                const advisoryData = await Promise.all(advisoryPromises);
+                       
+
+
             
                 const updatedData = result.map(item => {
-
                     const weather = weatherData.find(w => w.iataCode === item.destination);
+                    const advisory = advisoryData.find(a => a.iataCode === item.destination);
+                    
                     return {
                         name: item.destination,
                         A: parseFloat(item.price.total), // Extract and parse the price
                         B: weather ? weather.temperature : Math.random() * 40, // Use fetched temperature data or fake data
                         C: Math.random() * 100, // Fake weather data (0 to 100)
-                        D: advisoryDummieData.find(a => a.iataCode === item.destination)?.advisory || "No advisory",  // Use fetched advisory data or default value
+                        D: advisory ? advisory.advisory : "None",
                         E: Math.random() > 0.5 ? 1 : 0, // Fake visa requirements data (0 or 1)
                         F: Math.random() * 15 // Fake flight duration data (0 to 15 hours)
                     };
@@ -326,36 +220,36 @@ const ParallelCoordinates = () => {
         // 9. Draw Axes for Each Dimension
         // ----------------------
 
-        // Define brush for each axis
+        
         const brush = d3.brushY()
-        .extent([[ -20, margin.top], [20, height - margin.bottom]]) // Define the brushing area
-        .on("brush end", brushed); // Call `brushed` function on interaction
+        .extent([[ -20, margin.top], [20, height - margin.bottom]]) 
+        .on("brush end", brushed); 
 
 
         svg.selectAll("g.axis")
-            .data(dimensions) // Bind dimension names to axis groups
+            .data(dimensions) 
             .enter()
             .append("g")
             .attr("class", "axis")
-            .attr("transform", d => `translate(${xScale(d)},0)`) // Position axes
+            .attr("transform", d => `translate(${xScale(d)},0)`) 
             .each(function (d) {
                  if (d === "D") {
                     d3.select(this).call(d3.axisLeft(yScales[d]).tickFormat(d => d)); 
                 } else {
                     d3.select(this).call(d3.axisLeft(yScales[d]));
                 }
-            }) // Draw each axis
-            .append("g") // Add brush to each axis
+            }) 
+            .append("g") 
             .attr("class", "brush")
             .call(brush);
 
 
-          const activeFilters = {}; // Stores selected brush ranges
+          const activeFilters = {};
           console.log(activeFilters);
 
           function brushed(event, dim) {
               if (event.selection === null) {
-                  delete activeFilters[dim]; // Remove filter if no selection
+                  delete activeFilters[dim]; 
               } else {
                 if (dim === "D") {
                     const [y0, y1] = event.selection;
@@ -366,26 +260,26 @@ const ParallelCoordinates = () => {
                     activeFilters[dim] = selectedCategories;
                 } else {
                   const [y0, y1] = event.selection;
-                  activeFilters[dim] = [yScales[dim].invert(y1), yScales[dim].invert(y0)]; // Store inverted values
+                  activeFilters[dim] = [yScales[dim].invert(y1), yScales[dim].invert(y0)]; 
               }
           
-              updateHighlight(); // Apply filter to the lines
+              updateHighlight(); 
           }
 
           function updateHighlight() {
             svg.selectAll("path")
                 .attr("opacity", d => {
-                    if (!d) return 0.1; // Skip null or undefined data points
+                    if (!d) return 0.1; 
         
                     return Object.keys(activeFilters).every(dim => {
-                        if (!d.hasOwnProperty(dim) || d[dim] == null) return false; // Avoid null errors
+                        if (!d.hasOwnProperty(dim) || d[dim] == null) return false; 
                         if (dim === "D") {
                             return activeFilters[dim].includes(d[dim]);
                         } else {
                             const [min, max] = activeFilters[dim];
                             return d[dim] >= min && d[dim] <= max;
                         }
-                    }) ? 1 : 0.1; // Highlight matched lines, dim others
+                    }) ? 1 : 0.1;
                 });
               }
         }
