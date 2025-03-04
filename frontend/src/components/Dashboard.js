@@ -4,6 +4,7 @@ import GlobeCard from "./card/GlobeCard";
 import PcpCard from "./card/PcpCard";
 import {useState} from 'react';
 import ResultsCard from "./ResultsCard";
+import GlobeResultsCard from "./GlobeResultsCard";
 
 const Dashboard = () => {
   const [filteredDestinations, setFilteredDestinations] = useState([]);
@@ -27,7 +28,8 @@ const Dashboard = () => {
         <Box sx={{ gridColumn: "1 / -1" }}>
        <PcpCard onSelect={handleCity} onFilterChange={handleFilterChange}/>
         </Box>
-        <GlobeCard/>
+        {/* <GlobeCard/> */}
+        <GlobeResultsCard destinations={filteredDestinations}/>
         <ResultsCard destinations={filteredDestinations} />
         <CustomCard/>
       </Box>
