@@ -29,22 +29,26 @@ const GlobeResultsCard = ({ destinations = [] }) => {
       .attr("width", "100%")
       .attr("height", "100%");
 
+    // Draw the base globe
     svg.append("path")
       .datum({ type: "Sphere" })
       .attr("d", path)
       .attr("fill", "#abcadb")
       .attr("stroke", "none");
 
+    // Add graticule
     svg.append("path")
       .datum(graticule)
       .attr("d", path)
       .attr("fill", "none")
       .attr("stroke", "#abcadb");
 
+    // Create a Set of filtered country names for easier lookup
     const filteredCountries = new Set(
       destinations.map(d => d.destination_info.country_name)
     );
 
+    // Load and draw countries
     d3.json("world.json").then((worldData) => {
       svg.selectAll(".country")
         .data(worldData.features)
@@ -53,6 +57,7 @@ const GlobeResultsCard = ({ destinations = [] }) => {
         .attr("class", "country")
         .attr("d", path)
         .attr("fill", (d) => {
+          // Check if the country name is in our filtered set
           const isHighlighted = filteredCountries.has(d.properties.name);
           return isHighlighted ? "#4CAF50" : "#4d4c60";
         })
@@ -72,6 +77,7 @@ const GlobeResultsCard = ({ destinations = [] }) => {
         });
     });
 
+    // Add drag behavior
     const dragBehavior = drag().on("drag", (event) => {
       const rotate = projection.rotate();
       projection.rotate([
@@ -83,6 +89,7 @@ const GlobeResultsCard = ({ destinations = [] }) => {
 
     svg.call(dragBehavior);
 
+    // Add zoom behavior
     const zoomBehavior = d3.zoom().on("zoom", (event) => {
       const newScale = Math.max(100, Math.min(width / 2, event.transform.k * (width / 3)));
       projection.scale(newScale);
