@@ -1,25 +1,15 @@
 import { useEffect, useRef, useState } from "react"; // Import hooks for managing side effects and references
 import * as d3 from "d3"; // Import D3.js for data visualization
 
-const ParallelCoordinates = () => {
+const ParallelCoordinates = ( {onFilterChange}) => {
     const chartRef = useRef(); // Reference to the div container where the chart will be drawn
     const [data, setData] = useState([]); // State to store data from the API
     const [screenDimensions, setScreenDimensions] = useState({
       width: window.innerWidth * 0.9,  // 90% of screen width
       height: window.innerHeight * 0.6 // 20% of screen height
   });
+    const [originalFlightData, setOriginalFlightData] = useState([]);
     
-    // useEffect(() => {
-        // // ----------------------
-        // // 1. Sample Data
-        // // ----------------------
-        // const data = [
-        //     { name: "Sarajevo, BA", A: 10, B: 20, C: 30, D: 50, E: 0, F: 3 },
-        //     { name: "Delhi, IN",A: 20, B: 30, C: 40, D: 70, E: 1, F: 27 },
-        //     { name: "Stockholm, SE",A: 30, B: 10, C: 45, D: 65, E: 1, F: 13 },
-        //     { name: "Madrid, ES",A: 40, B: 20, C: 60, D: 35, E: 0, F: 20 },
-        // ];
-
 
         useEffect(() => {
           const handleResize = () => {
@@ -40,6 +30,7 @@ const ParallelCoordinates = () => {
             try {
                 const response = await fetch(`http://127.0.0.1:8001/api/flights/forlondon`);
                 const result = await response.json();
+                setOriginalFlightData(result);
                 
                 // Extract destination IATA codes and dates
                 const iataCodes = result.map(item => item.destination);
@@ -98,7 +89,8 @@ const ParallelCoordinates = () => {
                         C: Math.random() * 100, // Fake weather data (0 to 100)
                         D: advisory ? advisory.advisory : "None",
                         E: Math.random() > 0.5 ? 1 : 0, // Fake visa requirements data (0 or 1)
-                        F: item.destination_info.travel_days
+                        F: item.destination_info.travel_days,
+                        originalFlight: item
                     };
                 });
                 setData(updatedData);
@@ -135,7 +127,7 @@ const ParallelCoordinates = () => {
         // ----------------------
         // 5. Define Scales for Each Axis
         // ----------------------
-        const dimensions = Object.keys(data[0]).filter(d => d !== "name"); // Exclude "name" field
+        const dimensions = Object.keys(data[0]).filter(d => d !== "name" && d !== "originalFlight"); // Exclude "name" field
         const yScales = {}; // Object to store y-scales for each dimension
 
         dimensions.forEach(dim => {
@@ -177,6 +169,7 @@ const ParallelCoordinates = () => {
         // 8. Draw Lines (Paths) for Each Data Entry
         // ----------------------
         const colorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, data.length - 1]); // Color scale for lines
+        // Modify the mouseover, mouseout events in the path creation section
         svg.selectAll("path")
             .data(data)
             .enter()
@@ -187,25 +180,32 @@ const ParallelCoordinates = () => {
             .attr("stroke-width", 1) // Slightly thicker lines for better visibility
             .attr("d", d => d3.line()(dimensions.map(dim => [xScale(dim), yScales[dim](d[dim])])))
             .on("mouseover", function (event, d) {
-                d3.select(this)
-                    .attr("stroke-width", 4) // Highlight on hover
-                    .attr("opacity", 1);
-
+                // Only highlight if the line is already visible (part of filtered results)
+                if (this.getAttribute("opacity") === "1") {
+                    d3.select(this)
+                        .attr("stroke-width", 4)
+                        .attr("opacity", 1);
+    
                     tooltip.style("visibility", "visible")
-                    .html(`<strong>${d.name}</strong>`) // Show only the name, no numbers
+                    .html(`<strong>${d.name}</strong>`)
                     .style("top", `${event.pageY - 10}px`)
                     .style("left", `${event.pageX + 10}px`);
+                }
             })
             .on("mousemove", function (event) {
-                tooltip.style("top", `${event.pageY - 10}px`)
-                    .style("left", `${event.pageX + 10}px`);
+                if (this.getAttribute("opacity") === "1") {
+                    tooltip.style("top", `${event.pageY - 10}px`)
+                        .style("left", `${event.pageX + 10}px`);
+                }
             })
             .on("mouseout", function () {
-                d3.select(this)
-                    .attr("stroke-width", 2) // Reset thickness
-                    .attr("opacity", 0.75);
-
-                tooltip.style("visibility", "hidden");
+                if (this.getAttribute("opacity") === "1") {
+                    d3.select(this)
+                        .attr("stroke-width", 2)
+                        .attr("opacity", 1);
+    
+                    tooltip.style("visibility", "hidden");
+                }
             });
 
         // ----------------------
@@ -258,21 +258,41 @@ const ParallelCoordinates = () => {
               updateHighlight(); 
           }
 
+          
           function updateHighlight() {
+            const filteredDestinations = []; // Create array to store filtered destinations
+            
             svg.selectAll("path")
                 .attr("opacity", d => {
                     if (!d) return 0.1; 
         
-                    return Object.keys(activeFilters).every(dim => {
-                        if (!d.hasOwnProperty(dim) || d[dim] == null) return false; 
+                    const isHighlighted = Object.keys(activeFilters).every(dim => {
+                        if (!d.hasOwnProperty(dim) || d[dim] == null) return false; // Avoid null errors
                         if (dim === "D") {
                             return activeFilters[dim].includes(d[dim]);
                         } else {
                             const [min, max] = activeFilters[dim];
                             return d[dim] >= min && d[dim] <= max;
                         }
-                    }) ? 1 : 0.1;
+                    });
+        
+                    // If the line is highlighted, add its destination to the filtered list
+                    if (isHighlighted) {
+                        filteredDestinations.push({
+                          ...d.originalFlight,
+                          pcp: {
+                            temp: d.B,
+                            weather: d.C,
+                            safety: d.D,
+                            visa: d.E,
+                            duration: d.F
+                          }
+                        });
+                    }
+        
+                    return isHighlighted ? 1 : 0.1;
                 });
+                onFilterChange(filteredDestinations);
               }
         }
         
