@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"; // Import hooks for managing side effects and references
 import * as d3 from "d3"; // Import D3.js for data visualization
+import LinearProgress from '@mui/material/LinearProgress';
 
 const ParallelCoordinates = ( {onFilterChange}) => {
     const chartRef = useRef(); // Reference to the div container where the chart will be drawn
@@ -9,6 +10,7 @@ const ParallelCoordinates = ( {onFilterChange}) => {
       height: window.innerHeight * 0.6 // 20% of screen height
   });
     const [originalFlightData, setOriginalFlightData] = useState([]);
+    const [loading, setLoading] = useState(true);
     
 
         useEffect(() => {
@@ -92,8 +94,10 @@ const ParallelCoordinates = ( {onFilterChange}) => {
                     };
                 });
                 setData(updatedData);
+                setLoading(false);
             } catch (error) {
                 console.error("Error fetching data: ", error);
+                setLoading(false);
             }
         };
         fetchSourceCountry();
@@ -331,7 +335,25 @@ const ParallelCoordinates = ( {onFilterChange}) => {
     // ----------------------
     // 11. Return JSX (Chart Container)
     // ----------------------
-    return <div ref={chartRef} className="w-full h-full" />; // A div where the D3 chart will be drawn
+    return (
+      <div className="w-full h-full">
+          {loading ? (
+              <div 
+              className="flex justify-center items-center h-full">
+                <LinearProgress
+                  color="inherit"
+                  sx={{
+                    '& .MuiLinearProgress-bar': {
+                    background: "linear-gradient(to right, rgb(251, 150, 51), rgb(255, 120, 71), rgb(255, 94, 99), rgb(254, 75, 131), rgb(228, 65, 157))",
+                    },
+                  }}
+                />
+              </div>
+          ) : (
+              <div ref={chartRef} className="w-full h-full" />
+          )}
+      </div>
+  );
 };
 
 export default ParallelCoordinates;
