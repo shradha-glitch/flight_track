@@ -306,7 +306,7 @@ const ParallelCoordinates = ( {onFilterChange}) => {
         const customLabels = {
             A: "Price",
             B: "Temperature",
-            C: "Weather",
+            C: "Climate",
             D: "Safety",
             E: "Visa Requirements",
             F: "Trip Duration"
