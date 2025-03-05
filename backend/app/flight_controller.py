@@ -200,7 +200,7 @@ async def get_weather(iata_code: str, departure_date: str = Query(...), return_d
         "longitude": longitude,
         "start_date": departure_date,
         "end_date": return_date,
-        "daily": "temperature_2m_mean"
+        "daily": ["temperature_2m_mean", "cloud_cover_mean", "shortwave_radiation_sum", "rain_sum", "snowfall_sum"]
     }
     responses = openmeteo.weather_api(url, params=params)
 
@@ -210,13 +210,37 @@ async def get_weather(iata_code: str, departure_date: str = Query(...), return_d
     response = responses[0]
     daily = response.Daily()
     daily_temperature_2m_mean = daily.Variables(0).ValuesAsNumpy()
+    daily_cloud_cover_mean = daily.Variables(1).ValuesAsNumpy()
+    daily_shortwave_radiation_sum = daily.Variables(2).ValuesAsNumpy()
+    daily_rain_sum = daily.Variables(3).ValuesAsNumpy()
+    daily_snowfall_sum = daily.Variables(4).ValuesAsNumpy()
+
+
 
     # Calculate the average temperature over the date range
     average_temperature = float(np.mean(daily_temperature_2m_mean))
+    avg_cloud_cover = np.mean(daily_cloud_cover_mean)
+    avg_radiation = np.mean(daily_shortwave_radiation_sum)
+    avg_rain = np.mean(daily_rain_sum)
+    avg_snow = np.mean(daily_snowfall_sum)
 
+    # Determine the dominant weather condition using priority order
+    if avg_rain > 2.0:  
+        weather_summary = "Rainy"
+    elif avg_snow > 1.0:  
+        weather_summary = "Snowy"
+    elif avg_cloud_cover > 50:  
+        weather_summary = "Cloudy"
+    elif 20 <= avg_cloud_cover <= 50:  
+        weather_summary = "Partly Clouded"
+    elif avg_radiation > 100 and avg_cloud_cover < 20:  
+        weather_summary = "Sunny"
+    else:
+        weather_summary = "None"
     # Prepare weather data
     weather_data = {
-        "average_temperature": average_temperature
+        "average_temperature": average_temperature,
+        "climate": weather_summary,
     }
 
     return weather_data

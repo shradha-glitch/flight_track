@@ -42,11 +42,13 @@ const ParallelCoordinates = ( {onFilterChange}) => {
                  // Fetch weather data for each destination
                  const weatherPromises = iataCodes.map(async (iataCode, index) => {
                     const weatherResponse = await fetch(`http://127.0.0.1:8001/api/weather/${iataCode}?departure_date=${departureDates[index]}&return_date=${returnDates[index]}`);
-                    
                     const weatherData = await weatherResponse.json();
+                    console.log("Weather Data",weatherData.climate);
                     return {
                         iataCode,
-                        temperature: weatherData.average_temperature
+                        temperature: weatherData.average_temperature,
+                        climate: weatherData.climate,
+
                     };
                 })
 
@@ -74,19 +76,15 @@ const ParallelCoordinates = ( {onFilterChange}) => {
                 });
 
                 const advisoryData = await Promise.all(advisoryPromises);
-                       
-
-
             
                 const updatedData = result.map(item => {
                     const weather = weatherData.find(w => w.iataCode === item.destination);
-                    const advisory = advisoryData.find(a => a.iataCode === item.destination);
-                    
+                    const advisory = advisoryData.find(a => a.iataCode === item.destination);                    
                     return {
                         name: item.destination,
                         A: parseFloat(item.price.total), // Extract and parse the price
                         B: weather ? weather.temperature : Math.random() * 40, // Use fetched temperature data or fake data
-                        C: Math.random() * 100, // Fake weather data (0 to 100)
+                        C: weather ? weather.climate : "None", // Fake weather data (0 to 100)
                         D: advisory ? advisory.advisory : "None",
                         E: Math.random() > 0.5 ? 1 : 0, // Fake visa requirements data (0 or 1)
                         F: item.destination_info.travel_days,
@@ -131,7 +129,12 @@ const ParallelCoordinates = ( {onFilterChange}) => {
         const yScales = {}; // Object to store y-scales for each dimension
 
         dimensions.forEach(dim => {
-            if (dim === "D") {
+            if (dim === "C") {
+                // Use ordinal scale for weather category
+                yScales[dim] = d3.scalePoint()
+                    .domain(["None", "Sunny", "Partly Clouded", "Cloudy", "Rainy", "Snowy"])
+                    .range([height - margin.bottom, margin.top]); // Flip so higher numbers are at the top
+            }else if (dim === "D") {
                 // Use ordinal scale for advisory category
                 yScales[dim] = d3.scalePoint()
                     .domain(["None", "No advisory", "Advisory against travel to certain areas", "Advisory against non-essential travel", "Advisory against all travel"])
@@ -225,7 +228,7 @@ const ParallelCoordinates = ( {onFilterChange}) => {
             .attr("class", "axis")
             .attr("transform", d => `translate(${xScale(d)},0)`) 
             .each(function (d) {
-                 if (d === "D") {
+                 if (d === "D" || d === "C") {
                     d3.select(this).call(d3.axisLeft(yScales[d]).tickFormat(d => d)); 
                 } else {
                     d3.select(this).call(d3.axisLeft(yScales[d]));
@@ -237,13 +240,12 @@ const ParallelCoordinates = ( {onFilterChange}) => {
 
 
           const activeFilters = {};
-          console.log(activeFilters);
 
           function brushed(event, dim) {
               if (event.selection === null) {
                   delete activeFilters[dim]; 
               } else {
-                if (dim === "D") {
+                if (dim === "D" || dim === "C") {
                     const [y0, y1] = event.selection;
                     const selectedCategories = yScales[dim].domain().filter(category => {
                         const pos = yScales[dim](category);
@@ -268,7 +270,7 @@ const ParallelCoordinates = ( {onFilterChange}) => {
         
                     const isHighlighted = Object.keys(activeFilters).every(dim => {
                         if (!d.hasOwnProperty(dim) || d[dim] == null) return false; // Avoid null errors
-                        if (dim === "D") {
+                        if (dim === "D" || dim === "C") {
                             return activeFilters[dim].includes(d[dim]);
                         } else {
                             const [min, max] = activeFilters[dim];
