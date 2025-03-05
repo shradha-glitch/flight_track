@@ -25,7 +25,7 @@ const ResultsCard = ({ destinations = [] }) => {
                                     <div className="text-sm text-gray-600">
                                         <div>Price: ${flight.price?.total || 'N/A'}</div>
                                         <div>Temperature: {flight.pcp?.temp ? `${flight.pcp.temp.toFixed(1)}°C` : 'N/A'}</div>
-                                        <div>Weather Score: {flight.pcp?.weather ? flight.pcp.weather.toFixed(1) : 'N/A'}</div>
+                                        <div>Climate: {flight.pcp?.weather || 'N/A'}</div>
                                         <div>Safety: {flight.pcp?.safety || 'N/A'}</div>
                                         <div>Visa Required: {flight.pcp?.visa !== undefined ? (flight.pcp.visa ? "Yes" : "No") : 'N/A'}</div>
                                         <div>Flight Duration: {flight.pcp?.duration ? `${flight.pcp.duration.toFixed(1)} hours` : 'N/A'}</div>
