@@ -307,7 +307,7 @@ const ParallelCoordinates = ( {onFilterChange}) => {
             C: "Weather",
             D: "Safety",
             E: "Visa Requirements",
-            F: "Flight Duration"
+            F: "Trip Duration"
         };
 
         svg.selectAll(".axis-label")
@@ -318,6 +318,7 @@ const ParallelCoordinates = ( {onFilterChange}) => {
             .attr("x", d => xScale(d)) // Center labels on axes
             .attr("y", margin.top - 25) // Higher positioning for readability
             .attr("text-anchor", "middle")
+            .style("font-family", "Helvetica Neue")
             .style("font-size", "14px")
             .style("fill", "#333") // Dark gray text
             .style("font-weight", "bold") // Make labels bold for better visibility
