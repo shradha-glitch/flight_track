@@ -324,7 +324,7 @@ const ParallelCoordinates = ( {onFilterChange}) => {
             .attr("x", d => xScale(d)) // Center labels on axes
             .attr("y", margin.top - 25) // Higher positioning for readability
             .attr("text-anchor", "middle")
-            .style("font-family", "Helvetica Neue")
+            .style("font-family", "sans-serif")
             .style("font-size", "14px")
             .style("fill", "#333") // Dark gray text
             .style("font-weight", "bold") // Make labels bold for better visibility
