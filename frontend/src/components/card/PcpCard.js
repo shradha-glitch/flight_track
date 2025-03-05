@@ -10,6 +10,11 @@ import React, { useState } from "react";
 
 const PcpCard = ({ onSelect, onFilterChange }) => {
   const [isFormValid, setIsFormValid] = useState(false);
+  const [passportIsoCode, setPassportIsoCode] = useState("");
+
+  const handlePassportChange = (selectedCountries) => {
+    setPassportIsoCode(selectedCountries.map((country) => country.iso2));
+  };
   
   const handleSubmit = (e) => {
     e.preventDefault(); 
@@ -40,7 +45,7 @@ const PcpCard = ({ onSelect, onFilterChange }) => {
         <Departure onSelect={onSelect} required/>
         <DatePicker label={"Departure"} text={"Dates of Travel"} required />
         <DatePicker label={"Return"} text={" fef"} required/>
-        <PassportInput />
+        <PassportInput onChange={handlePassportChange}/>
         <Button
           type="submit" 
           variant="contained"
@@ -66,7 +71,7 @@ const PcpCard = ({ onSelect, onFilterChange }) => {
       <Box sx={{ px: 4 }}>
       <hr style={{ border: 'none', borderTop: '1px solid #D3D3D3' }} /> 
       {isFormValid && (
-        <ParallelCoordinates onFilterChange={onFilterChange}/>
+        <ParallelCoordinates onFilterChange={onFilterChange} passportIsoCode={passportIsoCode}/>
       )}
       </Box>
     </CustomCard>

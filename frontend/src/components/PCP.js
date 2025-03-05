@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"; // Import hooks for managin
 import * as d3 from "d3"; // Import D3.js for data visualization
 import LinearProgress from '@mui/material/LinearProgress';
 
-const ParallelCoordinates = ( {onFilterChange}) => {
+const ParallelCoordinates = ( {onFilterChange, passportIsoCode} ) => {
     const chartRef = useRef(); // Reference to the div container where the chart will be drawn
     const [data, setData] = useState([]); // State to store data from the API
     const [screenDimensions, setScreenDimensions] = useState({
@@ -11,7 +11,7 @@ const ParallelCoordinates = ( {onFilterChange}) => {
   });
     const [originalFlightData, setOriginalFlightData] = useState([]);
     const [loading, setLoading] = useState(true);
-    
+    console.log("Passport", passportIsoCode);
 
         useEffect(() => {
           const handleResize = () => {

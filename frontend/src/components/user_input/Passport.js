@@ -8,7 +8,7 @@ import {
   Avatar,
 } from "@mui/material";
 
-const PassportInput = () => {
+const PassportInput = ( {onChange}) => {
   const [search, setSearch] = useState("");
   const [countries, setCountries] = useState([]);
   const [selectedCountries, setSelectedCountries] = useState([]);
@@ -42,7 +42,10 @@ const PassportInput = () => {
         options={countries}
         value={selectedCountries}
         getOptionLabel={(option) => option.label || ""}
-        onChange={(e, newValue) => setSelectedCountries(newValue)}
+        onChange={(e, newValue) => {
+          setSelectedCountries(newValue);
+          onChange?.(newValue);
+        }}
         renderInput={(params) => (
           <TextField
             {...params}
