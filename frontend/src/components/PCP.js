@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"; // Import hooks for managin
 import * as d3 from "d3"; // Import D3.js for data visualization
 import LinearProgress from '@mui/material/LinearProgress';
 
-const ParallelCoordinates = ( {onFilterChange, passportIsoCode} ) => {
+const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} ) => {
     const chartRef = useRef(); // Reference to the div container where the chart will be drawn
     const [data, setData] = useState([]); // State to store data from the API
     const [screenDimensions, setScreenDimensions] = useState({
@@ -11,7 +11,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode} ) => {
   });
     const [originalFlightData, setOriginalFlightData] = useState([]);
     const [loading, setLoading] = useState(true);
-    console.log("Passport", passportIsoCode);
+
 
         useEffect(() => {
           const handleResize = () => {
@@ -230,7 +230,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode} ) => {
 
         
         const brush = d3.brushY()
-        .extent([[ -20, margin.top], [20, height - margin.bottom]]) 
+        .extent([[ -10, margin.top], [10, height - margin.bottom]]) 
         .on("brush end", brushed); 
 
 
@@ -249,14 +249,35 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode} ) => {
             }) 
             .append("g") 
             .attr("class", "brush")
-            .call(brush);
-
+            .each(function(d) {  // Pass dimension `d` properly to each brush
+                d3.select(this)
+                    .call(brush) 
+                    .on("brush end", function(event) { 
+                        brushed(event, d);  // Ensure dimension `d` is passed correctly
+                    });
+            })
+            .style("stroke", "#ccc") // Reset to original color
+            .style("stroke-width", "1px") // Restore original thickness
+            .style("opacity", 0.8) // Slight fade-out for smooth effect
+            .on("mouseover", function () {
+                d3.select(this)
+                    .style("stroke", "#CBC5B1") // Change stroke color for highlight
+                    .style("stroke-width", "2px") // Slightly thicker for visibility
+                    .style("opacity", 1); // Ensure visibility
+            })
+            .on("mouseout", function () {
+                d3.select(this)
+                    .style("stroke", "#ccc") // Reset to original color
+                    .style("stroke-width", "1px") // Restore original thickness
+                    .style("opacity", 0.8); // Slight fade-out for smooth effect
+            });
 
           const activeFilters = {};
 
           function brushed(event, dim) {
-              if (event.selection === null) {
-                  delete activeFilters[dim]; 
+              if (!event.selection) {
+                delete activeFilters[dim]; 
+                updateHighlight();
               } else {
                 if (dim === "D" || dim === "C") {
                     const [y0, y1] = event.selection;
@@ -271,12 +292,13 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode} ) => {
               }
           
               updateHighlight(); 
+              console.log(" updated Active Filters", activeFilters);
           }
 
           
           function updateHighlight() {
             const filteredDestinations = []; // Create array to store filtered destinations
-            
+
             svg.selectAll("path")
                 .attr("opacity", d => {
                     if (!d) return 0.1; 
@@ -337,7 +359,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode} ) => {
             .style("font-size", "14px")
             .style("fill", "#333") // Dark gray text
             .style("font-weight", "bold") // Make labels bold for better visibility
-            .text(d => customLabels[d] || d); // Use custom label if available
+            .text(d => customLabels[d] || d) // Use custom label if available
 
     }, [data, screenDimensions]); // Re-run effect when data changes
 

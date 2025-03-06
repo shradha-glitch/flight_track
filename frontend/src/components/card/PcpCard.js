@@ -11,18 +11,22 @@ import React, { useState, useEffect } from "react";
 const PcpCard = ({ onSelect, onFilterChange }) => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [passportIsoCode, setPassportIsoCode] = useState("");
+  const [departureDate, setDepartureDate] = useState("");
   const [searchTriggered, setSearchTriggered] = useState(false);
+
 
   const handlePassportChange = (selectedCountries) => {
     setPassportIsoCode(selectedCountries.map((country) => country.iso2));
   };
+
+  const handleDepartureDate = (date) => {
+    setDepartureDate(date);
+  }
+
   
   const handleSubmit = (e) => {
     e.preventDefault(); 
     const form = e.target;
-
-  console.log(form.checkValidity());
-  console.log(setSearchTriggered)
 
   if (form.checkValidity()) {
     setIsFormValid(true);
@@ -32,13 +36,6 @@ const PcpCard = ({ onSelect, onFilterChange }) => {
     setIsFormValid(false); 
   }
 };
-
-  // useEffect(() => {
-  //   if (isFormValid) {
-  //     // Reset isFormValid after rendering ParallelCoordinates
-  //     setTimeout(() => setIsFormValid(false), 0);
-  //   }
-  // }, [isFormValid]);
 
   return (
     <CustomCard>
@@ -57,7 +54,7 @@ const PcpCard = ({ onSelect, onFilterChange }) => {
         }}
       >
         <Departure onSelect={onSelect} required/>
-        <DatePicker label={"Departure"} text={"Dates of Travel"} required />
+        <DatePicker onChange={handleDepartureDate} label={"Departure"} text={"Dates of Travel"} required />
         <DatePicker label={"Return"} text={" fef"} required/>
         <PassportInput onChange={handlePassportChange}/>
         <Button
@@ -85,7 +82,7 @@ const PcpCard = ({ onSelect, onFilterChange }) => {
       <Box sx={{ px: 4 }}>
       <hr style={{ border: 'none', borderTop: '1px solid #D3D3D3' }} /> 
       {searchTriggered && (
-        <ParallelCoordinates onFilterChange={onFilterChange} passportIsoCode={passportIsoCode}/>
+        <ParallelCoordinates onFilterChange={onFilterChange} passportIsoCode={passportIsoCode} departureDate={departureDate}/>
       )}
       </Box>
     </CustomCard>
