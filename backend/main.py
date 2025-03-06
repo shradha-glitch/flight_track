@@ -37,7 +37,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # Local development
-        "https://flight-track-1.onrender.com/"  # Add your Render frontend URL here
+        "https://flight-track-1.onrender.com"  # Add your Render frontend URL here
     ],
     allow_credentials=True,
     allow_methods=["*"],
