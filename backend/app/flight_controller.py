@@ -100,26 +100,38 @@ async def get_advisory(country_code: str):
     return advisory
 
 """
-@endpoint: GET /api/visa/{country_code}
-@description: Get visa requirements for a specific country
+@endpoint: GET /api/visa
+@description: Get visa requirements for multiple countries
 @parameters:
-    - country_code: ISO country code (uppercase, e.g., 'US', 'GB')
-@usage: curl http://localhost:8000/api/visa/US
+    - country_codes: Comma-separated list of ISO country codes (uppercase, e.g., 'US,GB,FR')
+@usage: curl http://localhost:8000/api/visa?country_codes=US,GB,FR
 """
-@router.get("/visa/{country_code}")
-async def get_visa_requirements(country_code: str):
+@router.get("/visa")
+async def get_visa_requirements(country_codes: str = Query(..., description="Comma-separated list of country codes")):
     """
-    Get visa requirements for a specific country.
+    Get visa requirements for multiple countries.
     """
     visa_data = load_visa_data()
     if not visa_data:
         raise HTTPException(status_code=404, detail="Visa data not found")
 
-    requirements = visa_data.get(country_code.upper())
-    if not requirements:
-        raise HTTPException(status_code=404, detail=f"No visa requirements found for country code {country_code}")
+    # Split the country codes and remove any whitespace
+    codes = [code.strip().upper() for code in country_codes.split(",")]
 
-    return requirements
+    # Get requirements for each country
+    requirements = {}
+    for code in codes:
+        requirement = visa_data.get(code)
+        if requirement:
+            requirements[code] = requirement
+        else:
+            requirements[code] = None
+
+    return {
+        "requirements": requirements,
+        "total_requested": len(codes),
+        "found": len([r for r in requirements.values() if r is not None])
+    }
 
 """
 @endpoint: GET /api/destinations/travel-advisory
