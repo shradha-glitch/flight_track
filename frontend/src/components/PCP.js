@@ -339,12 +339,12 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
         // 10. Axis Labels (Properly Positioned)
         // ----------------------
         const customLabels = {
-            A: "Price",
-            B: "Temperature",
+            A: "Price (£)",
+            B: "Temperature (C°)",
             C: "Climate",
             D: "Safety",
             E: "Visa Requirements",
-            F: "Trip Duration"
+            F: "Trip Duration (Days)"
         };
 
         svg.selectAll(".axis-label")
