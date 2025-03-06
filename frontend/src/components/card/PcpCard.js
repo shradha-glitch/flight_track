@@ -6,11 +6,12 @@ import PassportInput from "../user_input/Passport";
 import DatePicker from "../user_input/Date";
 import Header from "../Header";
 import SearchIcon from "@mui/icons-material/Search";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const PcpCard = ({ onSelect, onFilterChange }) => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [passportIsoCode, setPassportIsoCode] = useState("");
+  const [searchTriggered, setSearchTriggered] = useState(false);
 
   const handlePassportChange = (selectedCountries) => {
     setPassportIsoCode(selectedCountries.map((country) => country.iso2));
@@ -20,12 +21,25 @@ const PcpCard = ({ onSelect, onFilterChange }) => {
     e.preventDefault(); 
     const form = e.target;
 
-    if (form.checkValidity()) {
-      setIsFormValid(true);
-    } else {
-      setIsFormValid(false); 
-    }
-  };
+  console.log(form.checkValidity());
+  console.log(setSearchTriggered)
+
+  if (form.checkValidity()) {
+    setIsFormValid(true);
+    setSearchTriggered(false);
+    setTimeout(() => setSearchTriggered(true), 0);
+  } else {
+    setIsFormValid(false); 
+  }
+};
+
+  // useEffect(() => {
+  //   if (isFormValid) {
+  //     // Reset isFormValid after rendering ParallelCoordinates
+  //     setTimeout(() => setIsFormValid(false), 0);
+  //   }
+  // }, [isFormValid]);
+
   return (
     <CustomCard>
       <Header></Header>
@@ -70,7 +84,7 @@ const PcpCard = ({ onSelect, onFilterChange }) => {
       </form>
       <Box sx={{ px: 4 }}>
       <hr style={{ border: 'none', borderTop: '1px solid #D3D3D3' }} /> 
-      {isFormValid && (
+      {searchTriggered && (
         <ParallelCoordinates onFilterChange={onFilterChange} passportIsoCode={passportIsoCode}/>
       )}
       </Box>

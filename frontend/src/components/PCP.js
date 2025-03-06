@@ -35,6 +35,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode} ) => {
                 setOriginalFlightData(result);
                 
                 // Extract destination IATA codes and dates
+                const isoCodes = result.map(item => item.destination_info.iso_code);
                 const iataCodes = result.map(item => item.destination);
                 const departureDates = result.map(item => item.departureDate);
                 const returnDates = result.map(item => item.returnDate);
@@ -65,8 +66,16 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode} ) => {
                       return null;
                   }
 
-              
                   const advisoryInfo = advisoryData.advisories[iataCode];
+                
+                //Visa fetch!
+                //   const visaPromises = isoCodes.map(async (isoCode) => {
+                //     const visaResponse = await fetch(`http://127.0.0.1:8001/api/visa/${isoCode}?userPassport=${passportIsoCode}`);
+                //     const visaData = await visaResponse.json();
+                //     return {
+                //         isoCode,
+                //         visaRequired: visaData.visa_required, //change this maybe
+                //     };
 
                     return {
                         iataCode: advisoryInfo.iata,
