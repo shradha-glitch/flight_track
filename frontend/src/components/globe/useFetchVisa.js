@@ -8,7 +8,7 @@ const useFetchVisa = (countryCode) => {
 
     const fetchVisa = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8001/api/visa/${countryCode}`);
+        const response = await fetch(`https://flight-track.onrender.com/api/visa/${countryCode}`);
         if (!response.ok) throw new Error("Network response did not work");
         const result = await response.json();
         setData(result);
