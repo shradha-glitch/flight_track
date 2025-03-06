@@ -100,6 +100,70 @@ async def get_advisory(country_code: str):
     return advisory
 
 """
+@endpoint: GET /api/pcpvisa
+@description: Get visa requirements for multiple countries with optional departure date filter
+@parameters:
+    - country_codes: Comma-separated list of ISO country codes (uppercase, e.g., 'US,GB,FR')
+    - departure_date: Optional date filter (YYYY-MM-DD)
+@usage: 
+    - All dates: curl http://localhost:8000/api/pcpvisa?country_codes=US,GB,FR
+    - Specific date: curl http://localhost:8000/api/pcpvisa?country_codes=US,GB,FR&departure_date=2025-03-11
+"""
+@router.get("/pcpvisa")
+async def get_visa_requirements(
+        country_codes: str = Query(..., description="Comma-separated list of country codes"),
+        departure_date: str = Query(None, description="Optional departure date filter (YYYY-MM-DD)")
+):
+    """
+    Get visa requirements for multiple countries.
+    """
+    visa_data = load_visa_data()
+    if not visa_data:
+        raise HTTPException(status_code=404, detail="Visa data not found")
+
+    flights = load_flight_data()
+    if not flights:
+        raise HTTPException(status_code=404, detail="No flight data found")
+
+    if departure_date:
+        flights = [f for f in flights if f["departureDate"] == departure_date]
+
+    # Add location information and calculate travel days for each flight's destination
+    destination_visa_map = {}
+    for flight in flights:
+        location_info = iata_to_location_info(flight["destination"])
+
+        # Calculate travel days
+        departure = datetime.strptime(flight["departureDate"], "%Y-%m-%d")
+        return_date = datetime.strptime(flight["returnDate"], "%Y-%m-%d")
+        travel_days = (return_date - departure).days
+
+        # Add travel days to destination_info
+        location_info["travel_days"] = travel_days
+        flight["destination_info"] = location_info
+
+        # Get the destination country's ISO code
+        destination_iso = location_info["iso_code"]
+
+        # Map visa requirements for each requested country to this destination's country
+        destination_requirements = {}
+        for origin_country in country_codes.split(','):
+            origin_country = origin_country.strip().upper()
+            if origin_country in visa_data:
+                # Get visa requirement for traveling from origin country to destination country
+                destination_requirements[origin_country] = visa_data[origin_country].get(destination_iso, "Unknown")
+
+        if destination_requirements:  # Only add if we have requirements
+            destination_visa_map[flight["destination"]] = destination_requirements
+
+    return {
+        "destination_requirements": destination_visa_map,
+        "total_destinations": len(destination_visa_map),
+        "departure_date": departure_date
+    }
+
+
+"""
 @endpoint: GET /api/visa
 @description: Get visa requirements for multiple countries
 @parameters:
