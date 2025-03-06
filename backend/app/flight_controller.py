@@ -100,26 +100,102 @@ async def get_advisory(country_code: str):
     return advisory
 
 """
-@endpoint: GET /api/visa/{country_code}
-@description: Get visa requirements for a specific country
+@endpoint: GET /api/pcpvisa
+@description: Get visa requirements for multiple countries with optional departure date filter
 @parameters:
-    - country_code: ISO country code (uppercase, e.g., 'US', 'GB')
-@usage: curl http://localhost:8000/api/visa/US
+    - country_codes: Comma-separated list of ISO country codes (uppercase, e.g., 'US,GB,FR')
+    - departure_date: Optional date filter (YYYY-MM-DD)
+@usage: 
+    - All dates: curl http://localhost:8000/api/pcpvisa?country_codes=US,GB,FR
+    - Specific date: curl http://localhost:8000/api/pcpvisa?country_codes=US,GB,FR&departure_date=2025-03-11
 """
-@router.get("/visa/{country_code}")
-async def get_visa_requirements(country_code: str):
+@router.get("/pcpvisa")
+async def get_visa_requirements(
+        country_codes: str = Query(..., description="Comma-separated list of country codes"),
+        departure_date: str = Query(None, description="Optional departure date filter (YYYY-MM-DD)")
+):
     """
-    Get visa requirements for a specific country.
+    Get visa requirements for multiple countries.
     """
     visa_data = load_visa_data()
     if not visa_data:
         raise HTTPException(status_code=404, detail="Visa data not found")
 
-    requirements = visa_data.get(country_code.upper())
-    if not requirements:
-        raise HTTPException(status_code=404, detail=f"No visa requirements found for country code {country_code}")
+    flights = load_flight_data()
+    if not flights:
+        raise HTTPException(status_code=404, detail="No flight data found")
 
-    return requirements
+    if departure_date:
+        flights = [f for f in flights if f["departureDate"] == departure_date]
+
+    # Add location information and calculate travel days for each flight's destination
+    destination_visa_map = {}
+    for flight in flights:
+        location_info = iata_to_location_info(flight["destination"])
+
+        # Calculate travel days
+        departure = datetime.strptime(flight["departureDate"], "%Y-%m-%d")
+        return_date = datetime.strptime(flight["returnDate"], "%Y-%m-%d")
+        travel_days = (return_date - departure).days
+
+        # Add travel days to destination_info
+        location_info["travel_days"] = travel_days
+        flight["destination_info"] = location_info
+
+        # Get the destination country's ISO code
+        destination_iso = location_info["iso_code"]
+
+        # Map visa requirements for each requested country to this destination's country
+        destination_requirements = {}
+        for origin_country in country_codes.split(','):
+            origin_country = origin_country.strip().upper()
+            if origin_country in visa_data:
+                # Get visa requirement for traveling from origin country to destination country
+                destination_requirements[origin_country] = visa_data[origin_country].get(destination_iso, "Unknown")
+
+        if destination_requirements:  # Only add if we have requirements
+            destination_visa_map[flight["destination"]] = destination_requirements
+
+    return {
+        "destination_requirements": destination_visa_map,
+        "total_destinations": len(destination_visa_map),
+        "departure_date": departure_date
+    }
+
+
+"""
+@endpoint: GET /api/visa
+@description: Get visa requirements for multiple countries
+@parameters:
+    - country_codes: Comma-separated list of ISO country codes (uppercase, e.g., 'US,GB,FR')
+@usage: curl http://localhost:8000/api/visa?country_codes=US,GB,FR
+"""
+@router.get("/visa")
+async def get_visa_requirements(country_codes: str = Query(..., description="Comma-separated list of country codes")):
+    """
+    Get visa requirements for multiple countries.
+    """
+    visa_data = load_visa_data()
+    if not visa_data:
+        raise HTTPException(status_code=404, detail="Visa data not found")
+
+    # Split the country codes and remove any whitespace
+    codes = [code.strip().upper() for code in country_codes.split(",")]
+
+    # Get requirements for each country
+    requirements = {}
+    for code in codes:
+        requirement = visa_data.get(code)
+        if requirement:
+            requirements[code] = requirement
+        else:
+            requirements[code] = None
+
+    return {
+        "requirements": requirements,
+        "total_requested": len(codes),
+        "found": len([r for r in requirements.values() if r is not None])
+    }
 
 """
 @endpoint: GET /api/destinations/travel-advisory
