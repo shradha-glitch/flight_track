@@ -10,6 +10,9 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
       height: window.innerHeight * 0.6 // 20% of screen height
   });
     const [originalFlightData, setOriginalFlightData] = useState([]);
+    const [visaDetails, setVisaDetails] = useState([]);
+    console.log("Visa Details", visaDetails);
+
     const [loading, setLoading] = useState(true);
 
 
@@ -109,6 +112,12 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                 });
                 setData(updatedData);
                 setLoading(false);
+                // Store visa details by country code
+                const extractedVisaDetails = {};
+                visaData.forEach((data, index) => {
+                    extractedVisaDetails[result[index].destination] = data.visaRequirements;
+                });
+                setVisaDetails(extractedVisaDetails);
             } catch (error) {
                 console.error("Error fetching data: ", error);
                 setLoading(false);
@@ -137,6 +146,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
     // Loop through the visaRequirements object
         for (let countryCode in visaRequirements) {
             let visaRequirement = visaRequirements[countryCode];
+
             console.log("Checking visa requirement for", countryCode, visaRequirement);
 
             if (visaRequirement === -1) {
