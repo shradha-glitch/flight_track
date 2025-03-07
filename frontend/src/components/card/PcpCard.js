@@ -13,36 +13,43 @@ const PcpCard = ({ onSelect, onFilterChange }) => {
   const [passportIsoCode, setPassportIsoCode] = useState("");
   const [departureDate, setDepartureDate] = useState("");
   const [searchTriggered, setSearchTriggered] = useState(false);
-
-
+  const [departureDateError, setDepartureDateError] = useState(null);
+  const [showDateWarning, setShowDateWarning] = useState(false);
   const handlePassportChange = (selectedCountries) => {
     setPassportIsoCode(selectedCountries.map((country) => country.iso2));
   };
-
-  const handleDepartureDate = (date) => {
+  const handleDepartureDate = (date, error) => {
     setDepartureDate(date);
+    setDepartureDateError(error);
   }
-
   
   const handleSubmit = (e) => {
     e.preventDefault(); 
     const form = e.target;
 
-  if (form.checkValidity()) {
-    setIsFormValid(true);
-    setSearchTriggered(false);
-    setTimeout(() => setSearchTriggered(true), 0);
-  } else {
-    setIsFormValid(false); 
-  }
-};
+    // Check if departure date is missing
+    if (!departureDate) {
+      setIsFormValid(false);
+      setDepartureDateError('invalidDate');
+      setShowDateWarning(true);
+      return;
+    }
+
+    if (form.checkValidity() && !departureDateError) {
+      setIsFormValid(true);
+      setShowDateWarning(false);
+      setSearchTriggered(false);
+      setTimeout(() => setSearchTriggered(true), 0);
+    } else {
+      setIsFormValid(false); 
+    }
+  };
 
   return (
     <CustomCard>
       <Header></Header>
       <form onSubmit={handleSubmit}>
-      <Box
-        sx={{
+        <Box sx={{
           mb: 4,
           display: "flex",
           flexDirection: "row",
@@ -51,10 +58,21 @@ const PcpCard = ({ onSelect, onFilterChange }) => {
           gap: 2,
           px: 4,
           flexWrap: "wrap"
-        }}
-      >
-        <Departure onSelect={onSelect} required/>
-        <DatePicker onChange={handleDepartureDate} label={"Departure"} text={"Dates of Travel"} required />
+        }}>
+          <Departure onSelect={onSelect} required/>
+          <Box sx={{ width: '100%', maxWidth: 250 }}>
+            <DatePicker 
+              onChange={handleDepartureDate} 
+              label={"Departure"} 
+              text={"Dates of Travel"} 
+              required 
+            />
+            {showDateWarning && !departureDate && (
+              <Box sx={{ color: 'error.main', fontSize: '0.75rem', mt: 0.5, ml: 2, fontFamily: 'Helvetica' }}>
+                Please select a departure date
+              </Box>
+            )}
+          </Box>
         <DatePicker label={"Return"} text={" fef"} required/>
         <PassportInput onChange={handlePassportChange}/>
         <Button
