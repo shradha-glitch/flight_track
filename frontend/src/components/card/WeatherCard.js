@@ -1,6 +1,6 @@
 import React from 'react';
 import CustomCard from "./Card";
-import { Box, Typography, Divider } from "@mui/material";
+import { Box, Typography, Divider, Avatar } from "@mui/material";
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import CloudIcon from '@mui/icons-material/Cloud';
 import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
@@ -34,9 +34,11 @@ const WeatherCard = ({ selectedDestination }) => {
                 flexDirection: 'column',
                 p: 3
             }}>
-                <Typography variant="h6" fontWeight="bold" mb={3}>
+                {!selectedDestination && (
+                    <Typography variant="h6" fontWeight="bold" mb={3}>
                     Weather Information
-                </Typography>
+                    </Typography>   
+                )}
                 
                 {!selectedDestination ? (
                     <Typography color="text.secondary">Select a destination to view weather details</Typography>
@@ -51,6 +53,11 @@ const WeatherCard = ({ selectedDestination }) => {
                             alignItems: 'center',
                             gap: 2
                         }}>
+                            <Avatar
+                                src={`https://countryflagsapi.netlify.app/flag/${selectedDestination.destination_info.iso_code.toLowerCase()}.svg`}
+                                alt={selectedDestination.destination_info.country_name}
+                                sx={{ width: 40, height: 24, borderRadius: '2px' }}
+                            />
                             <Typography variant="h5" fontWeight="bold">
                                 {selectedDestination.destination_info.city_name}, {selectedDestination.destination_info.country_name}
                             </Typography>

@@ -58,7 +58,9 @@ const ResultsCard = ({ destinations = [], onSelectDestination, selectedDestinati
                                     gridTemplateColumns: '0.2fr 1.5fr 1fr 1fr 1fr',
                                     py: 1.5,
                                     borderBottom: '1px solid #eee',
-                                    alignItems: 'center'
+                                    alignItems: 'center',
+                                    opacity: selectedDestination && selectedDestination.destination !== flight.destination ? 0.6 : 1,
+                                    transition: 'opacity 0.2s ease'
                                 }}>
                                     <Radio
                                         checked={selectedDestination?.destination === flight.destination}

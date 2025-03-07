@@ -52,6 +52,20 @@ const PassportInput = ( {onChange}) => {
             label="Passport"
             variant="outlined"
             onChange={(e) => setSearch(e.target.value)}
+            InputProps={{
+              ...params.InputProps,
+              sx: {
+                flexWrap: 'nowrap',
+                overflowX: 'auto',
+                '&::-webkit-scrollbar': {
+                  height: '4px',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  backgroundColor: '#bdbdbd',
+                  borderRadius: '4px',
+                },
+              }
+            }}
           />
         )}
         renderOption={(props, option) => (
@@ -72,16 +86,16 @@ const PassportInput = ( {onChange}) => {
         onInputChange={(e, newValue) => setSearch(newValue)}
         renderTags={(value, getTagProps) => {
           if (value.length === 0) return null;
-          const firstCountry = value[0]; 
-          const additionalCount = value.length > 1 ? ` +${value.length - 1}` : ""; 
-          return (
+          
+          return value.map((country, index) => (
             <Chip
-              {...getTagProps({ index: 0 })} // Use the first tag's props
-              label={`${firstCountry.label}${additionalCount}`}
+              {...getTagProps({ index })}
+              key={index}
+              label={country.label}
               avatar={
                 <Avatar
-                  src={`https://countryflagsapi.netlify.app/flag/${firstCountry.iso2}.svg`}
-                  alt={firstCountry.label}
+                  src={`https://countryflagsapi.netlify.app/flag/${country.iso2}.svg`}
+                  alt={country.label}
                 />
               }
               sx={{
@@ -94,7 +108,7 @@ const PassportInput = ( {onChange}) => {
                 },
               }}
             />
-          );
+          ));
         }}
       />
     </Box>
