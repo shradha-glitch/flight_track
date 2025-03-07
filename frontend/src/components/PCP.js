@@ -115,7 +115,18 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                 // Store visa details by country code
                 const extractedVisaDetails = {};
                 visaData.forEach((data, index) => {
-                    extractedVisaDetails[result[index].destination] = data.visaRequirements;
+                    const visaRequirements = data.visaRequirements;
+                    const formattedVisaRequirements = {};
+                
+                    Object.entries(visaRequirements).forEach(([key, value]) => {
+                        if (typeof value === 'number') {
+                            formattedVisaRequirements[key] = `${value} days`;
+                        } else {
+                            formattedVisaRequirements[key] = value;
+                        }
+                    });
+                
+                    extractedVisaDetails[result[index].destination] = formattedVisaRequirements;
                 });
                 setVisaDetails(extractedVisaDetails);
             } catch (error) {
@@ -150,7 +161,6 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
             console.log("Checking visa requirement for", countryCode, visaRequirement);
 
             if (visaRequirement === -1) {
-                console.log("Home BASEEEE");
                 visaRequirement = "home country";
             } else if (!isNaN(visaRequirement)) {
                 visaRequirement = "visa with day limit";
@@ -383,7 +393,9 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                             weather: d.C,
                             safety: d.D,
                             visa: d.E,
-                            duration: d.F
+                            duration: d.F,
+                            visaDetails: visaDetails[d.name]
+                            
                           }
                         });
                     }
