@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import CustomCard from "./Card";
 import { Box, Typography, Divider, Avatar } from "@mui/material";
@@ -9,8 +9,39 @@ import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import FilterDramaIcon from '@mui/icons-material/FilterDrama';
 
+
 const WeatherCard = ({ selectedDestination }) => {
     const svgRef = useRef();
+    const [weatherData, setWeatherData] = useState(null);
+
+
+    useEffect(() => {
+        if (!selectedDestination) return;
+
+        const fetchWeatherData = async () => {
+            const { destination, departureDate, returnDate } = selectedDestination;
+            const apiUrl = `http://127.0.0.1:8001/api/weather/${destination}?departure_date=${departureDate}&return_date=${returnDate}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("Failed to fetch weather data");
+                const data = await response.json();
+                console.log("Fetched Weather Data:", data);
+
+                if (data.daily_temperature) {
+                    setWeatherData(data.daily_temperature);
+                } else {
+                    console.warn("No daily temperature data found in API response");
+                    setWeatherData(null);
+                }
+            } catch (error) {
+                console.error("Error fetching weather data:", error);
+                setWeatherData(null);
+            }
+        };
+
+        fetchWeatherData();
+    }, [selectedDestination]);
 
     const getWeatherIcon = (weather) => {
         switch(weather) {
@@ -30,19 +61,29 @@ const WeatherCard = ({ selectedDestination }) => {
     };
 
     useEffect(() => {
-        if (!selectedDestination) return;
+        console.log("useEffect triggered, selectedDestination:", selectedDestination);
+        if (!weatherData || !selectedDestination) return;
 
-        const data = [
-            { date: "Mar 11", temp: 14 },
-            { date: "Mar 12", temp: 16 },
-            { date: "Mar 13", temp: 13 },
-            { date: "Mar 14", temp: 17 },
-            { date: "Mar 15", temp: 15 }
-        ];
+        const startDate = new Date(selectedDestination.departureDate);
+        const endDate = new Date(selectedDestination.returnDate);
+        const data = [];
+
+        let currentDate = new Date(startDate);
+        const options = { month: 'short', day: 'numeric' };
+
+        for (let i = 0; currentDate <= endDate; i++) {
+            data.push({
+                date: currentDate.toLocaleDateString('en-US', options),
+                temp: weatherData[i] || null
+            });
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        console.log("Formatted Weather Data for Graph:", data);
         
-        const width = 400;
+        const width = 300;
         const height = 100;
-        const margin = { top: 10, right: 5, bottom: 20, left: 20 };
+        const margin = { top: 10, right: 5, bottom: 20, left: 30 };
 
         d3.select(svgRef.current).selectAll("*").remove();
 
@@ -53,12 +94,15 @@ const WeatherCard = ({ selectedDestination }) => {
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
         const x = d3.scalePoint()
-            .domain(data.map(d => d.date))
+            .domain(data.map(d => d.date.toString()))
             .range([0, width])
             .padding(0.5);
 
         const y = d3.scaleLinear()
-            .domain([10, 20])
+            .domain([
+                d3.min(data, d => d.temp) - 1,
+                d3.max(data, d => d.temp) + 1
+            ])
             .range([height, 0]);
 
         const line = d3.line()
@@ -79,7 +123,9 @@ const WeatherCard = ({ selectedDestination }) => {
             .attr("stroke", "#4682B4")
             .attr("stroke-width", 2)
             .attr("d", line);
-    }, [selectedDestination]);
+    }, [weatherData, selectedDestination]);
+
+
 
     return (
         <CustomCard>
@@ -120,19 +166,35 @@ const WeatherCard = ({ selectedDestination }) => {
                             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
                                 <Box>
                                     <Typography variant="body2" color="text.secondary">Departure</Typography>
-                                    <Typography variant="body1">11 March 2025</Typography>
+                                    <Typography variant="body1">
+                                        {new Date(selectedDestination.departureDate).toLocaleDateString('en-GB', {
+                                            day: 'numeric',
+                                            month: 'long',
+                                            year: 'numeric'
+                                        })}
+                                    </Typography>
                                 </Box>
                                 <Box>
                                     <Typography variant="body2" color="text.secondary">Return</Typography>
-                                    <Typography variant="body1">15 March 2025</Typography>
+                                    <Typography variant="body1">
+                                        {new Date(selectedDestination.returnDate).toLocaleDateString('en-GB', {
+                                            day: 'numeric',
+                                            month: 'long',
+                                            year: 'numeric'
+                                        })}
+                                    </Typography>
                                 </Box>
                                 <Box>
                                     <Typography variant="body2" color="text.secondary">Duration</Typography>
-                                    <Typography variant="body1">4 days</Typography>
+                                    <Typography variant="body1">
+                                        {selectedDestination.pcp?.duration || 'N/A'} days
+                                    </Typography>
                                 </Box>
                                 <Box>
                                     <Typography variant="body2" color="text.secondary">Price</Typography>
-                                    <Typography variant="body1" fontWeight="bold">£164.87</Typography>
+                                    <Typography variant="body1" fontWeight="bold">
+                                        £{selectedDestination.price?.total || 'N/A'}
+                                    </Typography>
                                 </Box>
                             </Box>
                         </Box>
