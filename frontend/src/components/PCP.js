@@ -5,10 +5,37 @@ import LinearProgress from '@mui/material/LinearProgress';
 const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} ) => {
     const chartRef = useRef(); // Reference to the div container where the chart will be drawn
     const [data, setData] = useState([]); // State to store data from the API
+    // Update the screen dimensions calculation
     const [screenDimensions, setScreenDimensions] = useState({
-      width: window.innerWidth * 0.9,  // 90% of screen width
-      height: window.innerHeight * 0.6 // 20% of screen height
-  });
+        width: Math.max(window.innerWidth * 0.85, 800),  // Minimum width of 800px
+        height: Math.max(window.innerHeight * 0.65, 500) // Minimum height of 500px
+    });
+    
+    // Update the resize handler
+    useEffect(() => {
+        const handleResize = () => {
+            setScreenDimensions({
+                width: Math.max(window.innerWidth * 0.85, 800),
+                height: Math.max(window.innerHeight * 0.65, 500)
+            });
+        };
+    
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+    
+    // Update the margin and styling in the chart creation
+    useEffect(() => {
+        if (data.length === 0) return;
+    
+        const { width, height } = screenDimensions;
+        const margin = { 
+            top: Math.max(height * 0.08, 40),     // Responsive margins
+            right: Math.max(width * 0.06, 80),
+            bottom: Math.max(height * 0.1, 50),
+            left: Math.max(width * 0.04, 45)
+        };
+    });
     const [originalFlightData, setOriginalFlightData] = useState([]);
     const [visaDetails, setVisaDetails] = useState([]);
     console.log("Visa Details", visaDetails);
@@ -27,6 +54,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
           window.addEventListener("resize", handleResize);
           return () => window.removeEventListener("resize", handleResize);
       }, []);
+    
 
 
     useEffect(() => {
@@ -465,6 +493,8 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
           )}
       </div>
   );
+
 };
+
 
 export default ParallelCoordinates;
