@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import { geoOrthographic, geoPath, geoGraticule } from "d3-geo";
 import { drag } from "d3-drag";
 import { Tooltip, Typography, Chip, Box, Avatar, Divider } from "@mui/material";
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 
 const GlobeResults = ({ data = [] }) => {
   const globeRef = useRef();
@@ -82,11 +83,12 @@ const GlobeResults = ({ data = [] }) => {
                 </Typography>
                 
                 {/* Advisory chip - only if it exists and is not "none" */}
-                {isHighlighted && countryTrips[0]?.pcp?.advisory && 
-                 countryTrips[0].pcp.advisory !== "none" && 
-                 countryTrips[0].pcp.advisory !== "no advisory" && (
+                {isHighlighted && countryTrips[0]?.pcp?.safety && 
+                 countryTrips[0].pcp.safety !== "None" && 
+                 countryTrips[0].pcp.safety !== "No advisory" && (
                   <Chip 
-                    label={countryTrips[0].pcp.advisory} 
+                    icon={<ReportProblemIcon />}
+                    label={countryTrips[0].pcp.safety} 
                     color="warning" 
                     size="small" 
                     sx={{ ml: 1 }}
@@ -137,11 +139,10 @@ const GlobeResults = ({ data = [] }) => {
                   </Box>
                 </Box>
               )}
-              
               {/* Trip sections - one for each city */}
               {isHighlighted && countryTrips.map((trip, index) => (
                 <Box key={index} sx={{ mb: 1 }}>
-                  {index > 0 && <Divider sx={{ my: 1 }} />}
+                  {index > 0 && <Divider sx={{ my: 1, borderColor: '#9e9e9e' }} />}
                   <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
                     {trip.destination_info.city_name} ({trip.destination})
                   </Typography>
