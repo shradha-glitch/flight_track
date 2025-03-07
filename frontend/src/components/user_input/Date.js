@@ -19,6 +19,14 @@ const CustomDatePicker = ({label, onChange}) => {
     }
   };
 
+  // Define the range
+  const startDate = dayjs("2025-03-11");
+  const endDate = dayjs("2025-03-31");
+
+  // Function to disable dates outside the range
+  const shouldDisableDate = (date) => date.isBefore(startDate) || date.isAfter(endDate);
+
+
   return (
     <Box sx={{flexDirection: "column", display: "flex"}}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -26,6 +34,12 @@ const CustomDatePicker = ({label, onChange}) => {
           label={`${label} *`}
           value={selectedDate}
           onChange={handleDateChange}
+          shouldDisableDate={shouldDisableDate}
+          minDate={startDate} // Prevents selecting dates before March 11, 2025
+          maxDate={endDate} // Prevents selecting dates after March 31, 2025
+          views={["year", "month", "day"]} // Restricts navigation to year, month, and day
+          openTo="day"
+          disableFuture={false}
           renderInput={(params) => <TextField {...params} required />}
         />
       </LocalizationProvider>

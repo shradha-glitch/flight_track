@@ -5,10 +5,37 @@ import LinearProgress from '@mui/material/LinearProgress';
 const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} ) => {
     const chartRef = useRef(); // Reference to the div container where the chart will be drawn
     const [data, setData] = useState([]); // State to store data from the API
+    // Update the screen dimensions calculation
     const [screenDimensions, setScreenDimensions] = useState({
-      width: window.innerWidth * 0.9,  // 90% of screen width
-      height: window.innerHeight * 0.6 // 20% of screen height
-  });
+        width: Math.max(window.innerWidth * 0.85, 800),  // Minimum width of 800px
+        height: Math.max(window.innerHeight * 0.65, 500) // Minimum height of 500px
+    });
+    
+    // Update the resize handler
+    useEffect(() => {
+        const handleResize = () => {
+            setScreenDimensions({
+                width: Math.max(window.innerWidth * 0.85, 800),
+                height: Math.max(window.innerHeight * 0.65, 500)
+            });
+        };
+    
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+    
+    // Update the margin and styling in the chart creation
+    useEffect(() => {
+        if (data.length === 0) return;
+    
+        const { width, height } = screenDimensions;
+        const margin = { 
+            top: Math.max(height * 0.08, 40),     // Responsive margins
+            right: Math.max(width * 0.06, 80),
+            bottom: Math.max(height * 0.1, 50),
+            left: Math.max(width * 0.04, 45)
+        };
+    });
     const [originalFlightData, setOriginalFlightData] = useState([]);
     const [visaDetails, setVisaDetails] = useState([]);
     console.log("Visa Details", visaDetails);
@@ -27,6 +54,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
           window.addEventListener("resize", handleResize);
           return () => window.removeEventListener("resize", handleResize);
       }, []);
+    
 
 
     useEffect(() => {
@@ -53,7 +81,14 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                     return {
                         iataCode,
                         temperature: weatherData.average_temperature,
-                        climate: weatherData.climate,
+                        climate: weatherData.dominant_climate,
+                        climate_breakdown: weatherData.weather_breakdown,
+                        daily_temperature : weatherData.daily_temperature,
+                        daily_cloud_cover : weatherData.daily_cloud_cover,
+                        daily_radiation_sum : weatherData.daily_radiation_sum,
+                        daily_rain_sum : weatherData.daily_rain_sum,
+                        daily_snowfall_sum : weatherData.daily_snowfall_sum
+
 
                     };
                 })
@@ -105,7 +140,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                         B: weather ? weather.temperature : Math.random() * 40, 
                         C: weather ? weather.climate : "None", 
                         D: advisory ? advisory.advisory : "None",
-                        E: visaRequirement,
+                        E: visaRequirement || "unknown",
                         F: item.destination_info.travel_days,
                         originalFlight: item
                     };
@@ -119,7 +154,9 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                     const formattedVisaRequirements = {};
                 
                     Object.entries(visaRequirements).forEach(([key, value]) => {
-                        if (typeof value === 'number') {
+                        if (value === -1) {
+                            formattedVisaRequirements[key] = "Home country";
+                        } else if (typeof value === 'number') {
                             formattedVisaRequirements[key] = `${value} days`;
                         } else {
                             formattedVisaRequirements[key] = value;
@@ -161,9 +198,9 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
             console.log("Checking visa requirement for", countryCode, visaRequirement);
 
             if (visaRequirement === -1) {
-                visaRequirement = "home country";
+                visaRequirement = "Home country";
             } else if (!isNaN(visaRequirement)) {
-                visaRequirement = "visa with day limit";
+                visaRequirement = "Visa with day limit";
             }
 
             // Compare and update worstVisa if the current visa has a worse priority
@@ -456,6 +493,8 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
           )}
       </div>
   );
+
 };
+
 
 export default ParallelCoordinates;

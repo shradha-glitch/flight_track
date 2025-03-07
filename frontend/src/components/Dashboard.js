@@ -21,7 +21,7 @@ const Dashboard = () => {
       <Box
         sx={{
           display: "grid",
-          gap: { xs: 2, md: 4 }, 
+          gap: { xs: 2, md: 2 }, 
           gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" }, 
         }}
       >

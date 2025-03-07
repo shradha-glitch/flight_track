@@ -291,36 +291,65 @@ async def get_weather(iata_code: str, departure_date: str = Query(...), return_d
     daily_rain_sum = daily.Variables(3).ValuesAsNumpy()
     daily_snowfall_sum = daily.Variables(4).ValuesAsNumpy()
 
-
+    # Helper function to safely convert numpy values to JSON-serializable format
+    def safe_float(value):
+        if np.isnan(value) or np.isinf(value):
+            return None
+        return float(value)
 
     # Calculate the average temperature over the date range
-    average_temperature = float(np.mean(daily_temperature_2m_mean))
-    avg_cloud_cover = np.mean(daily_cloud_cover_mean)
-    avg_radiation = np.mean(daily_shortwave_radiation_sum)
-    avg_rain = np.mean(daily_rain_sum)
-    avg_snow = np.mean(daily_snowfall_sum)
+    average_temperature = safe_float(np.mean(daily_temperature_2m_mean))
+    avg_cloud_cover = safe_float(np.mean(daily_cloud_cover_mean))
+    avg_radiation = safe_float(np.mean(daily_shortwave_radiation_sum))
+    avg_rain = safe_float(np.mean(daily_rain_sum))
+    avg_snow = safe_float(np.mean(daily_snowfall_sum))
 
-    # Determine the dominant weather condition using priority order
-    if avg_rain > 2.0:  
-        weather_summary = "Rainy"
-    elif avg_snow > 1.0:  
-        weather_summary = "Snowy"
-    elif avg_cloud_cover > 50:  
-        weather_summary = "Cloudy"
-    elif 20 <= avg_cloud_cover <= 50:  
-        weather_summary = "Partly Clouded"
-    elif avg_radiation > 100 and avg_cloud_cover < 20:  
-        weather_summary = "Sunny"
-    else:
-        weather_summary = "None"
-    # Prepare weather data
+    # Count days for each weather condition (using safe conversion)
+    rainy_days = safe_float(np.sum(daily_rain_sum > 1.0))
+    snowy_days = safe_float(np.sum(daily_snowfall_sum > 0.1))
+    sunny_days = safe_float(np.sum((daily_cloud_cover_mean < 20) & (daily_shortwave_radiation_sum > 15)))
+    cloudy_days = safe_float(np.sum(daily_cloud_cover_mean > 50))
+    partly_cloudy_days = safe_float(np.sum((daily_cloud_cover_mean >= 20) & (daily_cloud_cover_mean <= 50)))
+
+    # Create a weather summary dictionary
+    weather_conditions = {
+        "Rainy": rainy_days or 0,  # Use 0 if None
+        "Snowy": snowy_days or 0,
+        "Sunny": sunny_days or 0,
+        "Cloudy": cloudy_days or 0,
+        "Partly Clouded": partly_cloudy_days or 0
+    }
+
+    # Find the dominant weather condition
+    dominant_weather = max(weather_conditions.items(), key=lambda x: x[1])
+    weather_summary = dominant_weather[0]
+
+    # Convert NumPy arrays to Python lists and handle special values
+    def safe_list(arr):
+        return [safe_float(x) or 0 for x in arr]  # Replace None with 0
+
+    daily_temperature_2m_mean = safe_list(daily_temperature_2m_mean)
+    daily_cloud_cover_mean = safe_list(daily_cloud_cover_mean)
+    daily_shortwave_radiation_sum = safe_list(daily_shortwave_radiation_sum)
+    daily_rain_sum = safe_list(daily_rain_sum)
+    daily_snowfall_sum = safe_list(daily_snowfall_sum)
+
+    # Create a more detailed weather report
+    total_days = float(len(daily_temperature_2m_mean))
     weather_data = {
-        "average_temperature": average_temperature,
-        "climate": weather_summary,
+        "average_temperature": round(average_temperature or 0, 1),  # Use 0 if None
+        "dominant_climate": weather_summary,
+        "daily_temperature": daily_temperature_2m_mean,
+        "daily_cloud_cover": daily_cloud_cover_mean,
+        "daily_radiation_sum": daily_shortwave_radiation_sum,
+        "daily_rain_sum": daily_rain_sum,
+        "daily_snowfall_sum": daily_snowfall_sum,
+        "weather_breakdown": {
+            condition: {
+                "days": int(days),
+                "percentage": round((days / total_days * 100) if days and total_days else 0, 1)
+            } for condition, days in weather_conditions.items() if days > 0
+        }
     }
 
     return weather_data
-
-
-
-

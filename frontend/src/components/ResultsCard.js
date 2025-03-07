@@ -6,7 +6,11 @@ const ResultsCard = ({ destinations = [] }) => {
     return (
         <CustomCard>
             <Box sx={{ 
+<<<<<<< HEAD
                 height: '400px',
+=======
+                height: '500px',
+>>>>>>> 629bb75e9c6769672b793d485ed3787a4b3dc21d
                 display: 'flex',
                 flexDirection: 'column',
                 p: 3
