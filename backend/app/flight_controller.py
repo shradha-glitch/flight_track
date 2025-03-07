@@ -320,11 +320,23 @@ async def get_weather(iata_code: str, departure_date: str = Query(...), return_d
     dominant_weather = max(weather_conditions.items(), key=lambda x: x[1])
     weather_summary = dominant_weather[0]
 
+    # Convert NumPy arrays to Python lists for JSON serialization
+    daily_temperature_2m_mean = daily_temperature_2m_mean.tolist()
+    daily_cloud_cover_mean = daily_cloud_cover_mean.tolist()
+    daily_shortwave_radiation_sum = daily_shortwave_radiation_sum.tolist()
+    daily_rain_sum = daily_rain_sum.tolist()
+    daily_snowfall_sum = daily_snowfall_sum.tolist()
+
     # Create a more detailed weather report
     total_days = float(len(daily_temperature_2m_mean))  # Convert to float for consistent division
     weather_data = {
         "average_temperature": round(float(average_temperature), 1),
         "dominant_climate": weather_summary,
+        "daily_temperature":daily_temperature_2m_mean,
+        "daily_cloud_cover" : daily_cloud_cover_mean,
+        "daily_radiation_sum" : daily_shortwave_radiation_sum,
+        "daily_rain_sum" : daily_rain_sum,
+        "daily_snowfall_sum" : daily_snowfall_sum,
         "weather_breakdown": {
             condition: {
                 "days": int(days),  # Keep days as integer
@@ -334,7 +346,6 @@ async def get_weather(iata_code: str, departure_date: str = Query(...), return_d
     }
 
     return weather_data
-
 
 
 
