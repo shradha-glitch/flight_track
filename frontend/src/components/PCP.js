@@ -105,7 +105,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                         B: weather ? weather.temperature : Math.random() * 40, 
                         C: weather ? weather.climate : "None", 
                         D: advisory ? advisory.advisory : "None",
-                        E: visaRequirement,
+                        E: visaRequirement || "unknown",
                         F: item.destination_info.travel_days,
                         originalFlight: item
                     };
@@ -119,7 +119,9 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                     const formattedVisaRequirements = {};
                 
                     Object.entries(visaRequirements).forEach(([key, value]) => {
-                        if (typeof value === 'number') {
+                        if (value === -1) {
+                            formattedVisaRequirements[key] = "home country";
+                        } else if (typeof value === 'number') {
                             formattedVisaRequirements[key] = `${value} days`;
                         } else {
                             formattedVisaRequirements[key] = value;
