@@ -10,6 +10,9 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
       height: window.innerHeight * 0.6 // 20% of screen height
   });
     const [originalFlightData, setOriginalFlightData] = useState([]);
+    const [visaDetails, setVisaDetails] = useState([]);
+    console.log("Visa Details", visaDetails);
+
     const [loading, setLoading] = useState(true);
 
 
@@ -30,7 +33,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
         // fetch data from the API
         const fetchSourceCountry = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8001/api/flights/forlondon`);
+                const response = await fetch(`http://127.0.0.1:8001/api/flights/forlondon?departure_date=${departureDate}`);
                 const result = await response.json();
                 setOriginalFlightData(result);
                 
@@ -46,6 +49,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                  const weatherPromises = iataCodes.map(async (iataCode, index) => {
                     const weatherResponse = await fetch(`http://127.0.0.1:8001/api/weather/${iataCode}?departure_date=${departureDates[index]}&return_date=${returnDates[index]}`);
                     const weatherData = await weatherResponse.json();
+                    console.log("Weather Data",weatherData.climate);
                     return {
                         iataCode,
                         temperature: weatherData.average_temperature,
@@ -66,15 +70,6 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                   }
 
                   const advisoryInfo = advisoryData.advisories[iataCode];
-                
-                //Visa fetch!
-                //   const visaPromises = isoCodes.map(async (isoCode) => {
-                //     const visaResponse = await fetch(`http://127.0.0.1:8001/api/visa/${isoCode}?userPassport=${passportIsoCode}`);
-                //     const visaData = await visaResponse.json();
-                //     return {
-                //         isoCode,
-                //         visaRequired: visaData.visa_required, //change this maybe
-                //     };
 
                     return {
                         iataCode: advisoryInfo.iata,
@@ -86,30 +81,101 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                 });
 
                 const advisoryData = await Promise.all(advisoryPromises);
+
+                const visaPromises = iataCodes.map(async (iataCode) => {
+                    const visaResponse = await fetch(`http://127.0.0.1:8001/api/pcpvisa?country_codes=${passportIsoCode.join(',')}&departure_date=${departureDate}`);
+                    const visaData = await visaResponse.json();
+                    return {
+                        visaRequirements: visaData.destination_requirements[iataCode],
+                        
+                    };
+                    
+                });
+
+                const visaData = await Promise.all(visaPromises);
             
-                const updatedData = result.map(item => {
+                const updatedData = result.map((item, index )=> {
                     const weather = weatherData.find(w => w.iataCode === item.destination);
-                    const advisory = advisoryData.find(a => a.iataCode === item.destination);                    
+                    const advisory = advisoryData.find(a => a.iataCode === item.destination); 
+                    const visaRequirement = getWorstVisaRequirement(visaData[index]);
+                    console.log("Visa Requirement", visaRequirement);
                     return {
                         name: item.destination,
-                        A: parseFloat(item.price.total), // Extract and parse the price
-                        B: weather ? weather.temperature : Math.random() * 40, // Use fetched temperature data or fake data
-                        C: weather ? weather.climate : "None", // Fake weather data (0 to 100)
+                        A: parseFloat(item.price.total),
+                        B: weather ? weather.temperature : Math.random() * 40, 
+                        C: weather ? weather.climate : "None", 
                         D: advisory ? advisory.advisory : "None",
-                        E: Math.random() > 0.5 ? 1 : 0, // Fake visa requirements data (0 or 1)
+                        E: visaRequirement,
                         F: item.destination_info.travel_days,
                         originalFlight: item
                     };
                 });
                 setData(updatedData);
                 setLoading(false);
+                // Store visa details by country code
+                const extractedVisaDetails = {};
+                visaData.forEach((data, index) => {
+                    const visaRequirements = data.visaRequirements;
+                    const formattedVisaRequirements = {};
+                
+                    Object.entries(visaRequirements).forEach(([key, value]) => {
+                        if (typeof value === 'number') {
+                            formattedVisaRequirements[key] = `${value} days`;
+                        } else {
+                            formattedVisaRequirements[key] = value;
+                        }
+                    });
+                
+                    extractedVisaDetails[result[index].destination] = formattedVisaRequirements;
+                });
+                setVisaDetails(extractedVisaDetails);
             } catch (error) {
                 console.error("Error fetching data: ", error);
                 setLoading(false);
             }
         };
         fetchSourceCountry();
-    }, []);
+    }, [passportIsoCode, departureDate]);
+
+
+    // Function to determine the worst visa requirement
+    const getWorstVisaRequirement = (visaData) => { 
+        const visaRequirements = visaData.visaRequirements; 
+        let worstVisa = "unknown"; // Default to visa free
+        const visaPriority = {
+            "unknown": 0,
+            "home country": 1,
+            "visa free": 2,
+            "visa with day limit": 3,
+            "eta": 4,
+            "e-visa": 5,
+            "visa on arrival": 6,         
+            "visa required": 7
+        };
+
+
+    // Loop through the visaRequirements object
+        for (let countryCode in visaRequirements) {
+            let visaRequirement = visaRequirements[countryCode];
+
+            console.log("Checking visa requirement for", countryCode, visaRequirement);
+
+            if (visaRequirement === -1) {
+                visaRequirement = "home country";
+            } else if (!isNaN(visaRequirement)) {
+                visaRequirement = "visa with day limit";
+            }
+
+            // Compare and update worstVisa if the current visa has a worse priority
+            if (visaPriority[visaRequirement] > visaPriority[worstVisa]) {
+                worstVisa = visaRequirement;  // Update worstVisa
+            }
+        }
+        // console.log("Worst visa requirement:", worstVisa);
+        return worstVisa;
+    };
+
+    
 
     useEffect(() => {
         if (data.length === 0) return; // Do nothing if data is not loaded yet
@@ -150,6 +216,12 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                 // Use ordinal scale for advisory category
                 yScales[dim] = d3.scalePoint()
                     .domain(["None", "No advisory", "Advisory against travel to certain areas", "Advisory against non-essential travel", "Advisory against all travel"])
+                    .range([height - margin.bottom, margin.top]); // Flip so higher numbers are at the top
+            }
+            else if (dim === "E") {
+                // Use ordinal scale for visa category
+                yScales[dim] = d3.scalePoint()
+                    .domain(["unknown", "home country", "visa free", "visa with day limit", "eta", "e-visa", "visa on arrival", "visa required"])
                     .range([height - margin.bottom, margin.top]); // Flip so higher numbers are at the top
             } else {
                 yScales[dim] = d3.scaleLinear()
@@ -240,7 +312,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
             .attr("class", "axis")
             .attr("transform", d => `translate(${xScale(d)},0)`) 
             .each(function (d) {
-                 if (d === "D" || d === "C") {
+                 if (d === "D" || d === "C" || d === "E") {
                     d3.select(this).call(d3.axisLeft(yScales[d]).tickFormat(d => d)); 
                 } else {
                     d3.select(this).call(d3.axisLeft(yScales[d]));
@@ -278,7 +350,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                 delete activeFilters[dim]; 
                 updateHighlight();
               } else {
-                if (dim === "D" || dim === "C") {
+                if (dim === "D" || dim === "C" || dim === "E") {
                     const [y0, y1] = event.selection;
                     const selectedCategories = yScales[dim].domain().filter(category => {
                         const pos = yScales[dim](category);
@@ -302,7 +374,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
         
                     const isHighlighted = Object.keys(activeFilters).every(dim => {
                         if (!d.hasOwnProperty(dim) || d[dim] == null) return false; // Avoid null errors
-                        if (dim === "D" || dim === "C") {
+                        if (dim === "D" || dim === "C" || dim === "E") {
                             return activeFilters[dim].includes(d[dim]);
                         } else {
                             const [min, max] = activeFilters[dim];
@@ -319,7 +391,9 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                             weather: d.C,
                             safety: d.D,
                             visa: d.E,
-                            duration: d.F
+                            duration: d.F,
+                            visaDetails: visaDetails[d.name]
+                            
                           }
                         });
                     }

@@ -27,8 +27,17 @@ const ResultsCard = ({ destinations = [] }) => {
                                         <div>Temperature: {flight.pcp?.temp ? `${flight.pcp.temp.toFixed(1)}°C` : 'N/A'}</div>
                                         <div>Climate: {flight.pcp?.weather || 'N/A'}</div>
                                         <div>Safety: {flight.pcp?.safety || 'N/A'}</div>
-                                        <div>Visa Required: {flight.pcp?.visa !== undefined ? (flight.pcp.visa ? "Yes" : "No") : 'N/A'}</div>
-                                        <div>Trip Duration: {flight.pcp?.duration ? `${flight.destination_info.travel_days} Days` : 'N/A'}</div>
+                                        <div>Visa Required: {flight.pcp?.visa || 'N/A'}</div>
+                                        <ul>
+                                            {flight.pcp?.visaDetails ? (
+                                                Object.entries(flight.pcp.visaDetails).map(([key, value]) => (
+                                                    <li key={key}>{key}: {value}</li>
+                                                ))
+                                            ) : (
+                                                <li>N/A</li>
+                                            )}
+                                        </ul>
+                                        <div>Flight Duration: {flight.pcp?.duration ? `${flight.pcp.duration.toFixed(1)} hours` : 'N/A'}</div>
                                         <div>Departure: {flight.departureDate ? new Date(flight.departureDate).toLocaleDateString() : 'N/A'}</div>
                                         <div>Return: {flight.returnDate ? new Date(flight.returnDate).toLocaleDateString() : 'N/A'}</div>
                                     </div>
