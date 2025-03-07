@@ -53,7 +53,8 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                     return {
                         iataCode,
                         temperature: weatherData.average_temperature,
-                        climate: weatherData.climate,
+                        climate: weatherData.dominant_climate,
+                        climate_breakdown: weatherData.weather_breakdown,
 
                     };
                 })
