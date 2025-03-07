@@ -46,7 +46,6 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                  const weatherPromises = iataCodes.map(async (iataCode, index) => {
                     const weatherResponse = await fetch(`http://127.0.0.1:8001/api/weather/${iataCode}?departure_date=${departureDates[index]}&return_date=${returnDates[index]}`);
                     const weatherData = await weatherResponse.json();
-                    console.log("Weather Data",weatherData.climate);
                     return {
                         iataCode,
                         temperature: weatherData.average_temperature,
@@ -290,9 +289,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                   const [y0, y1] = event.selection;
                   activeFilters[dim] = [yScales[dim].invert(y1), yScales[dim].invert(y0)]; 
               }
-          
-              updateHighlight(); 
-              console.log(" updated Active Filters", activeFilters);
+              updateHighlight();
           }
 
           
