@@ -51,16 +51,25 @@ const PcpCard = ({ onSelect, onFilterChange }) => {
       <form onSubmit={handleSubmit}>
         <Box sx={{
           mb: 4,
+          mt: 5,
           display: "flex",
           flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 2,
-          px: 4,
+          justifyContent: {xs:"space-between", lg: "space-evenly"},
+          alignItems: "flex-start",
+          gap: { xs: 1, sm: 2 }, // Responsive gap
+          px: { xs: 2, sm: 4 }, // Responsive padding
           flexWrap: "wrap"
         }}>
-          <Departure onSelect={onSelect} required/>
-          <Box sx={{ width: '100%', maxWidth: 250 }}>
+          <Box sx={{ 
+            width: { xs: '100%', sm: '45%', md: '30%', lg: '250px' },
+            minWidth: '200px'
+          }}>
+            <Departure onSelect={onSelect} required/>
+          </Box>
+          <Box sx={{ 
+            width: { xs: '100%', sm: '45%', md: '30%', lg: '250px' },
+            minWidth: '200px'
+          }}>
             <DatePicker 
               onChange={handleDepartureDate} 
               label={"Departure"} 
@@ -73,29 +82,35 @@ const PcpCard = ({ onSelect, onFilterChange }) => {
               </Box>
             )}
           </Box>
-        <DatePicker label={"Return"} text={" fef"} required/>
-        <PassportInput onChange={handlePassportChange}/>
-        <Button
-          type="submit" 
-          variant="contained"
-          startIcon={<SearchIcon />}
-          sx={{
-            py:2,
-            px:4,
-            maxHeight:55,
-            maxWidth:200,
-            fontSize: 16,
-            textTransform: "none",
-            backgroundColor: "#F1C120",
-            color: "#000",
-            "&:hover": {
-              backgroundColor: "#D8AD1C",
-            },
-          }}
-        >
-          Search
-        </Button>
-      </Box>
+          <Box sx={{ 
+            width: { xs: '100%', sm: '45%', md: '30%', lg: '250px' },
+            minWidth: '200px'
+          }}>
+            <PassportInput onChange={handlePassportChange}/>
+          </Box>
+          <Button
+            type="submit" 
+            variant="contained"
+            startIcon={<SearchIcon />}
+            sx={{
+              py: { xs: 1.5, sm: 2 },
+              px: { xs: 3, sm: 4 },
+              height: { xs: '48px', sm: '56px' },
+              width: { xs: '100%', sm: '200px' },
+              minWidth: '150px',
+              fontSize: { xs: 14, sm: 16 },
+              textTransform: "none",
+              backgroundColor: "#F1C120",
+              color: "#000",
+              "&:hover": {
+                backgroundColor: "#D8AD1C",
+              },
+              mt: { xs: 1, sm: 0 } // Add margin top on small screens
+            }}
+          >
+            Search
+          </Button>
+        </Box>
       </form>
       <Box sx={{ px: 4 }}>
       <hr style={{ border: 'none', borderTop: '1px solid #D3D3D3' }} /> 
