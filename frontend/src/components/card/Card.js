@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent, Typography, Box } from "@mui/material";
+import { Card, CardContent, Box } from "@mui/material";
 
 const CustomCard = ({ title, children, sx }) => {
   return (

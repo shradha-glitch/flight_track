@@ -30,7 +30,6 @@ import openmeteo_requests
 from retry_requests import retry
 import numpy as np
 from datetime import datetime
-from typing import Optional
 
 router = APIRouter()
 
@@ -79,31 +78,26 @@ async def get_flights_by_origin(origin: str = None, destination: str = None, dep
 
 
 """
-@endpoint: GET /api/advisory[/{country_code}]
-@description: Get travel advisory for a specific country or all countries
+@endpoint: GET /api/advisory/{country_code}
+@description: Get travel advisory for a specific country
 @parameters:
-    - country_code (optional): ISO country code (e.g., 'us', 'gb')
-@usage: 
-    - All advisories: curl http://localhost:8000/api/advisory
-    - Single country: curl http://localhost:8000/api/advisory/us
+    - country_code: ISO country code (e.g., 'us', 'gb')
+@usage: curl http://localhost:8000/api/advisory/us
 """
-@router.get("/advisory")
 @router.get("/advisory/{country_code}")
-async def get_advisory(country_code: Optional[str] = None):
+async def get_advisory(country_code: str):
     """
-    Get travel advisory for a specific country or all countries if no country code is provided.
+    Get travel advisory for a specific country.
     """
     advisories = load_advisory_data()
     if not advisories:
         raise HTTPException(status_code=404, detail="Advisory data not found")
 
-    if country_code:
-        advisory = advisories.get(country_code.lower())
-        if not advisory:
-            raise HTTPException(status_code=404, detail=f"No advisory found for country code {country_code}")
-        return {"country_code": country_code.lower(), "advisory": advisory}
+    advisory = advisories.get(country_code.lower())
+    if not advisory:
+        raise HTTPException(status_code=404, detail=f"No advisory found for country code {country_code}")
 
-    return {"advisories": advisories}
+    return advisory
 
 """
 @endpoint: GET /api/pcpvisa
@@ -326,6 +320,7 @@ async def get_weather(iata_code: str, departure_date: str = Query(...), return_d
     }
 
     return weather_data
+
 
 
 
