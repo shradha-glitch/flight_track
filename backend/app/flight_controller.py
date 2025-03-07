@@ -300,23 +300,37 @@ async def get_weather(iata_code: str, departure_date: str = Query(...), return_d
     avg_rain = np.mean(daily_rain_sum)
     avg_snow = np.mean(daily_snowfall_sum)
 
-    # Determine the dominant weather condition using priority order
-    if avg_rain > 2.0:  
-        weather_summary = "Rainy"
-    elif avg_snow > 1.0:  
-        weather_summary = "Snowy"
-    elif avg_cloud_cover > 50:  
-        weather_summary = "Cloudy"
-    elif 20 <= avg_cloud_cover <= 50:  
-        weather_summary = "Partly Clouded"
-    elif avg_radiation > 100 and avg_cloud_cover < 20:  
-        weather_summary = "Sunny"
-    else:
-        weather_summary = "None"
-    # Prepare weather data
+    # Count days for each weather condition
+    rainy_days = float(np.sum(daily_rain_sum > 1.0))  # Convert to float for consistent handling
+    snowy_days = float(np.sum(daily_snowfall_sum > 0.1))
+    sunny_days = float(np.sum((daily_cloud_cover_mean < 20) & (daily_shortwave_radiation_sum > 15)))
+    cloudy_days = float(np.sum(daily_cloud_cover_mean > 50))
+    partly_cloudy_days = float(np.sum((daily_cloud_cover_mean >= 20) & (daily_cloud_cover_mean <= 50)))
+
+    # Create a weather summary dictionary
+    weather_conditions = {
+        "Rainy": rainy_days,
+        "Snowy": snowy_days,
+        "Sunny": sunny_days,
+        "Cloudy": cloudy_days,
+        "Partly Clouded": partly_cloudy_days
+    }
+
+    # Find the dominant weather condition
+    dominant_weather = max(weather_conditions.items(), key=lambda x: x[1])
+    weather_summary = dominant_weather[0]
+
+    # Create a more detailed weather report
+    total_days = float(len(daily_temperature_2m_mean))  # Convert to float for consistent division
     weather_data = {
-        "average_temperature": average_temperature,
-        "climate": weather_summary,
+        "average_temperature": round(float(average_temperature), 1),
+        "dominant_climate": weather_summary,
+        "weather_breakdown": {
+            condition: {
+                "days": int(days),  # Keep days as integer
+                "percentage": round(float(days/total_days * 100), 1)  # Ensure float division
+            } for condition, days in weather_conditions.items() if days > 0
+        }
     }
 
     return weather_data
