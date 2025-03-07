@@ -2,15 +2,16 @@ import React, { useState, useEffect } from "react";
 import AdvisoryGlobe from "../globe/GlobeAdvisory";
 import CustomCard from "./Card";
 import { Box, Button } from "@mui/material";
-import GlobeResultsCard from "../globe/GlobeResults";
+import GlobeResult from "../globe/GlobeResults";
+import GlobeVisa from "../globe/GlobeVisa";
 
-const GlobeCard = ({ destinations = [], advisory = [] }) => {
+const GlobeCard = ({ destinations = []}) => {
   const [activeTab, setActiveTab] = useState("advisory");
-  
-  // Track prop changes
+    const countries = ["SE","IN","IS"];
+
   useEffect(() => {
     console.log('Destinations updated:', destinations);
-  }, [destinations]);  // This will log every time 'destinations' prop changes
+  }, [destinations]); 
   
   return (
     <CustomCard>
@@ -44,17 +45,15 @@ const GlobeCard = ({ destinations = [], advisory = [] }) => {
               border: "none",
               borderRadius: "8px",
               fontSize: "16px", 
-            }}
-          >
+            }}>
             {key.charAt(0).toUpperCase() + key.slice(1)}
           </Button>
         ))}
       </Box>
       {activeTab === "Results" ? (
-        <GlobeResultsCard data={destinations} />
-      ) : (
-        <AdvisoryGlobe />
-      )}
+        <GlobeResult data={destinations} />
+      ): activeTab === "Advisory" ? (  <AdvisoryGlobe />) : 
+      (<GlobeVisa countryCodes={countries}/>)}
     </CustomCard>
   );
 };
