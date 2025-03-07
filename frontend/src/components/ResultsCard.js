@@ -1,52 +1,104 @@
 import React from 'react';
 import CustomCard from "./card/Card";
+import { Box, Typography, Divider, Avatar } from "@mui/material";
 
 const ResultsCard = ({ destinations = [] }) => {
     return (
         <CustomCard>
-            <div style={{
+            <Box sx={{ 
                 height: '400px',
-                overflowY: 'auto',
-                overflowX: 'hidden',
-                padding: '1rem'
+                display: 'flex',
+                flexDirection: 'column',
+                p: 3
             }}>
-                <h3 className="text-lg font-semibold mb-4">Filtered Destinations</h3>
                 {destinations.length === 0 ? (
-                    <p className="text-gray-500">No destinations selected</p>
+                    <Typography variant="h6" fontWeight="bold" mb={3}>
+                        Filtered Destinations
+                    </Typography>
+                ) : null}
+                
+                {destinations.length === 0 ? (
+                    <Typography color="text.secondary">No destinations selected</Typography>
                 ) : (
-                    <ul className="space-y-2">
-                        {destinations.map((flight, index) => (
-                            <li 
-                                key={index}
-                                className="p-3 hover:bg-gray-100 rounded border border-gray-200"
-                            >
-                                <div className="flex flex-col gap-1">
-                                    <div className="font-semibold">{flight.destination_info.city_name}, {flight.destination_info.iso_code}</div>
-                                    <div className="text-sm text-gray-600">
-                                        <div>Price: ${flight.price?.total || 'N/A'}</div>
-                                        <div>Temperature: {flight.pcp?.temp ? `${flight.pcp.temp.toFixed(1)}°C` : 'N/A'}</div>
-                                        <div>Climate: {flight.pcp?.weather || 'N/A'}</div>
-                                        <div>Safety: {flight.pcp?.safety || 'N/A'}</div>
-                                        <div>Visa Required: {flight.pcp?.visa || 'N/A'}</div>
-                                        <ul>
-                                            {flight.pcp?.visaDetails ? (
-                                                Object.entries(flight.pcp.visaDetails).map(([key, value]) => (
-                                                    <li key={key}>{key}: {value}</li>
-                                                ))
-                                            ) : (
-                                                <li>N/A</li>
-                                            )}
-                                        </ul>
-                                        <div>Flight Duration: {flight.pcp?.duration ? `${flight.pcp.duration.toFixed(1)} hours` : 'N/A'}</div>
-                                        <div>Departure: {flight.departureDate ? new Date(flight.departureDate).toLocaleDateString() : 'N/A'}</div>
-                                        <div>Return: {flight.returnDate ? new Date(flight.returnDate).toLocaleDateString() : 'N/A'}</div>
-                                    </div>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                    <Box sx={{ 
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flexGrow: 1,
+                        overflow: 'hidden'
+                    }}>
+                        {/* Fixed Header */}
+                        <Box sx={{ 
+                            backgroundColor: 'white',
+                            zIndex: 10,
+                            pb: 1
+                        }}>
+                            <Box sx={{ 
+                                display: 'grid', 
+                                gridTemplateColumns: '1.5fr 1fr 1fr 1fr',
+                                mb: 1
+                            }}>
+                                <Typography fontWeight="medium">Destination</Typography>
+                                <Typography fontWeight="medium">Departure</Typography>
+                                <Typography fontWeight="medium">Return</Typography>
+                                <Typography fontWeight="medium">Price</Typography>
+                            </Box>
+                            <Divider />
+                        </Box>
+                        
+                        {/* Scrollable Content */}
+                        <Box sx={{ 
+                            overflowY: 'auto',
+                            flexGrow: 1,
+                            mt: 1
+                        }}>
+                            {destinations.map((flight, index) => (
+                                <Box key={index} sx={{ 
+                                    display: 'grid', 
+                                    gridTemplateColumns: '1.5fr 1fr 1fr 1fr',
+                                    py: 1.5,
+                                    borderBottom: '1px solid #eee',
+                                    alignItems: 'center'
+                                }}>
+                                    <Box sx={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        gap: 2
+                                    }}>
+                                        <Avatar
+                                            src={`https://countryflagsapi.netlify.app/flag/${flight.destination_info.iso_code.toLowerCase()}.svg`}
+                                            alt={flight.destination_info.city_name}
+                                            sx={{ width: 24, height: 24 }}
+                                        />
+                                        <Box>
+                                            <Typography variant="body1" fontWeight="bold">
+                                                {flight.destination_info.city_name}, {flight.destination_info.iso_code}
+                                            </Typography>
+                                            <Typography variant="caption" color="text.secondary">
+                                                {flight.origin} - {flight.destination}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                    <Typography>
+                                        {new Date(flight.departureDate).toLocaleDateString('en-GB', {
+                                            day: 'numeric',
+                                            month: 'long'
+                                        })}
+                                    </Typography>
+                                    <Typography>
+                                        {new Date(flight.returnDate).toLocaleDateString('en-GB', {
+                                            day: 'numeric',
+                                            month: 'long'
+                                        })}
+                                    </Typography>
+                                    <Typography fontWeight="medium">
+                                        £{flight.price?.total || 'N/A'}
+                                    </Typography>
+                                </Box>
+                            ))}
+                        </Box>
+                    </Box>
                 )}
-            </div>
+            </Box>
         </CustomCard>
     );
 };
