@@ -55,6 +55,12 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                         temperature: weatherData.average_temperature,
                         climate: weatherData.dominant_climate,
                         climate_breakdown: weatherData.weather_breakdown,
+                        daily_temperature : weatherData.daily_temperature,
+                        daily_cloud_cover : weatherData.daily_cloud_cover,
+                        daily_radiation_sum : weatherData.daily_radiation_sum,
+                        daily_rain_sum : weatherData.daily_rain_sum,
+                        daily_snowfall_sum : weatherData.daily_snowfall_sum
+
 
                     };
                 })
