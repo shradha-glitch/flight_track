@@ -145,14 +145,14 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
         const visaRequirements = visaData.visaRequirements; 
         let worstVisa = "unknown"; // Default to visa free
         const visaPriority = {
-            "Unknown": 0,
-            "Home country": 1,
-            "Visa free": 2,
-            "Visa with day limit": 3,
-            "eTA": 4,
+            "unknown": 0,
+            "home country": 1,
+            "visa free": 2,
+            "visa with day limit": 3,
+            "eta": 4,
             "e-visa": 5,
-            "Visa on arrival": 6,         
-            "Visa required": 7
+            "visa on arrival": 6,         
+            "visa required": 7
         };
 
 
@@ -223,7 +223,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
             else if (dim === "E") {
                 // Use ordinal scale for visa category
                 yScales[dim] = d3.scalePoint()
-                    .domain(["Unknown", "Home country", "Visa free", "Visa with day limit", "eTA", "e-visa", "Visa on arrival", "Visa required"])
+                    .domain(["unknown", "home country", "visa free", "visa with day limit", "eta", "e-visa", "visa on arrival", "visa required"])
                     .range([height - margin.bottom, margin.top]); // Flip so higher numbers are at the top
             } else {
                 yScales[dim] = d3.scaleLinear()
