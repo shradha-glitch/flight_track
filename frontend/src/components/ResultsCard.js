@@ -1,8 +1,8 @@
 import React from 'react';
 import CustomCard from "./card/Card";
-import { Box, Typography, Divider, Avatar } from "@mui/material";
+import { Box, Typography, Divider, Avatar, Radio } from "@mui/material";
 
-const ResultsCard = ({ destinations = [] }) => {
+const ResultsCard = ({ destinations = [], onSelectDestination, selectedDestination }) => {
     return (
         <CustomCard>
             <Box sx={{ 
@@ -34,9 +34,10 @@ const ResultsCard = ({ destinations = [] }) => {
                         }}>
                             <Box sx={{ 
                                 display: 'grid', 
-                                gridTemplateColumns: '1.5fr 1fr 1fr 1fr',
+                                gridTemplateColumns: '0.2fr 1.5fr 1fr 1fr 1fr',
                                 mb: 1
                             }}>
+                                <Typography fontWeight="medium"></Typography>
                                 <Typography fontWeight="medium">Destination</Typography>
                                 <Typography fontWeight="medium">Departure</Typography>
                                 <Typography fontWeight="medium">Return</Typography>
@@ -54,11 +55,18 @@ const ResultsCard = ({ destinations = [] }) => {
                             {destinations.map((flight, index) => (
                                 <Box key={index} sx={{ 
                                     display: 'grid', 
-                                    gridTemplateColumns: '1.5fr 1fr 1fr 1fr',
+                                    gridTemplateColumns: '0.2fr 1.5fr 1fr 1fr 1fr',
                                     py: 1.5,
                                     borderBottom: '1px solid #eee',
                                     alignItems: 'center'
                                 }}>
+                                    <Radio
+                                        checked={selectedDestination?.destination === flight.destination}
+                                        onChange={() => onSelectDestination(flight)}
+                                        value={flight.destination}
+                                        name="destination-radio-button"
+                                        size="small"
+                                    />
                                     <Box sx={{ 
                                         display: 'flex', 
                                         alignItems: 'center', 

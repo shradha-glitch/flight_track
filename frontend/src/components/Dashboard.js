@@ -4,9 +4,11 @@ import GlobeCard from "./card/GlobeCard";
 import PcpCard from "./card/PcpCard";
 import { useState } from 'react';
 import ResultsCard from "./ResultsCard";
+import WeatherCard from "./card/WeatherCard";
 
 const Dashboard = () => {
   const [filteredDestinations, setFilteredDestinations] = useState([]);
+  const [selectedDestination, setSelectedDestination] = useState(null);
 
   const handleCity = (city) => {
     console.log("City selected:", city);
@@ -14,6 +16,12 @@ const Dashboard = () => {
 
   const handleFilterChange = (destinations) => {
     setFilteredDestinations(destinations);
+    // Reset selected destination when filters change
+    setSelectedDestination(null);
+  };
+
+  const handleSelectDestination = (destination) => {
+    setSelectedDestination(destination);
   };
 
   return (
@@ -32,8 +40,12 @@ const Dashboard = () => {
         <GlobeCard
           destinations={filteredDestinations}
         />
-        <ResultsCard destinations={filteredDestinations} />
-        <CustomCard />
+        <ResultsCard 
+          destinations={filteredDestinations} 
+          onSelectDestination={handleSelectDestination}
+          selectedDestination={selectedDestination}
+        />
+        <WeatherCard selectedDestination={selectedDestination} />
       </Box>
     </Container>
   );
