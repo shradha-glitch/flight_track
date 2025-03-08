@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react"; // Import hooks for managing side effects and references
 import * as d3 from "d3"; // Import D3.js for data visualization
 import LinearProgress from '@mui/material/LinearProgress';
+import InfoIcon from '@mui/icons-material/Info';
+import { Tooltip } from '@mui/material';
 
 const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} ) => {
     const chartRef = useRef(); // Reference to the div container where the chart will be drawn
@@ -10,6 +12,11 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
         width: Math.max(window.innerWidth * 0.85, 800),  // Minimum width of 800px
         height: Math.max(window.innerHeight * 0.65, 500) // Minimum height of 500px
     });
+    const [originalFlightData, setOriginalFlightData] = useState([]);
+    const [visaDetails, setVisaDetails] = useState([]);
+    console.log("Visa Details", visaDetails);
+
+    const [loading, setLoading] = useState(true);
     
     // Update the resize handler
     useEffect(() => {
@@ -36,13 +43,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
             left: Math.max(width * 0.04, 45)
         };
     });
-    const [originalFlightData, setOriginalFlightData] = useState([]);
-    const [visaDetails, setVisaDetails] = useState([]);
-    console.log("Visa Details", visaDetails);
-
-    const [loading, setLoading] = useState(true);
-
-
+    
         useEffect(() => {
           const handleResize = () => {
               setScreenDimensions({
@@ -200,7 +201,8 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
             if (visaRequirement === -1) {
                 visaRequirement = "Home country";
             } else if (!isNaN(visaRequirement)) {
-                visaRequirement = "Visa with day limit";
+                console.log("Visa requirement is a number", visaRequirement);
+                visaRequirement = "visa with day limit";
             }
 
             // Compare and update worstVisa if the current visa has a worse priority
@@ -469,7 +471,30 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
             .style("font-weight", "bold") // Make labels bold for better visibility
             .text(d => customLabels[d] || d) // Use custom label if available
 
+            svg.selectAll(".axis-label")
+            .filter(d => d === "E")
+            .each(function(d) {
+                const label = d3.select(this);
+                label.append("tspan")
+                    .attr("dx", "0.5em")
+                    .attr("dy", "0.1em")
+                    .style("cursor", "pointer")
+                    .text("ℹ️")
+                    .on("click", () => {
+                        alert("Visa Requirements Information:\n\n" +
+                            "unknown: No information available\n" +
+                            "home country: Travel to or within home country\n" +
+                            "visa free: No visa required\n" +
+                            "visa with day limit: Visa required with a day limit\n" +
+                            "eta: Electronic Travel Authorization required\n" +
+                            "e-visa: Electronic visa required\n" +
+                            "visa on arrival: Visa available on arrival\n" +
+                            "visa required: Visa required before travel");
+                    });
+            });
+
     }, [data, screenDimensions]); // Re-run effect when data changes
+
 
     // ----------------------
     // 11. Return JSX (Chart Container)
