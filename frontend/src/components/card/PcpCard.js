@@ -1,12 +1,13 @@
 import CustomCard from "./Card";
 import ParallelCoordinates from "../PCP";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Departure from "../user_input/Location";
 import PassportInput from "../user_input/Passport";
 import DatePicker from "../user_input/Date";
 import Header from "../Header";
 import SearchIcon from "@mui/icons-material/Search";
 import React, { useState, useEffect } from "react";
+import Logo from "../logo";  // Add this import
 
 const PcpCard = ({ onSelect, onFilterChange, onPassportChange }) => {
   const [isFormValid, setIsFormValid] = useState(false);
@@ -118,7 +119,43 @@ const PcpCard = ({ onSelect, onFilterChange, onPassportChange }) => {
       </form>
       <Box sx={{ px: 4 }}>
         <hr style={{ border: "none", borderTop: "1px solid #D3D3D3" }} />
-        {searchTriggered && <ParallelCoordinates onFilterChange={onFilterChange} passportIsoCode={passportIsoCode} departureDate={departureDate} />}
+        {searchTriggered ? (
+          <ParallelCoordinates 
+          onFilterChange={onFilterChange} 
+          passportIsoCode={passportIsoCode} 
+          departureDate={departureDate} />
+        ) : (
+          <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            py: 8,
+            textAlign: 'center',
+            color: '#666',
+          }}
+          >
+          <Typography variant="h5" sx={{ mb: 2, fontWeight: 'medium' }}>
+            Welcome to
+          </Typography>
+            <Box sx={{ mb: 3 }}>
+              <Logo fillColor="#1B1B1B" />
+            </Box>
+            <Typography variant="body1" sx={{ maxWidth: 600, mb: 1 }}>
+              To explore available flights, please provide:
+            </Typography>
+            <Typography variant="body1" sx={{ maxWidth: 600, mb: 3 }}>
+            • Departure location
+            • Departure date
+            • Passport information
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#888' }}>
+            Once you've entered the required information, click "Search" to view flight options and filter based on your preferences.
+          </Typography>
+          </Box> 
+        )
+        }
       </Box>
     </CustomCard>
   );
