@@ -311,7 +311,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                         .attr("opacity", 1);
     
                     tooltip.style("visibility", "visible")
-                    .html(`<strong>${d.name}</strong>`)
+                    .html(`<strong>${d.originalFlight.destination_info.city_name}, ${d.originalFlight.destination_info.iso_code}</strong>`)
                     .style("top", `${event.pageY - 10}px`)
                     .style("left", `${event.pageX + 10}px`);
                 }
