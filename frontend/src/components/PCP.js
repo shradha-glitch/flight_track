@@ -449,12 +449,12 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
         // 10. Axis Labels (Properly Positioned)
         // ----------------------
         const customLabels = {
-            A: "Price (£)",
-            B: "Temperature (C°)",
+            A: "Price(£)",
+            B: "Temperature(C°)",
             C: "Climate",
             D: "Safety",
             E: "Visa Requirements",
-            F: "Trip Duration (Days)"
+            F: "Trip Duration(Days)"
         };
 
         svg.selectAll(".axis-label")
@@ -470,14 +470,64 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
             .style("fill", "#333") // Dark gray text
             .style("font-weight", "bold") // Make labels bold for better visibility
             .text(d => customLabels[d] || d) // Use custom label if available
+            .each(function(d){
+                const label = d3.select(this);
+                label.append("tspan")
+                    .attr("dx", "0.1em")
+                    .attr("dy", "0em")
+                    .text("⋮⋮")
+                    .style("font-size", "12px")
+                    .style("opacity", 0)
+                    .style("fill", "#666");
+            })
+            .on("mouseover", function() {
+                d3.select(this).select("tspan").style("opacity", 1);
+                d3.select(this)
+                    .style("fill", "#000")
+                   .style("text-shadow", "1px 1px 5px rgba(246, 174, 58, 0.8)");
+            })
+            .on("mouseout", function() {
+                if (!d3.select(this).classed("active")) {
+                    d3.select(this).select("tspan")
+                        .style("opacity", 0);  // Hide drag indicator
+                    d3.select(this)
+                        .style("fill", "#333")
+                        .style("text-shadow", "none");
+                }
+            })
+            .call(d3.drag()
+                .on("start", function(event, d) {
+                    d3.select(this)
+                    .raise()
+                    .classed("active", true)
+                    .style("cursor", "grabbing")
+                    .select("tspan")
+                    .style("opacity",1);
+                })
+                .on("drag", function(event, d) {
+                    const currentX = event.x;
+                    const currentIndex = dimensions.indexOf(d);
+                    let targetIndex = dimensions.findIndex(dim => xScale(dim) > currentX);
+                    if (targetIndex === -1) targetIndex = dimensions.length - 1;
+                    if (targetIndex === currentIndex) return;
+                    dimensions.splice(currentIndex, 1);
+                    dimensions.splice(targetIndex, 0, d);
+                    xScale.domain(dimensions);
+                    svg.selectAll("g.axis").attr("transform", dim => `translate(${xScale(dim)},0)`);
+                    svg.selectAll(".axis-label").attr("x", dim => xScale(dim));
+                    svg.selectAll("path").attr("d", function(d) {if (!d) return ""; return d3.line()(dimensions.map(dim => [xScale(dim), yScales[dim](d[dim])])); }); })
+                    .on("end", function(event, d) {
+                        d3.select(this).classed("active", false);
+                    })
+                );
 
             svg.selectAll(".axis-label")
             .filter(d => d === "E")
             .each(function(d) {
                 const label = d3.select(this);
                 label.append("tspan")
-                    .attr("dx", "0.5em")
-                    .attr("dy", "0.1em")
+                    .attr("dx", "-0.1em")
+                    .attr("dy", "0em")
                     .style("cursor", "pointer")
                     .text("ℹ️")
                     .on("click", () => {
