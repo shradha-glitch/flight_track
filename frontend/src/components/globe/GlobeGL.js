@@ -72,6 +72,13 @@ const GlobeGL = ({ data = [] }) => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
+  useEffect(() => {
+    // Update tooltip position whenever mouse moves (if tooltip is open)
+    if (tooltipOpen && tooltipRef.current) {
+      tooltipRef.current.style.left = `${mousePosition.x - 30}px`;
+      tooltipRef.current.style.top = `${mousePosition.y - 230}px`; // Offset above cursor
+    }
+  }, [mousePosition, tooltipOpen]);
   
   // Create a Set of filtered country names for easier lookup
   const filteredCountries = useMemo(() => {
@@ -457,14 +464,6 @@ const GlobeGL = ({ data = [] }) => {
     </Box>
     );
     
-    // Inside the onPolygonHover callback, update the tooltip positioning code:
-    if (tooltipRef.current) {
-    // Adjust the vertical offset to position the tooltip higher above the cursor
-    tooltipRef.current.style.left = `${mousePosition.x - 30}px`;
-    tooltipRef.current.style.top = `${mousePosition.y - 200}px`; // Increased offset from -20 to -50
-    }
-    
-    // Add this line to make the tooltip appear
     setTooltipOpen(true);
     
     } else {
