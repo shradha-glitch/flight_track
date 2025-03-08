@@ -482,14 +482,14 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                     .text("ℹ️")
                     .on("click", () => {
                         alert("Visa Requirements Information:\n\n" +
-                            "unknown: No information available\n" +
-                            "home country: Travel to or within home country\n" +
-                            "visa free: No visa required\n" +
-                            "visa with day limit: Visa required with a day limit\n" +
-                            "eta: Electronic Travel Authorization required\n" +
-                            "e-visa: Electronic visa required\n" +
-                            "visa on arrival: Visa available on arrival\n" +
-                            "visa required: Visa required before travel");
+                            "- unknown: No information available\n\n" +
+                            "- home country: Travel to or within home country\n\n" +
+                            "- visa free: No visa required\n\n" +
+                            "- visa with day limit: Visa required with a day limit\n\n" +
+                            "- eta: Electronic Travel Authorization required\n\n" +
+                            "- e-visa: Electronic visa required\n\n" +
+                            "- visa on arrival: Visa available on arrival\n\n" +
+                            "- visa required: Visa required before travel");
                     });
             });
 
