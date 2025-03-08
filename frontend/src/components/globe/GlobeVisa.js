@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 import { geoOrthographic, geoPath, geoGraticule } from "d3-geo";
 import { drag } from "d3-drag";
+import { Tooltip, Typography, Chip, Box, Avatar } from "@mui/material";
 
 const FetchVisa = async (countryCode) => {
   try {
@@ -22,6 +23,9 @@ const GlobeVisa = ({ countryCodes = [] }) => {
   const globeRef = useRef();
   const [visaData, setVisaData] = useState({});
   const [countryNames, setCountryNames] = useState({});
+  const [tooltipContent, setTooltipContent] = useState(null);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const tooltipRef = useRef(null);
 
   const visaPriority = {
     "unknown": 0,
@@ -49,8 +53,14 @@ const GlobeVisa = ({ countryCodes = [] }) => {
       const requirements = visaData[passportCode];
       if (requirements && requirements[countryId]) {
         const requirement = requirements[countryId];
-        if (requirement && visaPriority[requirement] > visaPriority[worstRequirement]) {
-          worstRequirement = requirement;
+
+        const processedRequirement = typeof requirement === "number" && requirement > 0
+          ? "visa with day limit"
+          : requirement;
+
+        if (processedRequirement && visaPriority[requirement] > visaPriority[worstRequirement]) {
+          worstRequirement = processedRequirement;
+          console.log("worstRequirement:", worstRequirement); // Logging for debugging
         }
       }
     }
@@ -126,10 +136,14 @@ const GlobeVisa = ({ countryCodes = [] }) => {
           .attr("d", path)
           .attr("fill", (d) => {
             const worstVisa = getWorstVisaRequirement(d.id);
+            // console.log("worstVisa:", worstVisa); // Logging for debugging
 
             switch (worstVisa) {
               case "visa free":
                 return "#4CAF50";
+              case "visa with day limit":
+                console.log("visa with day limit"); // Logging for debugging
+                return "#85e03f";
               case "visa required":
                 return "#C70039";
               case "e-visa":
@@ -144,7 +158,7 @@ const GlobeVisa = ({ countryCodes = [] }) => {
           })
           .attr("stroke", "#222")
           .on("mouseenter", (event, d) => {
-            const visaText = Object.entries(visaData).map(([passport, requirements]) => {
+            const visaEntries = Object.entries(visaData).map(([passport, requirements]) => {
               let visaRequirement = requirements[d.id] || "No Data";
               if (typeof visaRequirement === "number" && visaRequirement > 0) {
                 visaRequirement = `${visaRequirement} days of Visa Free travel`;
@@ -152,22 +166,47 @@ const GlobeVisa = ({ countryCodes = [] }) => {
               if (typeof visaRequirement === "number" && visaRequirement < 0) {
                 visaRequirement = "home country";
               }
-              const countryName = countryNames[passport] || passport;
-              return `${countryName}: ${visaRequirement}`;
-            }).join("<br>");
-
-            const tooltip = d3.select("#tooltip");
-            tooltip
-              .style("left", `${event.pageX + 10}px`)
-              .style("top", `${event.pageY + 10}px`)
-              .style("display", "inline-block")
-              .html(`
-                <strong>${d.properties.name}</strong><br>
-                ${visaText}
-              `);
+              return { passport, requirement: visaRequirement };
+            });
+          setTooltipContent(
+            <Box sx={{ p: 1, maxWidth: 350 }}>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
+                {d.properties.name}
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                {visaEntries.map(({ passport, requirement }) => (
+                  <Chip
+                    key={passport}
+                    avatar={
+                      <Avatar 
+                        src={`https://countryflagsapi.netlify.app/flag/${passport.toLowerCase()}.svg`}
+                        alt={countryNames[passport] || passport}
+                      />
+                    }
+                    label={`${countryNames[passport] || passport}: ${requirement}`}
+                    variant="filled"
+                    size="small"
+                    sx={{ 
+                      color: 'white',
+                      bgcolor: '#363636',
+                      '& .MuiChip-label': {
+                        whiteSpace: 'normal',
+                      }
+                    }}
+                  />
+                ))}
+              </Box>
+            </Box>
+          );
+          setTooltipOpen(true);
+          
+          if (tooltipRef.current) {
+            tooltipRef.current.style.left = `${event.pageX}px`;
+            tooltipRef.current.style.top = `${event.pageY}px`;
+          }
           })
           .on("mouseleave", () => {
-            d3.select("#tooltip").style("display", "none");
+            setTooltipOpen(false);
           });
       });
 
@@ -195,22 +234,43 @@ const GlobeVisa = ({ countryCodes = [] }) => {
     }
   }, [visaData, countryNames]);
 
+  // Replace the return statement with this
   return (
     <>
       <div
         ref={globeRef}
         style={{ width: "100%", minHeight: "400px", height: "100%" }}
       />
-      <div
-        id="tooltip"
+      <div 
+        ref={tooltipRef}
         style={{
           position: "absolute",
-          display: "none",
-          backgroundColor: "#fff",
-          color: "black",
-          padding: "5px",
-          borderRadius: "5px",
-          pointerEvents: "none",
+          width: "1px",
+          height: "1px",
+          pointerEvents: "none"
+        }}
+      />
+      <Tooltip
+        open={tooltipOpen}
+        title={tooltipContent}
+        arrow
+        placement="top"
+        PopperProps={{
+          anchorEl: tooltipRef.current,
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [0, 10],
+              },
+            },
+          ],
+          sx: {
+            '& .MuiTooltip-tooltip': {
+              fontSize: '1rem',
+              maxWidth: 'none',
+            }
+          }
         }}
       />
     </>

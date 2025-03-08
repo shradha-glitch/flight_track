@@ -2,6 +2,8 @@ import React, { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 import { geoOrthographic, geoPath, geoGraticule } from "d3-geo";
 import { drag } from "d3-drag";
+import { Tooltip, Typography, Box, Chip } from "@mui/material";
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 
 const fetchAdvisory = async (country_code) => {
   try {
@@ -18,6 +20,9 @@ const fetchAdvisory = async (country_code) => {
 const GlobeAdvisory = () => {
   const globeRef = useRef();
   const [safetyData, setSafetyData] = useState({});
+  const [tooltipContent, setTooltipContent] = useState(null);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const tooltipRef = useRef(null);
 
   useEffect(() => {
     const fetchAllAdvisories = async () => {
@@ -98,76 +103,123 @@ const GlobeAdvisory = () => {
           .attr("fill", (d) => {
             const advisory = safetyData[d.id];
             return advisory
-            ? advisory.advice === "No advisory"
-            ? "#4d4c60"
-            : advisory.advice === "Advisory against travel to certain areas"
-            ? "#674f82"
-            : advisory.advice === "Advisory against non-essential travel"
-            ? "#c07182"
-            : advisory.advice === "Advisory against all travel"
-            ? "#e69c67"
-            : "#e8e8e8"
-            : "#e8e8e8";})
-
+              ? advisory.advice === "No advisory"
+                ? "#4d4c60"
+                : advisory.advice === "Advisory against travel to certain areas"
+                ? "#674f82"
+                : advisory.advice === "Advisory against non-essential travel"
+                ? "#c07182"
+                : advisory.advice === "Advisory against all travel"
+                ? "#e69c67"
+                : "#e8e8e8"
+              : "#e8e8e8";
+          })
           .attr("stroke", "#222")
           .on("mouseenter", (event, d) => {
             const advisory = safetyData[d.id];
-            const tooltip = d3.select("#tooltip");
-            if (advisory) {
-              tooltip
-                .style("left", `${event.pageX + 10}px`)
-                .style("top", `${event.pageY + 10}px`)
-                .style("display", "inline-block")
-                .html(`<strong>${advisory.country_name}</strong><br>${advisory.advice}`);
-            } else {
-              tooltip
-                .style("left", `${event.pageX + 10}px`)
-                .style("top", `${event.pageY + 10}px`)
-                .style("display", "inline-block")
-                .html(`<strong>Unknown Country</strong><br>No Data`);
+            
+            setTooltipContent(
+              <Box sx={{ p: 1, maxWidth: 350 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', mb: 1 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', mr: 0 }}>
+                    {d.properties.name || 'Unknown Country'}
+                  </Typography>
+                  {advisory && advisory.advice !== "No advisory" && (
+                    <Chip 
+                      icon={<ReportProblemIcon />}
+                      label={advisory.advice}
+                      color="warning"
+                      size="small"
+                      sx={{ ml: 0 }}
+                    />
+                  )}
+                </Box>
+                {!advisory && (
+                  <Typography variant="body1">
+                    No advisory data available
+                  </Typography>
+                )}
+              </Box>
+            );
+            
+            setTooltipOpen(true);
+            
+            if (tooltipRef.current) {
+              tooltipRef.current.style.left = `${event.pageX}px`;
+              tooltipRef.current.style.top = `${event.pageY}px`;
             }
           })
           .on("mouseleave", () => {
-            d3.select("#tooltip").style("display", "none");
+            setTooltipOpen(false);
           });
-      });
 
-      const dragBehavior = drag().on("drag", (event) => {
-        const rotate = projection.rotate();
-        projection.rotate([rotate[0] + event.dx * 0.3, rotate[1] - event.dy * 0.3]);
-        svg.selectAll("path").attr("d", path);
-      });
+        // Move dragBehavior and zoomBehavior inside the worldData then block
+        const dragBehavior = drag().on("drag", (event) => {
+          const rotate = projection.rotate();
+          projection.rotate([rotate[0] + event.dx * 0.3, rotate[1] - event.dy * 0.3]);
+          svg.selectAll("path").attr("d", path);
+        });
 
-      svg.call(dragBehavior);
+        svg.call(dragBehavior);
 
-      const zoomBehavior = d3.zoom().on("zoom", (event) => {
-        const newScale = Math.max(100, Math.min(width / 2, event.transform.k * (width / 3)));
-        projection.scale(newScale);
-        svg.selectAll("path").attr("d", path);
-      });
+        const zoomBehavior = d3.zoom().on("zoom", (event) => {
+          const newScale = Math.max(100, Math.min(width / 2, event.transform.k * (width / 3)));
+          projection.scale(newScale);
+          svg.selectAll("path").attr("d", path);
+        });
 
-      svg.call(zoomBehavior);
-    }
-  }, [safetyData]);
-
+        svg.call(zoomBehavior);
+      }); // Close worldData then block
+    } // Close if block
+  }, [safetyData]); // Close useEffect
+  // Move the return statement outside of the d3 code
   return (
     <>
       <div ref={globeRef} style={{ width: "100%", minHeight: "400px", height: "100%" }} />
-      <div
-        id="tooltip"
+      <div 
+        ref={tooltipRef}
         style={{
           position: "absolute",
-          display: "none",
-          backgroundColor: "#fff",
-          color: "black",
-          padding: "5px",
-          borderRadius: "5px",
-          pointerEvents: "none",
+          width: "1px",
+          height: "1px",
+          pointerEvents: "none"
+        }}
+      />
+      <Tooltip
+        open={tooltipOpen}
+        title={tooltipContent}
+        arrow
+        placement="top"
+        PopperProps={{
+          anchorEl: tooltipRef.current,
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [0, 10],
+              },
+            },
+          ],
+          sx: {
+            '& .MuiTooltip-tooltip': {
+              fontSize: '0.875rem',
+              maxWidth: 'none',
+              // bgcolor: '#e0e0e0',
+              // color: 'black',
+              // boxShadow: '2px 2px 10px rgba(0,0,0,0.2)',
+              // borderRadius: '4px',
+              // border: '1px solid black'
+            },
+            '& .MuiTooltip-arrow': {
+              color: '#e0e0e0'
+            }
+          }
         }}
       />
     </>
   );
 };
+
 
 export default GlobeAdvisory;
 

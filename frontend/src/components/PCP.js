@@ -193,7 +193,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
             let visaRequirement = visaRequirements[countryCode];
 
             if (visaRequirement === -1) {
-                visaRequirement = "Home country";
+                visaRequirement = "home country";
             } else if (!isNaN(visaRequirement)) {
                 visaRequirement = "visa with day limit";
             }
