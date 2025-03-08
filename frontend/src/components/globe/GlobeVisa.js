@@ -16,14 +16,13 @@ const FetchVisa = async (countryCode) => {
   }
 };
 
-const GlobeVisa = ({ countryCodes }) => {
-  console.log("countries:", countryCodes); 
-  
+const GlobeVisa = ({ countryCodes = [] }) => {
+  console.log("countries:", countryCodes); // Logging for debugging
+
   const globeRef = useRef();
   const [visaData, setVisaData] = useState({});
   const [countryNames, setCountryNames] = useState({});
-  
-  // Define the priority order of visa types
+
   const visaPriority = {
     "unknown": 0,
     "home country": 1,
@@ -47,35 +46,40 @@ const GlobeVisa = ({ countryCodes }) => {
     let worstRequirement = "unknown";
 
     for (let passportCode in visaData) {
-      const requirement = visaData[passportCode][countryId];
-      if (requirement && visaPriority[requirement] > visaPriority[worstRequirement]) {
-        worstRequirement = requirement;
+      const requirements = visaData[passportCode];
+      if (requirements && requirements[countryId]) {
+        const requirement = requirements[countryId];
+        if (requirement && visaPriority[requirement] > visaPriority[worstRequirement]) {
+          worstRequirement = requirement;
+        }
       }
     }
-    
+  
     return worstRequirement;
-  };
+  };  
 
   useEffect(() => {
     const fetchVisaForMultiplePassports = async () => {
-      const allVisaData = {};
-      
-      for (let countryCode of countryCodes) {
-        const data = await FetchVisa(countryCode);
-        if (data) {
-          allVisaData[countryCode] = data.requirements[countryCode];
+      if (Array.isArray(countryCodes) && countryCodes.length > 0) {
+        const allVisaData = {};
+
+        for (let countryCode of countryCodes) {
+          const data = await FetchVisa(countryCode);
+          if (data) {
+            allVisaData[countryCode] = data.requirements[countryCode];
+          }
         }
+        setVisaData(allVisaData);
       }
-      setVisaData(allVisaData); 
     };
 
     if (countryCodes && countryCodes.length > 0) {
       fetchVisaForMultiplePassports();
     }
-    d3.json("world.json").then((worldData) => {
-      mapCountryCodesToNames(worldData); 
-    });
 
+    d3.json("world.json").then((worldData) => {
+      mapCountryCodesToNames(worldData);
+    });
   }, [countryCodes]); 
 
   useEffect(() => {
@@ -121,7 +125,7 @@ const GlobeVisa = ({ countryCodes }) => {
           .attr("class", "country")
           .attr("d", path)
           .attr("fill", (d) => {
-            const worstVisa = getWorstVisaRequirement(d.id); 
+            const worstVisa = getWorstVisaRequirement(d.id);
 
             switch (worstVisa) {
               case "visa free":
@@ -135,7 +139,7 @@ const GlobeVisa = ({ countryCodes }) => {
               case "eta":
                 return "#DAF7A6";
               default:
-                return "#e8e8e8";
+                return "#4d4c60";
             }
           })
           .attr("stroke", "#222")
@@ -189,7 +193,7 @@ const GlobeVisa = ({ countryCodes }) => {
 
       svg.call(zoomBehavior);
     }
-  }, [visaData, countryNames]); 
+  }, [visaData, countryNames]);
 
   return (
     <>
