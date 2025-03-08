@@ -1,7 +1,9 @@
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import Globe from "globe.gl";
-import { Box } from "@mui/material";
+import { Box, Tooltip, Typography, Chip, Avatar, Divider } from "@mui/material";
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import { GlobeColorSelector } from "./GlobeColorSelector";
+import * as d3 from 'd3';
 
 // Fetch functions for advisory and visa data
 const fetchAdvisory = async (country_code) => {
@@ -43,17 +45,33 @@ const fetchWorldData = async () => {
   }
 };
 
+// Add a mouse position tracking state at the component level
 const GlobeGL = ({ data = [] }) => {
   const globeRef = useRef();
   const globeEl = useRef();
   const [countries, setCountries] = useState([]);
   const [tooltipContent, setTooltipContent] = useState(null);
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const tooltipRef = useRef(null);
   const [colorScheme, setColorScheme] = useState("advisory");
   const [advisoryData, setAdvisoryData] = useState({});
   const [visaData, setVisaData] = useState({});
   const [countryNames, setCountryNames] = useState({});
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 }); // Add this state at component level
+  
+  // Add a useEffect to track mouse position globally at component level
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
   
   // Create a Set of filtered country names for easier lookup
   const filteredCountries = useMemo(() => {
@@ -309,22 +327,38 @@ const GlobeGL = ({ data = [] }) => {
         .polygonsTransitionDuration(300);
     }
     
-    // Update polygon data and colors
+    // Remove these lines - they're now at component level
+    // const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    // useEffect(() => { ... }, []);
+    
+    // Update the globe with the countries data
     globeEl.current
       .polygonsData(filteredFeatures)
-      .polygonCapColor(feat => {
+      .polygonCapColor(feat => getCountryColor(feat, isCountryHighlighted(feat)))
+      .polygonLabel(feat => {
+        const countryName = feat.properties.name;
         const highlighted = isCountryHighlighted(feat);
-        return getCountryColor(feat, highlighted);
+        
+        // Find all trips to this country
+        const countryTrips = data.filter(trip => 
+          trip.destination_info?.country_name && countryName && (
+            trip.destination_info.country_name === countryName ||
+            trip.destination_info.country_name.toLowerCase() === countryName.toLowerCase()
+          )
+        );
+        
+        return generateTooltipContent(feat, highlighted, countryTrips);
       });
     
-    // Set up hover and click interactions
+    // Then modify the onPolygonHover callback to use the tracked mouse position
     globeEl.current
-      .onPolygonHover(hoverD => {
+      .onPolygonHover((hoverD) => {  // We don't rely on the event parameter anymore
         // Highlight hovered country
         globeEl.current
           .polygonAltitude(d => d === hoverD ? 0.04 : 0.01);
         
         if (hoverD) {
+          console.log("Hovering over country:", hoverD.properties.name);
           const countryName = hoverD.properties.name;
           const highlighted = isCountryHighlighted(hoverD);
           
@@ -336,21 +370,114 @@ const GlobeGL = ({ data = [] }) => {
             )
           );
           
-          // Generate tooltip content
-          const tooltipHTML = generateTooltipContent(hoverD, highlighted, countryTrips);
+          console.log("Country trips:", countryTrips.length, "Highlighted:", highlighted);
+          console.log("Using tracked mouse position:", mousePosition.x, mousePosition.y);
           
-          // Get mouse position from the window event
-          const event = window.event;
-          if (event) {
-            setTooltipPosition({ 
-              x: event.clientX, 
-              y: event.clientY 
-            });
-            setTooltipContent(tooltipHTML);
-            setTooltipVisible(true);
-          }
+          // Create tooltip content
+          setTooltipContent(
+            <Box sx={{ p: 1, maxWidth: 350 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', mr: 1 }}>
+                  {countryName}
+                </Typography>
+                
+                {/* Advisory chip - only if it exists and is not "none" */}
+                {highlighted && countryTrips[0]?.pcp?.safety && 
+                 countryTrips[0].pcp.safety !== "None" && 
+                 countryTrips[0].pcp.safety !== "No advisory" && (
+                  <Chip 
+                    icon={<ReportProblemIcon />}
+                    label={countryTrips[0].pcp.safety} 
+                    color="warning" 
+                    size="small" 
+                    sx={{ ml: 1 }}
+                  />
+                )}
+              </Box>
+              
+              {/* Visa information with country flag */}
+              {highlighted && countryTrips.length > 0 && (
+                <Box sx={{ mb: 2 }}>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
+                    {countryTrips[0]?.pcp?.visaDetails ? (
+                      Object.entries(countryTrips[0].pcp.visaDetails).map(([key, value]) => (
+                        <Chip
+                          key={key}
+                          avatar={
+                            <Avatar 
+                              src={`https://countryflagsapi.netlify.app/flag/${key.toLowerCase()}.svg`}
+                              alt={key}
+                            />
+                          }
+                          label={`${value}`}
+                          variant="filled"
+                          size="small"
+                          sx={{ 
+                            color: 'white',
+                            bgcolor: '#363636'
+                          }}
+                        />
+                      ))
+                    ) : (
+                      <Chip
+                        avatar={
+                          <Avatar 
+                            src={`https://countryflagsapi.netlify.app/flag/${countryTrips[0].destination_info.iso_code.toLowerCase()}.svg`}
+                            alt={countryTrips[0].destination_info.country_name}
+                          />
+                        }
+                        label="Visa: N/A"
+                        variant="filled"
+                        size="small"
+                        sx={{ 
+                          color: 'white',
+                          bgcolor: '#1976d2'
+                        }}
+                      />
+                    )}
+                  </Box>
+                </Box>
+              )}
+              
+              {/* Trip sections - one for each city */}
+              {highlighted && countryTrips.map((trip, index) => (
+                <Box key={index} sx={{ mb: 1 }}>
+                  {index > 0 && <Divider sx={{ my: 1, borderColor: '#9e9e9e' }} />}
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
+                    {trip.destination_info.city_name} ({trip.destination})
+                  </Typography>
+                  <Typography variant="body2">
+                    {new Date(trip.departureDate).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'short'
+                    })} - {new Date(trip.returnDate).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'short'
+                    })}
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                    £{trip.price?.total || 'N/A'}
+                  </Typography>
+                </Box>
+              ))}
+              
+              {!highlighted && (
+                <Typography variant="body1">
+                  No trips available to this country
+                </Typography>
+              )}
+            </Box>
+          );
+          
+          // Use the tracked mousePosition instead of trying to access event
+          setTooltipPosition({ 
+            x: mousePosition.x, 
+            y: mousePosition.y 
+          });
+          
+          setTooltipOpen(true);
         } else {
-          setTooltipVisible(false);
+          setTooltipOpen(false);
         }
       });
     
@@ -369,7 +496,7 @@ const GlobeGL = ({ data = [] }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [countries, filteredCountries, colorScheme, advisoryData, visaData, data, countryNames]);
+  }, [countries, filteredCountries, colorScheme, advisoryData, visaData, data, countryNames, mousePosition]); // Add mousePosition to dependencies
 
   // Handle color scheme change
   const handleColorSchemeChange = (scheme) => {
@@ -378,28 +505,45 @@ const GlobeGL = ({ data = [] }) => {
 
   return (
     <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
-    {/* Add the color selector to the top left */}
-    <Box sx={{ position: 'absolute', top: 10, left: 10, zIndex: 10 }}>
-      <GlobeColorSelector onChange={handleColorSchemeChange} />
-    </Box>
-    
-    <div ref={globeRef} style={{ width: "100%", height: "100%" }} />
-    
-    {/* Custom tooltip */}
-    {tooltipVisible && (
-      <div
+      {/* Add the color selector to the top left */}
+      <Box sx={{ position: 'absolute', top: 10, left: 10, zIndex: 10 }}>
+        <GlobeColorSelector onChange={handleColorSchemeChange} />
+      </Box>
+      
+      <div ref={globeRef} style={{ width: "100%", height: "100%" }} />
+      
+      {/* Invisible element that follows the cursor for tooltip positioning */}
+      <div 
+        ref={tooltipRef}
         style={{
-          position: 'absolute',
-          left: `${tooltipPosition.x + 10}px`,
-          top: `${tooltipPosition.y + 10}px`,
-          zIndex: 1000,
-          pointerEvents: 'none',
+          position: "absolute",
+          width: "1px",
+          height: "1px",
+          pointerEvents: "none"
         }}
-        dangerouslySetInnerHTML={{ __html: tooltipContent }}
       />
-    )}
-  </Box>
-);
+      
+      {/* Custom tooltip instead of Material UI Tooltip */}
+      {tooltipOpen && tooltipContent && (
+        <div
+          style={{
+            position: 'fixed',
+            left: `${tooltipPosition.x + 15}px`,
+            top: `${tooltipPosition.y - 15}px`, // Offset slightly above cursor
+            zIndex: 1000,
+            backgroundColor: 'white',
+            borderRadius: '4px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+            padding: '8px',
+            pointerEvents: 'none',
+            maxWidth: '350px'
+          }}
+        >
+          {tooltipContent}
+        </div>
+      )}
+    </Box>
+  );
 };
 
 export default GlobeGL;
