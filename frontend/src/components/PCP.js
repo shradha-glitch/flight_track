@@ -14,7 +14,6 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
     });
     const [originalFlightData, setOriginalFlightData] = useState([]);
     const [visaDetails, setVisaDetails] = useState([]);
-    console.log("Visa Details", visaDetails);
 
     const [loading, setLoading] = useState(true);
     
@@ -78,7 +77,6 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                  const weatherPromises = iataCodes.map(async (iataCode, index) => {
                     const weatherResponse = await fetch(`http://127.0.0.1:8001/api/weather/${iataCode}?departure_date=${departureDates[index]}&return_date=${returnDates[index]}`);
                     const weatherData = await weatherResponse.json();
-                    console.log("Weather Data",weatherData.climate);
                     return {
                         iataCode,
                         temperature: weatherData.average_temperature,
@@ -101,7 +99,6 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                     const advisoryData = await advisoryResponse.json();
 
                     if (!advisoryData.advisories || !advisoryData.advisories[iataCode]) {
-                      console.error(`No advisory found for ${iataCode}`);
                       return null;
                   }
 
@@ -134,7 +131,6 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                     const weather = weatherData.find(w => w.iataCode === item.destination);
                     const advisory = advisoryData.find(a => a.iataCode === item.destination); 
                     const visaRequirement = getWorstVisaRequirement(visaData[index]);
-                    console.log("Visa Requirement", visaRequirement);
                     return {
                         name: item.destination,
                         A: parseFloat(item.price.total),
@@ -196,12 +192,9 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
         for (let countryCode in visaRequirements) {
             let visaRequirement = visaRequirements[countryCode];
 
-            console.log("Checking visa requirement for", countryCode, visaRequirement);
-
             if (visaRequirement === -1) {
                 visaRequirement = "Home country";
             } else if (!isNaN(visaRequirement)) {
-                console.log("Visa requirement is a number", visaRequirement);
                 visaRequirement = "visa with day limit";
             }
 
