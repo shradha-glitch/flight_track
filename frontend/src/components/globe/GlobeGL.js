@@ -335,24 +335,12 @@ const GlobeGL = ({ data = [] }) => {
     globeEl.current
       .polygonsData(filteredFeatures)
       .polygonCapColor(feat => getCountryColor(feat, isCountryHighlighted(feat)))
-      .polygonLabel(feat => {
-        const countryName = feat.properties.name;
-        const highlighted = isCountryHighlighted(feat);
-        
-        // Find all trips to this country
-        const countryTrips = data.filter(trip => 
-          trip.destination_info?.country_name && countryName && (
-            trip.destination_info.country_name === countryName ||
-            trip.destination_info.country_name.toLowerCase() === countryName.toLowerCase()
-          )
-        );
-        
-        return generateTooltipContent(feat, highlighted, countryTrips);
-      });
+      // Remove the polygonLabel to disable the built-in tooltip
+      .polygonLabel(() => null);
     
     // Then modify the onPolygonHover callback to use the tracked mouse position
     globeEl.current
-      .onPolygonHover((hoverD) => {  // We don't rely on the event parameter anymore
+      .onPolygonHover((hoverD) => {
         // Highlight hovered country
         globeEl.current
           .polygonAltitude(d => d === hoverD ? 0.04 : 0.01);
@@ -511,17 +499,6 @@ const GlobeGL = ({ data = [] }) => {
       </Box>
       
       <div ref={globeRef} style={{ width: "100%", height: "100%" }} />
-      
-      {/* Invisible element that follows the cursor for tooltip positioning */}
-      <div 
-        ref={tooltipRef}
-        style={{
-          position: "absolute",
-          width: "1px",
-          height: "1px",
-          pointerEvents: "none"
-        }}
-      />
       
       {/* Custom tooltip instead of Material UI Tooltip */}
       {tooltipOpen && tooltipContent && (
