@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"; // Import hooks for managin
 import * as d3 from "d3"; // Import D3.js for data visualization
 import LinearProgress from '@mui/material/LinearProgress';
 import InfoIcon from '@mui/icons-material/Info';
-import { Tooltip } from '@mui/material';
+import { Typography } from '@mui/material';
 
 const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} ) => {
     const chartRef = useRef(); // Reference to the div container where the chart will be drawn
@@ -545,20 +545,33 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
     return (
       <div className="w-full h-full">
           {loading ? (
-              <div 
-              className="flex justify-center items-center h-full">
-                <LinearProgress
-                  color="inherit"
-                  sx={{
-                    '& .MuiLinearProgress-bar': {
-                    background: "linear-gradient(to right, rgb(251, 150, 51), rgb(255, 120, 71), rgb(255, 94, 99), rgb(254, 75, 131), rgb(228, 65, 157))",
-                    },
-                  }}
-                />
-              </div>
-          ) : (
-              <div ref={chartRef} className="w-full h-full" />
-          )}
+            <div 
+            className="flex justify-center items-center h-full">
+            <LinearProgress
+                color="inherit"
+                sx={{
+                '& .MuiLinearProgress-bar': {
+                background: "linear-gradient(to right, rgb(251, 150, 51), rgb(255, 120, 71), rgb(255, 94, 99), rgb(254, 75, 131), rgb(228, 65, 157))",
+                },
+                }}
+            />
+            </div>
+        ) : ( 
+            <>
+            <Typography 
+            variant="h6" 
+            sx={{ 
+                textAlign: 'center', 
+                mb: 3,
+                color: '#666',
+                fontWeight: 'medium',
+            }}
+            >
+              Find your perfect flight - Filter based on your preferences - Drag axes to reorder and explore relationships
+            </Typography>
+            <div ref={chartRef} className="w-full h-full" />
+          </>
+        )}
       </div>
   );
 
