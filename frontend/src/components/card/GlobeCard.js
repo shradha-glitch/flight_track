@@ -5,14 +5,15 @@ import { Box, Button } from "@mui/material";
 import GlobeResult from "../globe/GlobeResults";
 import GlobeVisa from "../globe/GlobeVisa";
 
-const GlobeCard = ({ destinations = []}) => {
-  const [activeTab, setActiveTab] = useState("advisory");
-    const countries = ["SE","IN","IS"];
+const GlobeCard = ({ destinations = [], countries = [] }) => {
+  const [activeTab, setActiveTab] = useState("Advisory");
+
+  const formattedCountries = countries.map((country) => country.toUpperCase());
 
   useEffect(() => {
-    console.log('Destinations updated:', destinations);
-  }, [destinations]); 
-  
+    console.log("Active Tab:", activeTab);
+  }, [activeTab]);
+
   return (
     <CustomCard>
       <Box
@@ -20,40 +21,45 @@ const GlobeCard = ({ destinations = []}) => {
           justifyContent: "space-between",
           alignItems: "center",
           display: "flex",
-          width: "80%", 
+          width: "80%",
           height: "50px",
           margin: "10px auto",
           backgroundColor: "#F3F3F5",
           borderRadius: "8px",
-          overflow: "hidden", 
+          overflow: "hidden",
         }}
       >
-        {["Results", "Advisory", "Visa"].map((key) => (
+        {["Advisory", "Visa","Results" ].map((key) => (
           <Button
             key={key}
-            onClick={() => setActiveTab(key)}
+            onClick={() => setActiveTab(key)} 
             style={{
               width: "30%",
-              height: "80%", 
+              height: "80%",
               cursor: "pointer",
-              backgroundColor: activeTab === key ? "#F1C120" : "#F3F3F5",
+              backgroundColor: activeTab === key ? "#F1C120" : "#F3F3F5", 
               "&:hover": {
-                backgroundColor: "#D8AD1C",
+                backgroundColor: "#D8AD1C", 
               },
               textTransform: "none",
               color: "#000",
               border: "none",
               borderRadius: "8px",
-              fontSize: "16px", 
-            }}>
-            {key.charAt(0).toUpperCase() + key.slice(1)}
+              fontSize: "16px",
+            }}
+          >
+            {key.charAt(0).toUpperCase() + key.slice(1)} 
           </Button>
         ))}
       </Box>
+
       {activeTab === "Results" ? (
         <GlobeResult data={destinations} />
-      ): activeTab === "Advisory" ? (  <AdvisoryGlobe />) : 
-      (<GlobeVisa countryCodes={countries}/>)}
+      ) : activeTab === "Visa" ? (
+        <GlobeVisa countryCodes={formattedCountries} />
+      ) : (
+        <AdvisoryGlobe /> 
+      )}
     </CustomCard>
   );
 };
