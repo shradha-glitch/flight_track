@@ -1,9 +1,10 @@
 import { Box, Container } from "@mui/material";
-import GlobeCard from "./card/GlobeCard";
 import PcpCard from "./card/PcpCard";
 import { useState } from 'react';
 import ResultsCard from "./ResultsCard";
 import WeatherCard from "./card/WeatherCard";
+import GlobeGL from "./globe/GlobeGL"; // Import the new GlobeGL component
+import CustomCard from "./card/Card"; // Import CustomCard
 
 const Dashboard = () => {
   const [filteredDestinations, setFilteredDestinations] = useState([]);
@@ -45,10 +46,13 @@ const Dashboard = () => {
           />
         </Box>
         
-        <GlobeCard
-          destinations={filteredDestinations}
-          countries={passportIsoCode} // Pass the passportIsoCode to GlobeCard
-        />
+        {/* Wrap GlobeGL in CustomCard as it was previously */}
+        <CustomCard>
+          <Box sx={{ height: "100%", width: "100%" }}>
+            <GlobeGL data={filteredDestinations} />
+          </Box>
+        </CustomCard>
+        
         <ResultsCard 
           destinations={filteredDestinations} 
           onSelectDestination={handleSelectDestination}
