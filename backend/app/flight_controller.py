@@ -198,6 +198,7 @@ async def get_visa_requirements(country_codes: str = Query(..., description="Com
         "found": len([r for r in requirements.values() if r is not None])
     }
 
+
 """
 @endpoint: GET /api/destinations/travel-advisory
 @description: Get travel advisories for all destinations in flight data
