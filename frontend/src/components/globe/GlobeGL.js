@@ -139,13 +139,13 @@ const GlobeGL = ({ data = [] }) => {
         const advisory = advisoryData[feat.id];
         return advisory
           ? advisory.advice === "No advisory"
-            ? "#4CAF50"
+            ? "#5de362" //light green
             : advisory.advice === "Advisory against travel to certain areas"
-              ? "#674f82"
+              ? "#dff235" //kinda yellow
               : advisory.advice === "Advisory against non-essential travel"
-                ? "#c07182"
+                ? "#f29913" //orange
                 : advisory.advice === "Advisory against all travel"
-                  ? "#e69c67"
+                  ? "#e6091c" //red
                   : "#9E9E9E"
           : "#9E9E9E";
       
