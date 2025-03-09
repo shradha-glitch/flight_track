@@ -106,6 +106,8 @@ const GlobeGL = ({ data = [] }) => {
   const [countryNames, setCountryNames] = useState({});
   // Track mouse coordinates for a virtual anchor element
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  // Ref to hold tooltip close timeout
+  const tooltipTimeoutRef = useRef(null);
   
   // Track mouse position globally
   useEffect(() => {
@@ -131,7 +133,7 @@ const GlobeGL = ({ data = [] }) => {
     return countrySet;
   }, [data]);
   
-  // Get passport countries from data (unused for visa coloring in this snippet)
+  // Get passport countries from data (unused for visa coloring here)
   const passportCountries = useMemo(() => {
     const countries = new Set();
     data.forEach(trip => {
@@ -142,7 +144,7 @@ const GlobeGL = ({ data = [] }) => {
     return Array.from(countries);
   }, [data]);
   
-  // Old function using visaData – no longer used for coloring visa scheme
+  // Old function using visaData – not used for visa coloring anymore
   const getWorstVisaRequirement = (countryId) => {
     let worstRequirement = "unknown";
     const visaPriority = {
@@ -293,6 +295,12 @@ const GlobeGL = ({ data = [] }) => {
     
     // Modify onPolygonHover callback to update tooltip content based on trips
     globeEl.current.onPolygonHover((hoverD) => {
+      // Clear any pending tooltip close
+      if (tooltipTimeoutRef.current) {
+        clearTimeout(tooltipTimeoutRef.current);
+        tooltipTimeoutRef.current = null;
+      }
+      
       globeEl.current.polygonAltitude(d => d === hoverD ? 0.04 : 0.01);
       if (hoverD) {
         console.log("Hovering over country:", hoverD.properties.name);
@@ -403,7 +411,10 @@ const GlobeGL = ({ data = [] }) => {
         );
         setTooltipOpen(true);
       } else {
-        setTooltipOpen(false);
+        // Delay tooltip closure to smooth out rapid movements
+        tooltipTimeoutRef.current = setTimeout(() => {
+          setTooltipOpen(false);
+        }, 150);
       }
     });
     
