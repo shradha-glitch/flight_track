@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import Globe from "globe.gl";
 import { Box, Tooltip, Typography, Chip, Avatar, Divider } from "@mui/material";
-import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import { GlobeColorSelector } from "./GlobeColorSelector";
-import * as d3 from 'd3';
+import * as d3 from "d3";
 
 // Fetch functions for advisory and visa data
 const fetchAdvisory = async (country_code) => {
@@ -31,7 +31,6 @@ const fetchVisa = async (countryCode) => {
   }
 };
 
-// Add fetch function for world data
 const fetchWorldData = async () => {
   try {
     const response = await fetch("/world.json");
@@ -45,44 +44,30 @@ const fetchWorldData = async () => {
   }
 };
 
-// Add a mouse position tracking state at the component level
 const GlobeGL = ({ data = [] }) => {
   const globeRef = useRef();
   const globeEl = useRef();
   const [countries, setCountries] = useState([]);
   const [tooltipContent, setTooltipContent] = useState(null);
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const tooltipRef = useRef(null);
   const [colorScheme, setColorScheme] = useState("advisory");
   const [advisoryData, setAdvisoryData] = useState({});
   const [visaData, setVisaData] = useState({});
   const [countryNames, setCountryNames] = useState({});
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 }); // Add this state at component level
+  // Track mouse coordinates for a virtual anchor element
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   
-  // Add a useEffect to track mouse position globally at component level
+  // Track mouse position globally
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
-    
     window.addEventListener('mousemove', handleMouseMove);
-    
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
-  useEffect(() => {
-    // Update tooltip position whenever mouse moves (if tooltip is open)
-    if (tooltipOpen && tooltipRef.current) {
-      tooltipRef.current.style.left = `${mousePosition.x - 30}px`;
-      tooltipRef.current.style.top = `${mousePosition.y - 230}px`; // Offset above cursor
-    }
-  }, [mousePosition, tooltipOpen]);
   
   // Create a Set of filtered country names for easier lookup
   const filteredCountries = useMemo(() => {
-    // Create a more flexible matching by normalizing country names
     const countrySet = new Set();
     data.forEach(d => {
       if (d.destination_info?.country_name) {
@@ -125,11 +110,9 @@ const GlobeGL = ({ data = [] }) => {
       const requirements = visaData[passportCode];
       if (requirements && requirements[countryId]) {
         const requirement = requirements[countryId];
-
         const processedRequirement = typeof requirement === "number" && requirement > 0
           ? "visa with day limit"
           : requirement;
-
         if (processedRequirement && visaPriority[processedRequirement] > visaPriority[worstRequirement]) {
           worstRequirement = processedRequirement;
         }
@@ -150,24 +133,21 @@ const GlobeGL = ({ data = [] }) => {
 
   // Determine country color based on color scheme
   const getCountryColor = (feat, isHighlighted) => {
-    // If not highlighted, use a muted color
     if (!isHighlighted) return "#4d4c60";
-    
-    // Apply coloring based on selected scheme
     switch (colorScheme) {
       case "advisory":
         const advisory = advisoryData[feat.id];
         return advisory
           ? advisory.advice === "No advisory"
-            ? "#4CAF50" // Safe - green
+            ? "#4CAF50"
             : advisory.advice === "Advisory against travel to certain areas"
-              ? "#674f82" // Some caution - purple
+              ? "#674f82"
               : advisory.advice === "Advisory against non-essential travel"
-                ? "#c07182" // High caution - pink
+                ? "#c07182"
                 : advisory.advice === "Advisory against all travel"
-                  ? "#e69c67" // Danger - orange
-                  : "#9E9E9E" // Unknown - grey
-          : "#9E9E9E"; // Unknown - grey
+                  ? "#e69c67"
+                  : "#9E9E9E"
+          : "#9E9E9E";
       
       case "visa":
         const visaRequirement = getWorstVisaRequirement(feat.id);
@@ -178,10 +158,10 @@ const GlobeGL = ({ data = [] }) => {
                visaRequirement === "visa on arrival" ? "#FF9800" :
                visaRequirement === "visa required" ? "#F44336" :
                visaRequirement === "home country" ? "#2196F3" :
-               "#9E9E9E"; // Unknown
+               "#9E9E9E";
       
       default:
-        return "#4CAF50"; // Default highlight color
+        return "#4CAF50";
     }
   };
 
@@ -189,78 +169,9 @@ const GlobeGL = ({ data = [] }) => {
   const isCountryHighlighted = (feat) => {
     const countryName = feat.properties.name;
     const countryId = feat.id;
-    
     return (countryName && filteredCountries.has(countryName)) || 
            (countryName && filteredCountries.has(countryName.toLowerCase())) ||
            (countryId && filteredCountries.has(countryId));
-  };
-
-  // Generate tooltip content
-  const generateTooltipContent = (hoverD, isHighlighted, countryTrips) => {
-    const countryName = hoverD.properties.name;
-    
-    let tooltipHTML = `<div style="padding: 10px; max-width: 300px; background: white; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
-      <h3 style="margin-top: 0; margin-bottom: 10px;">${countryName}</h3>`;
-    
-    if (isHighlighted) {
-      if (colorScheme === "advisory" && advisoryData[hoverD.id]) {
-        tooltipHTML += `<div style="margin-bottom: 10px;">
-          <span style="display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 12px; background-color: ${
-            advisoryData[hoverD.id].advice === "No advisory" ? "#4CAF50" :
-            advisoryData[hoverD.id].advice === "Advisory against travel to certain areas" ? "#FFC107" :
-            "#F44336"
-          }; color: white;">${advisoryData[hoverD.id].advice}</span>
-        </div>`;
-      }
-      
-      if (colorScheme === "visa") {
-        tooltipHTML += `<div style="margin-bottom: 10px;">`;
-        for (let passportCode in visaData) {
-          if (visaData[passportCode] && visaData[passportCode][hoverD.id]) {
-            let visaRequirement = visaData[passportCode][hoverD.id];
-            if (typeof visaRequirement === "number" && visaRequirement > 0) {
-              visaRequirement = `${visaRequirement} days of Visa Free travel`;
-            }
-            if (typeof visaRequirement === "number" && visaRequirement < 0) {
-              visaRequirement = "home country";
-            }
-            
-            tooltipHTML += `<div style="margin-bottom: 5px;">
-              <img src="https://countryflagsapi.netlify.app/flag/${passportCode.toLowerCase()}.svg" 
-                   style="width: 20px; height: 15px; margin-right: 5px; vertical-align: middle;" />
-              <span>${countryNames[passportCode] || passportCode}: ${visaRequirement}</span>
-            </div>`;
-          }
-        }
-        tooltipHTML += `</div>`;
-      }
-      
-      // Add trip information
-      countryTrips.forEach((trip, index) => {
-        if (index > 0) {
-          tooltipHTML += `<hr style="border: none; border-top: 1px solid #eee; margin: 10px 0;" />`;
-        }
-        
-        tooltipHTML += `<div>
-          <div style="font-weight: 500; margin-bottom: 5px;">${trip.destination_info.city_name} (${trip.destination})</div>
-          <div style="font-size: 14px; margin-bottom: 5px;">
-            ${new Date(trip.departureDate).toLocaleDateString('en-GB', {
-              day: 'numeric',
-              month: 'short'
-            })} - ${new Date(trip.returnDate).toLocaleDateString('en-GB', {
-              day: 'numeric',
-              month: 'short'
-            })}
-          </div>
-          <div style="font-weight: bold; font-size: 14px;">£${trip.price?.total || 'N/A'}</div>
-        </div>`;
-      });
-    } else {
-      tooltipHTML += `<div>No trips available to this country</div>`;
-    }
-    
-    tooltipHTML += `</div>`;
-    return tooltipHTML;
   };
 
   // Fetch world data when component mounts
@@ -272,7 +183,6 @@ const GlobeGL = ({ data = [] }) => {
         mapCountryCodesToNames(worldData);
       }
     };
-    
     loadWorldData();
   }, []);
 
@@ -281,47 +191,37 @@ const GlobeGL = ({ data = [] }) => {
     const fetchAllData = async () => {
       try {
         if (countries.length > 0) {
-          // Fetch advisory data
           const countryCodes = countries.map((d) => d.id);
           const advisoryPromises = countryCodes.map(async (code) => {
             const data = await fetchAdvisory(code);
             return { code, data };
           });
-          
           const advisoryResults = await Promise.all(advisoryPromises);
           const advisoryMap = {};
-          
           advisoryResults.forEach(({ code, data }) => {
             if (data) {
               advisoryMap[code] = data;
             }
           });
-          
           setAdvisoryData(advisoryMap);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-    
     fetchAllData();
   }, [countries]);
 
   // Initialize and update the globe
   useEffect(() => {
-    if (!globeRef.current || countries.length === 0) {
-      return;
-    }
+    if (!globeRef.current || countries.length === 0) return;
 
     // Filter out Antarctica
     const filteredFeatures = countries.filter(d => d.properties.ISO_A2 !== 'AQ');
     
     // Initialize globe if it doesn't exist
     if (!globeEl.current) {
-      // Create the globe instance
       globeEl.current = Globe()(globeRef.current);
-      
-      // Configure the globe
       globeEl.current
         .width(globeRef.current.clientWidth)
         .height(globeRef.current.clientHeight)
@@ -334,213 +234,173 @@ const GlobeGL = ({ data = [] }) => {
         .polygonsTransitionDuration(300);
     }
     
-    // Remove these lines - they're now at component level
-    // const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-    // useEffect(() => { ... }, []);
-    
     // Update the globe with the countries data
     globeEl.current
       .polygonsData(filteredFeatures)
       .polygonCapColor(feat => getCountryColor(feat, isCountryHighlighted(feat)))
-      // Remove the polygonLabel to disable the built-in tooltip
       .polygonLabel(() => null);
     
-    // Then modify the onPolygonHover callback to use the tracked mouse position
-    // Inside the useEffect where you set up the globe
-    globeEl.current
-    .onPolygonHover((hoverD) => {
-    // Highlight hovered country
-    globeEl.current
-    .polygonAltitude(d => d === hoverD ? 0.04 : 0.01);
-    
-    if (hoverD) {
-    console.log("Hovering over country:", hoverD.properties.name);
-    const countryName = hoverD.properties.name;
-    const highlighted = isCountryHighlighted(hoverD);
-    
-    // Find all trips to this country
-    const countryTrips = data.filter(trip => 
-    trip.destination_info?.country_name && countryName && (
-    trip.destination_info.country_name === countryName ||
-    trip.destination_info.country_name.toLowerCase() === countryName.toLowerCase()
-    )
-    );
-    
-    console.log("Country trips:", countryTrips.length, "Highlighted:", highlighted);
-    
-    // Create tooltip content
-    setTooltipContent(
-    <Box sx={{ p: 1, maxWidth: 350 }}>
-    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-    <Typography variant="h6" sx={{ fontWeight: 'bold', mr: 1 }}>
-    {countryName}
-    </Typography>
-    
-    {/* Advisory chip - only if it exists and is not "none" */}
-    {highlighted && countryTrips[0]?.pcp?.safety && 
-    countryTrips[0].pcp.safety !== "None" && 
-    countryTrips[0].pcp.safety !== "No advisory" && (
-    <Chip 
-    icon={<ReportProblemIcon />}
-    label={countryTrips[0].pcp.safety} 
-    color="warning" 
-    size="small" 
-    sx={{ ml: 1 }}
-    />
-    )}
-    </Box>
-    
-    {/* Visa information with country flag */}
-    {highlighted && countryTrips.length > 0 && (
-    <Box sx={{ mb: 2 }}>
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
-    {countryTrips[0]?.pcp?.visaDetails ? (
-    Object.entries(countryTrips[0].pcp.visaDetails).map(([key, value]) => (
-    <Chip
-    key={key}
-    avatar={
-    <Avatar 
-    src={`https://countryflagsapi.netlify.app/flag/${key.toLowerCase()}.svg`}
-    alt={key}
-    />
-    }
-    label={`${value}`}
-    variant="filled"
-    size="small"
-    sx={{ 
-    color: 'white',
-    bgcolor: '#363636'
-    }}
-    />
-    ))
-    ) : (
-    <Chip
-    avatar={
-    <Avatar 
-    src={`https://countryflagsapi.netlify.app/flag/${countryTrips[0].destination_info.iso_code.toLowerCase()}.svg`}
-    alt={countryTrips[0].destination_info.country_name}
-    />
-    }
-    label="Visa: N/A"
-    variant="filled"
-    size="small"
-    sx={{ 
-    color: 'white',
-    bgcolor: '#1976d2'
-    }}
-    />
-    )}
-    </Box>
-    </Box>
-    )}
-    
-    {/* Trip sections - one for each city */}
-    {highlighted && countryTrips.map((trip, index) => (
-    <Box key={index} sx={{ mb: 1 }}>
-    {index > 0 && <Divider sx={{ my: 1, borderColor: '#9e9e9e' }} />}
-    <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
-    {trip.destination_info.city_name} ({trip.destination})
-    </Typography>
-    <Typography variant="body2">
-    {new Date(trip.departureDate).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short'
-    })} - {new Date(trip.returnDate).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short'
-    })}
-    </Typography>
-    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-    £{trip.price?.total || 'N/A'}
-    </Typography>
-    </Box>
-    ))}
-    
-    {!highlighted && (
-    <Typography variant="body1">
-    No trips available to this country
-    </Typography>
-    )}
-    </Box>
-    );
-    
-    setTooltipOpen(true);
-    
-    } else {
-    setTooltipOpen(false);
-    }
+    // Modify onPolygonHover callback to update tooltip content based on trips
+    globeEl.current.onPolygonHover((hoverD) => {
+      globeEl.current.polygonAltitude(d => d === hoverD ? 0.04 : 0.01);
+      if (hoverD) {
+        console.log("Hovering over country:", hoverD.properties.name);
+        const countryName = hoverD.properties.name;
+        const highlighted = isCountryHighlighted(hoverD);
+        const countryTrips = data.filter(trip => 
+          trip.destination_info?.country_name && countryName && (
+            trip.destination_info.country_name === countryName ||
+            trip.destination_info.country_name.toLowerCase() === countryName.toLowerCase()
+          )
+        );
+        console.log("Country trips:", countryTrips.length, "Highlighted:", highlighted);
+        
+        setTooltipContent(
+          <Box sx={{ p: 1, maxWidth: 350 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', mr: 1 }}>
+                {countryName}
+              </Typography>
+              {highlighted && countryTrips[0]?.pcp?.safety && 
+                countryTrips[0].pcp.safety !== "None" && 
+                countryTrips[0].pcp.safety !== "No advisory" && (
+                  <Chip 
+                    icon={<ReportProblemIcon />}
+                    label={countryTrips[0].pcp.safety} 
+                    color="warning" 
+                    size="small" 
+                    sx={{ ml: 1 }}
+                  />
+              )}
+            </Box>
+            {highlighted && countryTrips.length > 0 && (
+              <Box sx={{ mb: 2 }}>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
+                  {countryTrips[0]?.pcp?.visaDetails ? (
+                    Object.entries(countryTrips[0].pcp.visaDetails).map(([key, value]) => (
+                      <Chip
+                        key={key}
+                        avatar={
+                          <Avatar 
+                            src={`https://countryflagsapi.netlify.app/flag/${key.toLowerCase()}.svg`}
+                            alt={key}
+                          />
+                        }
+                        label={`${value}`}
+                        variant="filled"
+                        size="small"
+                        sx={{ color: 'white', bgcolor: '#363636' }}
+                      />
+                    ))
+                  ) : (
+                    <Chip
+                      avatar={
+                        <Avatar 
+                          src={`https://countryflagsapi.netlify.app/flag/${countryTrips[0].destination_info.iso_code.toLowerCase()}.svg`}
+                          alt={countryTrips[0].destination_info.country_name}
+                        />
+                      }
+                      label="Visa: N/A"
+                      variant="filled"
+                      size="small"
+                      sx={{ color: 'white', bgcolor: '#1976d2' }}
+                    />
+                  )}
+                </Box>
+              </Box>
+            )}
+            {highlighted && countryTrips.map((trip, index) => (
+              <Box key={index} sx={{ mb: 1 }}>
+                {index > 0 && <Divider sx={{ my: 1, borderColor: '#9e9e9e' }} />}
+                <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
+                  {trip.destination_info.city_name} ({trip.destination})
+                </Typography>
+                <Typography variant="body2">
+                  {new Date(trip.departureDate).toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'short'
+                  })} - {new Date(trip.returnDate).toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'short'
+                  })}
+                </Typography>
+                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                  £{trip.price?.total || 'N/A'}
+                </Typography>
+              </Box>
+            ))}
+            {!highlighted && (
+              <Typography variant="body1">
+                No trips available to this country
+              </Typography>
+            )}
+          </Box>
+        );
+        setTooltipOpen(true);
+      } else {
+        setTooltipOpen(false);
+      }
     });
     
-    // Handle window resize
     const handleResize = () => {
-    if (globeEl.current && globeRef.current) {
-    globeEl.current
-    .width(globeRef.current.clientWidth)
-    .height(globeRef.current.clientHeight);
-    }
+      if (globeEl.current && globeRef.current) {
+        globeEl.current
+          .width(globeRef.current.clientWidth)
+          .height(globeRef.current.clientHeight);
+      }
     };
-    
     window.addEventListener('resize', handleResize);
-    
-    // Clean up
-    return () => {
-    window.removeEventListener('resize', handleResize);
-    };
-    }, [countries, filteredCountries, colorScheme, advisoryData, visaData, data, countryNames, mousePosition]); // Add mousePosition to dependencies
-
-    // Handle color scheme change
-    const handleColorSchemeChange = (scheme) => {
+    return () => window.removeEventListener('resize', handleResize);
+  }, [countries, filteredCountries, colorScheme, advisoryData, visaData, data, countryNames, mousePosition]);
+  
+  const handleColorSchemeChange = (scheme) => {
     setColorScheme(scheme);
-    };
+  };
 
-    return (
+  return (
     <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
-    {/* Add the color selector to the top left */}
-    <Box sx={{ position: 'absolute', top: 10, left: 10, zIndex: 10 }}>
-    <GlobeColorSelector onChange={handleColorSchemeChange} />
-    </Box>
-    
-    <div ref={globeRef} style={{ width: "100%", minHeight: "400px", height: "100%" }} />
-    
-    {/* Invisible element that follows the cursor for tooltip positioning */}
-    <div 
-    ref={tooltipRef}
-    style={{
-    position: "absolute",
-    width: "1px",
-    height: "1px",
-    pointerEvents: "none"
-    }}
-    />
-    
-    {/* Material UI Tooltip */}
-    <Tooltip
-      open={tooltipOpen}
-      title={tooltipContent || ""}
-      arrow
-      placement="top"
-      slotProps={{
-        popper: {
-          anchorEl: tooltipRef.current,
-          modifiers: [
-            {
-              name: 'offset',
-              options: {
-                offset: [0, 50], // Increased vertical offset to move tooltip higher
-              },
+      {/* Color selector in top left */}
+      <Box sx={{ position: 'absolute', top: 10, left: 10, zIndex: 10 }}>
+        <GlobeColorSelector onChange={handleColorSchemeChange} />
+      </Box>
+      <div ref={globeRef} style={{ width: "100%", minHeight: "400px", height: "100%" }} />
+      {/* Material UI Tooltip using a virtual anchor via slotProps */}
+      <Tooltip
+        open={tooltipOpen}
+        title={tooltipContent || ""}
+        arrow
+        placement="top"
+        slotProps={{
+          popper: {
+            anchorEl: {
+              getBoundingClientRect: () => ({
+                top: mousePosition.y,
+                left: mousePosition.x,
+                bottom: mousePosition.y,
+                right: mousePosition.x,
+                width: 0,
+                height: 0,
+              }),
             },
-          ],
-          sx: {
-            '& .MuiTooltip-tooltip': {
-              fontSize: '1rem',
-              maxWidth: 'none'
+            modifiers: [
+              {
+                name: 'offset',
+                options: {
+                  offset: [0, 20],
+                },
+              },
+            ],
+            sx: {
+              '& .MuiTooltip-tooltip': {
+                fontSize: '1rem',
+                maxWidth: 'none'
+              }
             }
           }
-        }
-      }}
-    />
+        }}
+      />
     </Box>
-    );
-    };
+  );
+};
 
-    export default GlobeGL;
+export default GlobeGL;
