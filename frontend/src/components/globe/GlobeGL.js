@@ -64,7 +64,7 @@ const ColorLegend = ({ colorScheme }) => {
 // Fetch functions for advisory and visa data
 const fetchAdvisory = async (country_code) => {
   try {
-    const response = await fetch(`http://127.0.0.1:8001/api/advisory/${country_code}`);
+    const response = await fetch(`https://flight-track.onrender.com/api/advisory/${country_code}`);
     if (!response.ok) throw new Error("Network response was not ok");
     const data = await response.json();
     return data;
@@ -77,7 +77,7 @@ const fetchAdvisory = async (country_code) => {
 const fetchVisa = async (countryCode) => {
   try {
     const response = await fetch(
-      `http://127.0.0.1:8001/api/visa?country_codes=${countryCode}`
+      `https://flight-track.onrender.com/api/visa?country_codes=${countryCode}`
     );
     if (!response.ok) throw new Error("Network response did not work");
     const result = await response.json();
