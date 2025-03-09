@@ -4,10 +4,11 @@ import { geoOrthographic, geoPath, geoGraticule } from "d3-geo";
 import { drag } from "d3-drag";
 import { Tooltip, Typography, Box, Chip } from "@mui/material";
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+import { API_URL } from "../../constants";
 
 const fetchAdvisory = async (country_code) => {
   try {
-    const response = await fetch(`https://flight-track.onrender.com/api/advisory/${country_code}`);
+    const response = await fetch(`${API_URL}/api/advisory/${country_code}`);
     if (!response.ok) throw new Error("Network response was not ok");
     const data = await response.json();
     return data;

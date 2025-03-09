@@ -4,6 +4,7 @@ import { Box, Tooltip, Typography, Chip, Avatar, Divider, Paper } from "@mui/mat
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import { GlobeColorSelector } from "./GlobeColorSelector";
 import * as d3 from "d3";
+import {API_URL} from '../../constants';
 
 // Colour legend component
 const ColorLegend = ({ colorScheme }) => {
@@ -64,7 +65,7 @@ const ColorLegend = ({ colorScheme }) => {
 // Fetch functions for advisory and visa data
 const fetchAdvisory = async (country_code) => {
   try {
-    const response = await fetch(`https://flight-track.onrender.com/api/advisory/${country_code}`);
+    const response = await fetch(`${API_URL}/api/advisory/${country_code}`);
     if (!response.ok) throw new Error("Network response was not ok");
     const data = await response.json();
     return data;
@@ -77,7 +78,7 @@ const fetchAdvisory = async (country_code) => {
 const fetchVisa = async (countryCode) => {
   try {
     const response = await fetch(
-      `https://flight-track.onrender.com/api/visa?country_codes=${countryCode}`
+      `${API_URL}/api/visa?country_codes=${countryCode}`
     );
     if (!response.ok) throw new Error("Network response did not work");
     const result = await response.json();
@@ -164,6 +165,7 @@ const getVisaRequirementFromTrips = (feature, tripsData) => {
 };
 
 const GlobeGL = ({ data = [] }) => {
+  // console.log("data", data)
   const globeRef = useRef();
   const globeEl = useRef();
   const [countries, setCountries] = useState([]);
@@ -177,6 +179,28 @@ const GlobeGL = ({ data = [] }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   // Ref to hold tooltip close timeout
   const tooltipTimeoutRef = useRef(null);
+  const [routes, setRoutes] = useState([]);
+  // console.log("Routes", routes)
+
+  const LONDON_COORDS = {
+    lat: 51.5074,
+    lng: -0.1278
+  };
+
+  //create routes data when filtered destinations change
+  useEffect(() => {
+    const newRoutes = data.map(destination => ({
+      startLat: LONDON_COORDS.lat,
+      startLng: LONDON_COORDS.lng,
+      endLat: destination.destination_info?.latitude,
+      endLng: destination.destination_info?.longitude,
+      color:'rgb(255, 7, 201)', // Amber color for routes
+      destination_info: destination.destination_info,
+    }));
+    setRoutes(newRoutes);
+
+  }, [data]);
+
   
   // Track mouse position globally
   useEffect(() => {
@@ -333,6 +357,21 @@ const GlobeGL = ({ data = [] }) => {
     fetchAllData();
   }, [countries]);
 
+  // Add a separate effect just for routes
+  useEffect(() => {
+    if (!globeEl.current) return;
+    globeEl.current
+      .arcColor('color')
+      .arcDashLength(1.5)
+      .arcDashGap(0.03)
+      .arcDashAnimateTime(2000)
+      .arcsData(routes)
+      .arcStroke(0.7)
+      .arcAltitude(0.5);
+  }, [routes]);
+
+
+
   // Initialize and update the globe
   useEffect(() => {
     if (!globeRef.current || countries.length === 0) return;
@@ -354,6 +393,8 @@ const GlobeGL = ({ data = [] }) => {
         .polygonStrokeColor(() => '#111')
         .polygonsTransitionDuration(300);
     }
+
+  
     
     // Update the globe with the countries data
     globeEl.current

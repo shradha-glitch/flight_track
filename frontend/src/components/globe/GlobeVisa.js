@@ -3,11 +3,12 @@ import * as d3 from "d3";
 import { geoOrthographic, geoPath, geoGraticule } from "d3-geo";
 import { drag } from "d3-drag";
 import { Tooltip, Typography, Chip, Box, Avatar } from "@mui/material";
+import { API_URL } from "../../constants";
 
 const FetchVisa = async (countryCode) => {
   try {
     const response = await fetch(
-      `https://flight-track.onrender.com/api/visa?country_codes=${countryCode}`
+      `${API_URL}/api/visa?country_codes=${countryCode}`
     );
     if (!response.ok) throw new Error("Network response did not work");
     const result = await response.json();

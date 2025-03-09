@@ -3,6 +3,7 @@ import * as d3 from "d3"; // Import D3.js for data visualization
 import LinearProgress from '@mui/material/LinearProgress';
 import InfoIcon from '@mui/icons-material/Info';
 import { Typography } from '@mui/material';
+import { API_URL } from '../constants';
 
 const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} ) => {
     const chartRef = useRef(); // Reference to the div container where the chart will be drawn
@@ -57,12 +58,11 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
     
 
 
-
     useEffect(() => {
         // fetch data from the API
         const fetchSourceCountry = async () => {
             try {
-                const response = await fetch(`https://flight-track.onrender.com/api/flights/forlondon?departure_date=${departureDate}`);
+                const response = await fetch(`${API_URL}/api/flights/forlondon?departure_date=${departureDate}`);
                 const result = await response.json();
                 setOriginalFlightData(result);
                 
@@ -76,7 +76,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
 
                  // Fetch weather data for each destination
                  const weatherPromises = iataCodes.map(async (iataCode, index) => {
-                    const weatherResponse = await fetch(`https://flight-track.onrender.com/api/weather/${iataCode}?departure_date=${departureDates[index]}&return_date=${returnDates[index]}`);
+                    const weatherResponse = await fetch(`${API_URL}/api/weather/${iataCode}?departure_date=${departureDates[index]}&return_date=${returnDates[index]}`);
                     const weatherData = await weatherResponse.json();
                     return {
                         iataCode,
@@ -96,7 +96,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                 const weatherData = await Promise.all(weatherPromises);
 
                 const advisoryPromises = iataCodes.map(async (iataCode) => {
-                    const advisoryResponse = await fetch(`https://flight-track.onrender.com/api/destinations/travel-advisory/`);
+                    const advisoryResponse = await fetch(`${API_URL}/api/destinations/travel-advisory/`);
                     const advisoryData = await advisoryResponse.json();
 
                     if (!advisoryData.advisories || !advisoryData.advisories[iataCode]) {
@@ -117,7 +117,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                 const advisoryData = await Promise.all(advisoryPromises);
 
                 const visaPromises = iataCodes.map(async (iataCode) => {
-                    const visaResponse = await fetch(`https://flight-track.onrender.com/api/pcpvisa?country_codes=${passportIsoCode.join(',')}&departure_date=${departureDate}`);
+                    const visaResponse = await fetch(`${API_URL}/api/pcpvisa?country_codes=${passportIsoCode.join(',')}&departure_date=${departureDate}`);
                     const visaData = await visaResponse.json();
                     return {
                         visaRequirements: visaData.destination_requirements[iataCode],
