@@ -4,6 +4,12 @@ import CustomCard from "./Card";
 import { Box, Typography, Divider, Avatar, Tooltip } from "@mui/material";
 import { API_URL } from '../../constants';
 
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import CloudIcon from '@mui/icons-material/Cloud';
+import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import FilterDramaIcon from '@mui/icons-material/FilterDrama';
+
 const WeatherCard = ({ selectedDestination }) => {
     const svgRef = useRef();
     const [weatherData, setWeatherData] = useState(null);
@@ -13,7 +19,7 @@ const WeatherCard = ({ selectedDestination }) => {
 
         const fetchWeatherData = async () => {
             const { destination, departureDate, returnDate } = selectedDestination;
-            const apiUrl = `${API_URL}/api/weather/${destination}?departure_date=${departureDate}&return_date=${returnDate}`;
+            const apiUrl = `${API_URL}/api/neooneweather?departure_date=${departureDate}`;
 
             try {
                 const response = await fetch(apiUrl);
@@ -21,13 +27,16 @@ const WeatherCard = ({ selectedDestination }) => {
                 const data = await response.json();
                 console.log("Fetched Weather Data:", data);
 
-                if (data.daily_temperature && data.daily_cloud_cover) {
+                // Extract the specific destination's weather data from the response
+                const destinationWeather = data.destinations[destination];
+
+                if (destinationWeather && destinationWeather.daily_temperature && destinationWeather.daily_cloud_cover) {
                     setWeatherData({
-                        temperatures: data.daily_temperature || [],
-                        cloudCover: data.daily_cloud_cover || [],
-                        radiation: data.daily_radiation_sum || [],
-                        rain: data.daily_rain_sum || [],
-                        snowfall: data.daily_snowfall_sum || []
+                        temperatures: destinationWeather.daily_temperature || [],
+                        cloudCover: destinationWeather.daily_cloud_cover || [],
+                        radiation: destinationWeather.daily_radiation_sum || [],
+                        rain: destinationWeather.daily_rain_sum || [],
+                        snowfall: destinationWeather.daily_snowfall_sum || []
                     });
                 } else {
                     console.warn("No complete weather data found in API response");
@@ -177,6 +186,23 @@ datasets.forEach(({ key, color }) => {
 
     }, [weatherData, selectedDestination]);
 
+    const getWeatherIcon = (weather, size = 40) => {
+        switch (weather) {
+            case 'Sunny':
+                return <WbSunnyIcon sx={{ fontSize: size, color: '#FFD700' }} />;
+            case 'Partly Clouded':
+                return <FilterDramaIcon sx={{ fontSize: size, color: '#87CEEB' }} />;
+            case 'Cloudy':
+                return <CloudIcon sx={{ fontSize: size, color: '#A9A9A9' }} />;
+            case 'Rainy':
+                return <ThunderstormIcon sx={{ fontSize: size, color: '#4682B4' }} />;
+            case 'Snowy':
+                return <AcUnitIcon sx={{ fontSize: size, color: '#E0FFFF' }} />;
+            default:
+                return <WbSunnyIcon sx={{ fontSize: size, color: '#FFD700' }} />;
+        }
+    };
+
     return (
         <CustomCard>
             <Box sx={{
@@ -208,12 +234,15 @@ datasets.forEach(({ key, color }) => {
                         </Box>
                         <Divider />
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
-                            <Typography variant="h4" fontWeight="bold">
-                                {selectedDestination.pcp?.temp}°C
-                            </Typography>
-                            <Typography variant="body1">
-                                {selectedDestination.pcp?.weather || 'Unknown'}
-                            </Typography>
+                            {getWeatherIcon(selectedDestination.pcp?.weather)}
+                            <Box>
+                                <Typography variant="h4" fontWeight="bold">
+                                    {selectedDestination.pcp?.temp}°C
+                                </Typography>
+                                <Typography variant="body1">
+                                    {selectedDestination.pcp?.weather || 'Unknown'}
+                                </Typography>
+                            </Box>
                         </Box>
                         <Box sx={{ mt: 4 }}>
                             <Typography variant="h6" fontWeight="bold" mb={2}>Trip Details</Typography>

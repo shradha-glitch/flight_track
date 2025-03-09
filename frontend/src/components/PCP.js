@@ -72,65 +72,66 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                 const departureDates = result.map(item => item.departureDate);
                 const returnDates = result.map(item => item.returnDate);
 
+                // Fetch all weather data in a single API call
+                const weatherResponse = await fetch(`${API_URL}/api/neooneweather?departure_date=${departureDate}`);
+                const allWeatherData = await weatherResponse.json();
                 
 
-                 // Fetch weather data for each destination
-                 const weatherPromises = iataCodes.map(async (iataCode, index) => {
-                    const weatherResponse = await fetch(`${API_URL}/api/weather/${iataCode}?departure_date=${departureDates[index]}&return_date=${returnDates[index]}`);
-                    const weatherData = await weatherResponse.json();
-                    return {
-                        iataCode,
-                        temperature: weatherData.average_temperature,
-                        climate: weatherData.dominant_climate,
-                        climate_breakdown: weatherData.weather_breakdown,
-                        daily_temperature : weatherData.daily_temperature,
-                        daily_cloud_cover : weatherData.daily_cloud_cover,
-                        daily_radiation_sum : weatherData.daily_radiation_sum,
-                        daily_rain_sum : weatherData.daily_rain_sum,
-                        daily_snowfall_sum : weatherData.daily_snowfall_sum
+               // Process weather data for each destination
+                const weatherData = iataCodes.map(iataCode => {
+                const destinationWeather = allWeatherData.destinations[iataCode];
+                if (!destinationWeather) return { iataCode, temperature: Math.random() * 40, climate: "None" };
+                
+                return {
+                    iataCode,
+                    temperature: destinationWeather.average_temperature,
+                    climate: destinationWeather.dominant_climate,
+                    climate_breakdown: destinationWeather.weather_breakdown,
+                    daily_temperature: destinationWeather.daily_temperature,
+                    daily_cloud_cover: destinationWeather.daily_cloud_cover,
+                    daily_radiation_sum: destinationWeather.daily_radiation_sum,
+                    daily_rain_sum: destinationWeather.daily_rain_sum,
+                    daily_snowfall_sum: destinationWeather.daily_snowfall_sum
+                };
+            });
 
 
-                    };
-                })
+                // Fetch all travel advisory data in a single API call
+                const advisoryResponse = await fetch(`${API_URL}/api/destinations/travel-advisory/`);
+                const advisoryData = await advisoryResponse.json();
 
-                const weatherData = await Promise.all(weatherPromises);
-
-                const advisoryPromises = iataCodes.map(async (iataCode) => {
-                    const advisoryResponse = await fetch(`${API_URL}/api/destinations/travel-advisory/`);
-                    const advisoryData = await advisoryResponse.json();
-
+                // Process advisory data for each destination
+                const advisoryInfo = iataCodes.map(iataCode => {
                     if (!advisoryData.advisories || !advisoryData.advisories[iataCode]) {
-                      return null;
-                  }
-
-                  const advisoryInfo = advisoryData.advisories[iataCode];
-
-                    return {
-                        iataCode: advisoryInfo.iata,
-                        iso: advisoryInfo.iso,
-                        countryName: advisoryInfo.advisory.country_name,
-                        advisory: advisoryInfo.advisory.advice,
-
-                    };
-                });
-
-                const advisoryData = await Promise.all(advisoryPromises);
-
-                const visaPromises = iataCodes.map(async (iataCode) => {
-                    const visaResponse = await fetch(`${API_URL}/api/pcpvisa?country_codes=${passportIsoCode.join(',')}&departure_date=${departureDate}`);
-                    const visaData = await visaResponse.json();
-                    return {
-                        visaRequirements: visaData.destination_requirements[iataCode],
-                        
-                    };
+                        return { iataCode, advisory: "None" };
+                    }
                     
+                    const advisory = advisoryData.advisories[iataCode];
+                    return {
+                        iataCode: advisory.iata,
+                        iso: advisory.iso,
+                        countryName: advisory.advisory.country_name,
+                        advisory: advisory.advisory.advice,
+                    };
                 });
 
-                const visaData = await Promise.all(visaPromises);
+
+                // Fetch visa data in a single API call
+                const visaResponse = await fetch(`${API_URL}/api/pcpvisa?country_codes=${passportIsoCode.join(',')}&departure_date=${departureDate}`);
+                const allVisaData = await visaResponse.json();
+
+                // Process visa data for each destination
+                const visaData = iataCodes.map(iataCode => {
+                    const destinationRequirements = allVisaData.destination_requirements[iataCode] || {};
+                    return {
+                        visaRequirements: destinationRequirements
+                    };
+                });
+
             
                 const updatedData = result.map((item, index )=> {
                     const weather = weatherData.find(w => w.iataCode === item.destination);
-                    const advisory = advisoryData.find(a => a.iataCode === item.destination); 
+                    const advisory = advisoryInfo.find(a => a.iataCode === item.destination); 
                     const visaRequirement = getWorstVisaRequirement(visaData[index]);
                     return {
                         name: item.destination,

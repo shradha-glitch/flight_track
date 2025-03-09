@@ -34,6 +34,7 @@ from datetime import datetime
 router = APIRouter()
 
 
+
 """
 @endpoint: GET /api/flights/forlondon
 @description: Get flights data with optional origin and destination filters
@@ -353,3 +354,133 @@ async def get_weather(iata_code: str, departure_date: str = Query(...), return_d
     }
 
     return weather_data
+
+
+"""
+@endpoint: GET /api/neo_weather
+@description: Get weather forecast for all destinations with flights on a specific departure date
+@parameters:
+    - departure_date: Departure date (YYYY-MM-DD)
+@usage: curl http://localhost:8000/api/neo_weather?departure_date=2025-03-11
+"""
+@router.get("/neooneweather")
+async def get_weather(departure_date: str = Query(...)):
+    """
+    Get weather forecast for all destinations with flights on the specified departure date.
+    """
+    flights = load_flight_data()
+    if not flights:
+        raise HTTPException(status_code=404, detail="No flight data found")
+
+    if departure_date:
+        flights = [f for f in flights if f["departureDate"] == departure_date]
+
+    # Dictionary to store weather data for each destination
+    destination_weather_map = {}
+
+    # Process each flight
+    for flight in flights:
+        destination = flight["destination"]
+
+        # Skip if we already processed this destination
+        if destination in destination_weather_map:
+            continue
+
+        coords = get_airport_coords(destination)
+        if not coords:
+            continue  # Skip destinations without coordinates
+
+        latitude, longitude = coords
+        return_date = flight["returnDate"]
+
+        # Fetch weather data from Open-Meteo API
+        url = "https://climate-api.open-meteo.com/v1/climate"
+        params = {
+            "latitude": latitude,
+            "longitude": longitude,
+            "start_date": departure_date,
+            "end_date": return_date,
+            "daily": ["temperature_2m_mean", "cloud_cover_mean", "shortwave_radiation_sum", "rain_sum", "snowfall_sum"]
+        }
+
+        try:
+            responses = openmeteo.weather_api(url, params=params)
+
+            if not responses:
+                continue  # Skip if no weather data
+
+            response = responses[0]
+            daily = response.Daily()
+            daily_temperature_2m_mean = daily.Variables(0).ValuesAsNumpy()
+            daily_cloud_cover_mean = daily.Variables(1).ValuesAsNumpy()
+            daily_shortwave_radiation_sum = daily.Variables(2).ValuesAsNumpy()
+            daily_rain_sum = daily.Variables(3).ValuesAsNumpy()
+            daily_snowfall_sum = daily.Variables(4).ValuesAsNumpy()
+
+            # Helper function to safely convert numpy values to JSON-serializable format
+            def safe_float(value):
+                if np.isnan(value) or np.isinf(value):
+                    return None
+                return float(value)
+
+            # Calculate the average temperature over the date range
+            average_temperature = safe_float(np.mean(daily_temperature_2m_mean))
+
+            # Count days for each weather condition (using safe conversion)
+            rainy_days = safe_float(np.sum(daily_rain_sum > 1.0))
+            snowy_days = safe_float(np.sum(daily_snowfall_sum > 0.1))
+            sunny_days = safe_float(np.sum((daily_cloud_cover_mean < 20) & (daily_shortwave_radiation_sum > 15)))
+            cloudy_days = safe_float(np.sum(daily_cloud_cover_mean > 50))
+            partly_cloudy_days = safe_float(np.sum((daily_cloud_cover_mean >= 20) & (daily_cloud_cover_mean <= 50)))
+
+            # Create a weather summary dictionary
+            weather_conditions = {
+                "Rainy": rainy_days or 0,
+                "Snowy": snowy_days or 0,
+                "Sunny": sunny_days or 0,
+                "Cloudy": cloudy_days or 0,
+                "Partly Clouded": partly_cloudy_days or 0
+            }
+
+            # Find the dominant weather condition
+            dominant_weather = max(weather_conditions.items(), key=lambda x: x[1])
+            weather_summary = dominant_weather[0]
+
+            # Convert NumPy arrays to Python lists and handle special values
+            def safe_list(arr):
+                return [safe_float(x) or 0 for x in arr]  # Replace None with 0
+
+            daily_temperature_2m_mean = safe_list(daily_temperature_2m_mean)
+            daily_cloud_cover_mean = safe_list(daily_cloud_cover_mean)
+            daily_shortwave_radiation_sum = safe_list(daily_shortwave_radiation_sum)
+            daily_rain_sum = safe_list(daily_rain_sum)
+            daily_snowfall_sum = safe_list(daily_snowfall_sum)
+
+            # Create a more detailed weather report
+            total_days = float(len(daily_temperature_2m_mean))
+
+            # Store weather data for this destination
+            destination_weather_map[destination] = {
+                "average_temperature": round(average_temperature or 0, 1),
+                "dominant_climate": weather_summary,
+                "daily_temperature": daily_temperature_2m_mean,
+                "daily_cloud_cover": daily_cloud_cover_mean,
+                "daily_radiation_sum": daily_shortwave_radiation_sum,
+                "daily_rain_sum": daily_rain_sum,
+                "daily_snowfall_sum": daily_snowfall_sum,
+                "weather_breakdown": {
+                    condition: {
+                        "days": int(days),
+                        "percentage": round((days / total_days * 100) if days and total_days else 0, 1)
+                    } for condition, days in weather_conditions.items() if days > 0
+                }
+            }
+        except Exception as e:
+            # Skip destinations with errors in weather data processing
+            continue
+
+    return {
+        "departure_date": departure_date,
+        "destinations": destination_weather_map,
+        "total_destinations": len(destination_weather_map)
+    }
