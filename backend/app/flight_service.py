@@ -45,6 +45,12 @@ def iata_to_location_info(iata_code):
     if not iata_code:
         return {"city_name": None, "country_name": None, "iso_code": None}
 
+    coords = get_airport_coords(iata_code)
+    # Set default values for coordinates
+    latitude, longitude = None, None
+    if coords:
+        latitude, longitude = coords
+
     airport = airports.get(iata_code.upper())  # Look up IATA code
     if airport:
         iso_code = airport.get("country")  # ISO 2-letter code
@@ -53,7 +59,9 @@ def iata_to_location_info(iata_code):
         return {
             "city_name": city_name,
             "country_name": country_name,
-            "iso_code": iso_code
+            "iso_code": iso_code,
+            "latitude" : latitude,
+            "longitude" : longitude
         }
     return {"city_name": None, "country_name": None, "iso_code": None}
 
