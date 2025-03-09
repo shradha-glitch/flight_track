@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import CustomCard from "./Card";
 import { Box, Typography, Divider, Avatar, Tooltip } from "@mui/material";
+import { API_URL } from '../../constants';
 
 const WeatherCard = ({ selectedDestination }) => {
     const svgRef = useRef();
@@ -12,7 +13,7 @@ const WeatherCard = ({ selectedDestination }) => {
 
         const fetchWeatherData = async () => {
             const { destination, departureDate, returnDate } = selectedDestination;
-            const apiUrl = `http://127.0.0.1:8001/api/weather/${destination}?departure_date=${departureDate}&return_date=${returnDate}`;
+            const apiUrl = `${API_URL}/api/weather/${destination}?departure_date=${departureDate}&return_date=${returnDate}`;
 
             try {
                 const response = await fetch(apiUrl);
@@ -185,7 +186,14 @@ datasets.forEach(({ key, color }) => {
                 p: 3
             }}>
                 {!selectedDestination ? (
-                    <Typography variant="h6" fontWeight="bold">Weather Information</Typography>
+                    <Typography variant="h6" fontWeight="bold" mb={3}>
+                        Weather Information
+                    </Typography>
+                ) : null}
+                {!selectedDestination? (
+                    <Typography color="text.secondary">
+                        Select a destination in the "Filtered Destinations" list to view weather information.
+                    </Typography>
                 ) : (
                     <Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

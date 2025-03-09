@@ -18,7 +18,7 @@ const ResultsCard = ({ destinations = [], onSelectDestination, selectedDestinati
                 ) : null}
                 
                 {destinations.length === 0 ? (
-                    <Typography color="text.secondary">No destinations selected</Typography>
+                    <Typography color="text.secondary">Search and filter flights to view the results listed here</Typography>
                 ) : (
                     <Box sx={{ 
                         display: 'flex',
