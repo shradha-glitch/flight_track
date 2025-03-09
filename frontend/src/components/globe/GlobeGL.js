@@ -247,12 +247,22 @@ const GlobeGL = ({ data = [] }) => {
         console.log("Hovering over country:", hoverD.properties.name);
         const countryName = hoverD.properties.name;
         const highlighted = isCountryHighlighted(hoverD);
-        const countryTrips = data.filter(trip => 
-          trip.destination_info?.country_name && countryName && (
-            trip.destination_info.country_name === countryName ||
-            trip.destination_info.country_name.toLowerCase() === countryName.toLowerCase()
-          )
-        );
+        const countryTrips = data.filter(trip => {
+            const tripISO = trip.destination_info?.iso_code;
+            const geoISO = hoverD.id; // assuming the geojson id is the ISO code
+            if (tripISO && geoISO) {
+              return tripISO.toLowerCase() === geoISO.toLowerCase();
+            }
+            // Fallback: use flexible matching on country names
+            const tripCountry = trip.destination_info?.country_name?.toLowerCase();
+            const hoverCountry = countryName.toLowerCase();
+            return (
+              tripCountry &&
+              (tripCountry === hoverCountry ||
+                tripCountry.includes(hoverCountry) ||
+                hoverCountry.includes(tripCountry))
+            );
+          });
         console.log("Country trips:", countryTrips.length, "Highlighted:", highlighted);
         
         setTooltipContent(
@@ -363,7 +373,11 @@ const GlobeGL = ({ data = [] }) => {
       <Box sx={{ position: 'absolute', top: 10, left: 10, zIndex: 10 }}>
         <GlobeColorSelector onChange={handleColorSchemeChange} />
       </Box>
-      <div ref={globeRef} style={{ width: "100%", minHeight: "400px", height: "100%" }} />
+      <div
+        ref={globeRef}
+        style={{ width: "100%", minHeight: "400px", height: "100%" }}
+        onMouseLeave={() => setTooltipOpen(false)}
+      />
       {/* Material UI Tooltip using a virtual anchor via slotProps */}
       <Tooltip
         open={tooltipOpen}
@@ -386,7 +400,7 @@ const GlobeGL = ({ data = [] }) => {
               {
                 name: 'offset',
                 options: {
-                  offset: [0, 20],
+                  offset: [0, 10],
                 },
               },
             ],
