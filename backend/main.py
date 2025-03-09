@@ -37,7 +37,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # Local development
-        "https://flight-track-1.onrender.com"  # Add your Render frontend URL here
+        "https://flight-track-1.onrender.com",
+        "https://flight-track-73i5c1cer-shradhas-projects-61f0747a.vercel.app",# Add your Render frontend URL here
+        "https://flight-track-xi.vercel.app"
 
     ],
     allow_credentials=True,
