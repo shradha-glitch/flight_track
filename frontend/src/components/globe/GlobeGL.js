@@ -44,6 +44,56 @@ const fetchWorldData = async () => {
   }
 };
 
+// Helper: determine worst visa requirement from visaDetails in trip data
+const getVisaRequirementFromTrips = (feature, tripsData) => {
+  const countryName = feature.properties.name;
+  const geoISO = feature.id; // assuming this is the ISO code
+  // Filter trips using ISO if available, otherwise use fuzzy name matching
+  const matchingTrips = tripsData.filter(trip => {
+    const tripISO = trip.destination_info?.iso_code;
+    if (tripISO && geoISO) {
+      return tripISO.toLowerCase() === geoISO.toLowerCase();
+    }
+    const tripCountry = trip.destination_info?.country_name?.toLowerCase();
+    const hoverCountry = countryName.toLowerCase();
+    return (
+      tripCountry &&
+      (tripCountry === hoverCountry ||
+        tripCountry.includes(hoverCountry) ||
+        hoverCountry.includes(tripCountry))
+    );
+  });
+  
+  if (matchingTrips.length === 0) return "unknown";
+  
+  const visaDetails = matchingTrips[0].pcp?.visaDetails;
+  if (!visaDetails) return "unknown";
+  
+  // Priority order for visa requirements
+  const visaPriority = {
+    "unknown": 0,
+    "home country": 1,
+    "visa free": 2,
+    "visa with day limit": 3,
+    "eta": 4,
+    "e-visa": 5,
+    "visa on arrival": 6,
+    "visa required": 7
+  };
+  
+  let worst = "unknown";
+  for (let key in visaDetails) {
+    let req = visaDetails[key];
+    if (typeof req === "number" && req > 0) {
+      req = "visa with day limit";
+    }
+    if (req && visaPriority[req] > visaPriority[worst]) {
+      worst = req;
+    }
+  }
+  return worst;
+};
+
 const GlobeGL = ({ data = [] }) => {
   const globeRef = useRef();
   const globeEl = useRef();
@@ -52,7 +102,7 @@ const GlobeGL = ({ data = [] }) => {
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [colorScheme, setColorScheme] = useState("advisory");
   const [advisoryData, setAdvisoryData] = useState({});
-  const [visaData, setVisaData] = useState({});
+  const [visaData, setVisaData] = useState({}); // not used for visa coloring anymore
   const [countryNames, setCountryNames] = useState({});
   // Track mouse coordinates for a virtual anchor element
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -81,7 +131,7 @@ const GlobeGL = ({ data = [] }) => {
     return countrySet;
   }, [data]);
   
-  // Get passport countries from data
+  // Get passport countries from data (unused for visa coloring in this snippet)
   const passportCountries = useMemo(() => {
     const countries = new Set();
     data.forEach(trip => {
@@ -92,7 +142,7 @@ const GlobeGL = ({ data = [] }) => {
     return Array.from(countries);
   }, [data]);
   
-  // Get worst visa requirement for a country
+  // Old function using visaData – no longer used for coloring visa scheme
   const getWorstVisaRequirement = (countryId) => {
     let worstRequirement = "unknown";
     const visaPriority = {
@@ -135,22 +185,23 @@ const GlobeGL = ({ data = [] }) => {
   const getCountryColor = (feat, isHighlighted) => {
     if (!isHighlighted) return "#4d4c60";
     switch (colorScheme) {
-      case "advisory":
+      case "advisory": {
         const advisory = advisoryData[feat.id];
         return advisory
           ? advisory.advice === "No advisory"
-            ? "#5de362" //light green
+            ? "#5de362" // light green
             : advisory.advice === "Advisory against travel to certain areas"
-              ? "#dff235" //kinda yellow
-              : advisory.advice === "Advisory against non-essential travel"
-                ? "#f29913" //orange
-                : advisory.advice === "Advisory against all travel"
-                  ? "#e6091c" //red
-                  : "#9E9E9E"
+            ? "#dff235" // kinda yellow
+            : advisory.advice === "Advisory against non-essential travel"
+            ? "#f29913" // orange
+            : advisory.advice === "Advisory against all travel"
+            ? "#e6091c" // red
+            : "#9E9E9E"
           : "#9E9E9E";
-      
-      case "visa":
-        const visaRequirement = getWorstVisaRequirement(feat.id);
+      }
+      case "visa": {
+        // Use the trip data to compute visa requirement
+        const visaRequirement = getVisaRequirementFromTrips(feat, data);
         return visaRequirement === "visa free" ? "#4CAF50" :
                visaRequirement === "visa with day limit" ? "#8BC34A" :
                visaRequirement === "eta" ? "#CDDC39" :
@@ -159,7 +210,7 @@ const GlobeGL = ({ data = [] }) => {
                visaRequirement === "visa required" ? "#F44336" :
                visaRequirement === "home country" ? "#2196F3" :
                "#9E9E9E";
-      
+      }
       default:
         return "#4CAF50";
     }
@@ -248,26 +299,30 @@ const GlobeGL = ({ data = [] }) => {
         const countryName = hoverD.properties.name;
         const highlighted = isCountryHighlighted(hoverD);
         const countryTrips = data.filter(trip => {
-            const tripISO = trip.destination_info?.iso_code;
-            const geoISO = hoverD.id; // assuming the geojson id is the ISO code
-            if (tripISO && geoISO) {
-              return tripISO.toLowerCase() === geoISO.toLowerCase();
-            }
-            // Fallback: use flexible matching on country names
-            const tripCountry = trip.destination_info?.country_name?.toLowerCase();
-            const hoverCountry = countryName.toLowerCase();
-            return (
-              tripCountry &&
-              (tripCountry === hoverCountry ||
-                tripCountry.includes(hoverCountry) ||
-                hoverCountry.includes(tripCountry))
-            );
-          });
+          const tripISO = trip.destination_info?.iso_code;
+          const geoISO = hoverD.id;
+          if (tripISO && geoISO) {
+            return tripISO.toLowerCase() === geoISO.toLowerCase();
+          }
+          const tripCountry = trip.destination_info?.country_name?.toLowerCase();
+          const hoverCountry = countryName.toLowerCase();
+          return (
+            tripCountry &&
+            (tripCountry === hoverCountry ||
+             tripCountry.includes(hoverCountry) ||
+             hoverCountry.includes(tripCountry))
+          );
+        });
         console.log("Country trips:", countryTrips.length, "Highlighted:", highlighted);
         
         setTooltipContent(
           <Box sx={{ p: 1, maxWidth: 350 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Avatar
+                src={`https://countryflagsapi.netlify.app/flag/${hoverD.id.toLowerCase()}.svg`}
+                alt={countryName}
+                sx={{ width: 40, height: 24, borderRadius: '2px', mr: 1 }}
+              />
               <Typography variant="h6" sx={{ fontWeight: 'bold', mr: 1 }}>
                 {countryName}
               </Typography>
