@@ -4,6 +4,12 @@ import CustomCard from "./Card";
 import { Box, Typography, Divider, Avatar, Tooltip } from "@mui/material";
 import { API_URL } from '../../constants';
 
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import CloudIcon from '@mui/icons-material/Cloud';
+import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import FilterDramaIcon from '@mui/icons-material/FilterDrama';
+
 const WeatherCard = ({ selectedDestination }) => {
     const svgRef = useRef();
     const [weatherData, setWeatherData] = useState(null);
@@ -177,6 +183,23 @@ datasets.forEach(({ key, color }) => {
 
     }, [weatherData, selectedDestination]);
 
+    const getWeatherIcon = (weather, size = 40) => {
+        switch (weather) {
+            case 'Sunny':
+                return <WbSunnyIcon sx={{ fontSize: size, color: '#FFD700' }} />;
+            case 'Partly Clouded':
+                return <FilterDramaIcon sx={{ fontSize: size, color: '#87CEEB' }} />;
+            case 'Cloudy':
+                return <CloudIcon sx={{ fontSize: size, color: '#A9A9A9' }} />;
+            case 'Rainy':
+                return <ThunderstormIcon sx={{ fontSize: size, color: '#4682B4' }} />;
+            case 'Snowy':
+                return <AcUnitIcon sx={{ fontSize: size, color: '#E0FFFF' }} />;
+            default:
+                return <WbSunnyIcon sx={{ fontSize: size, color: '#FFD700' }} />;
+        }
+    };
+
     return (
         <CustomCard>
             <Box sx={{
@@ -208,12 +231,15 @@ datasets.forEach(({ key, color }) => {
                         </Box>
                         <Divider />
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
-                            <Typography variant="h4" fontWeight="bold">
-                                {selectedDestination.pcp?.temp}°C
-                            </Typography>
-                            <Typography variant="body1">
-                                {selectedDestination.pcp?.weather || 'Unknown'}
-                            </Typography>
+                            {getWeatherIcon(selectedDestination.pcp?.weather)}
+                            <Box>
+                                <Typography variant="h4" fontWeight="bold">
+                                    {selectedDestination.pcp?.temp}°C
+                                </Typography>
+                                <Typography variant="body1">
+                                    {selectedDestination.pcp?.weather || 'Unknown'}
+                                </Typography>
+                            </Box>
                         </Box>
                         <Box sx={{ mt: 4 }}>
                             <Typography variant="h6" fontWeight="bold" mb={2}>Trip Details</Typography>
