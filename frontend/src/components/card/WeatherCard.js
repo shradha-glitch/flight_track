@@ -19,7 +19,7 @@ const WeatherCard = ({ selectedDestination }) => {
 
         const fetchWeatherData = async () => {
             const { destination, departureDate, returnDate } = selectedDestination;
-            const apiUrl = `${API_URL}/api/weather/${destination}?departure_date=${departureDate}&return_date=${returnDate}`;
+            const apiUrl = `${API_URL}/api/neooneweather?departure_date=${departureDate}`;
 
             try {
                 const response = await fetch(apiUrl);
@@ -27,13 +27,16 @@ const WeatherCard = ({ selectedDestination }) => {
                 const data = await response.json();
                 console.log("Fetched Weather Data:", data);
 
-                if (data.daily_temperature && data.daily_cloud_cover) {
+                // Extract the specific destination's weather data from the response
+                const destinationWeather = data.destinations[destination];
+
+                if (destinationWeather && destinationWeather.daily_temperature && destinationWeather.daily_cloud_cover) {
                     setWeatherData({
-                        temperatures: data.daily_temperature || [],
-                        cloudCover: data.daily_cloud_cover || [],
-                        radiation: data.daily_radiation_sum || [],
-                        rain: data.daily_rain_sum || [],
-                        snowfall: data.daily_snowfall_sum || []
+                        temperatures: destinationWeather.daily_temperature || [],
+                        cloudCover: destinationWeather.daily_cloud_cover || [],
+                        radiation: destinationWeather.daily_radiation_sum || [],
+                        rain: destinationWeather.daily_rain_sum || [],
+                        snowfall: destinationWeather.daily_snowfall_sum || []
                     });
                 } else {
                     console.warn("No complete weather data found in API response");
