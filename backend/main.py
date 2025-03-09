@@ -31,16 +31,13 @@ async def root():
     return {"message": "Welcome to the Flight Data and Weather API!"}
 
 
-
-# Enable CORS to allow requests from your frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",  # Local development
+        "http://localhost:3000",
         "https://flight-track-1.onrender.com",
-        "https://flight-track-73i5c1cer-shradhas-projects-61f0747a.vercel.app",# Add your Render frontend URL here
-        "https://flight-track-xi.vercel.app"
-
+        "https://flight-track-73i5c1cer-shradhas-projects-61f0747a.vercel.app",
+        "https://flight-track-xi.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
