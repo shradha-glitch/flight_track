@@ -1,106 +1,53 @@
-import React, { useState } from "react";
-import { 
-  Box, 
-  Button, 
-  Menu, 
-  MenuItem, 
-  Typography,
-  ListItemIcon
-} from "@mui/material";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import CheckIcon from '@mui/icons-material/Check';
+"use client"
 
-// Updated to only have 3 options (no Results option)
-const colorSchemes = [
-  {
-    value: "advisory",
-    label: "Travel Advisory",
-  },
-  {
-    value: "visa",
-    label: "Visa Requirements",
-  },
-  {
-    value: "temperature",
-    label: "Temperature",
-  },
-];
+import React from "react";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 export function GlobeColorSelector({ onChange }) {
-  const [value, setValue] = useState("advisory"); // Default to advisory instead of results
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  
-  const handleSelect = (currentValue) => {
-    setValue(currentValue);
-    handleClose();
-    if (onChange) {
-      onChange(currentValue);
+  const [alignment, setAlignment] = React.useState("advisory");
+
+  const handleChange = (event, newAlignment) => {
+    if (newAlignment !== null) {
+      setAlignment(newAlignment);
+      if (onChange) {
+        onChange(newAlignment);
+      }
     }
   };
 
   return (
-    <Box>
-      <Button
-        variant="contained"
-        onClick={handleClick}
-        endIcon={<KeyboardArrowDownIcon />}
-        sx={{ 
-          backgroundColor: 'white', 
-          color: 'black',
-          '&:hover': {
-            backgroundColor: '#f5f5f5',
-          },
-          width: '280px',
-          justifyContent: 'space-between',
-          textTransform: 'none',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.12)'
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography color="text.secondary" sx={{ mr: 1 }}>
-            Colour:
-          </Typography>
-          <Typography>
-            {colorSchemes.find((scheme) => scheme.value === value)?.label}
-          </Typography>
-        </Box>
-      </Button>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          sx: { width: '280px', maxWidth: '100%' }
-        }}
-      >
-        {colorSchemes.map((scheme) => (
-          <MenuItem 
-            key={scheme.value}
-            onClick={() => handleSelect(scheme.value)}
-            sx={{ 
-              py: 1.5,
-              display: 'flex',
-              justifyContent: 'space-between'
-            }}
-          >
-            {scheme.label}
-            {value === scheme.value && (
-              <ListItemIcon sx={{ minWidth: 'auto' }}>
-                <CheckIcon fontSize="small" />
-              </ListItemIcon>
-            )}
-          </MenuItem>
-        ))}
-      </Menu>
-    </Box>
+    <ToggleButtonGroup
+      color="primary"
+      value={alignment}
+      exclusive
+      onChange={handleChange}
+      aria-label="Color scheme"
+      size="small"
+      sx={{ 
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
+        border: "1px solid rgba(255, 255, 255, 0.2)",
+        borderRadius: 1,
+        "& .MuiToggleButton-root": {
+          color: "white",
+          border: "none",
+          padding: "4px 12px",
+          fontSize: "0.85rem",
+        },
+        "& .MuiToggleButton-root:hover": {
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+        },
+        "& .Mui-selected": {
+          backgroundColor: "#D8AD1D !important",
+          color: "black !important",
+        },
+        "& .Mui-selected:hover": {
+          backgroundColor: "white !important",
+        }
+      }}
+    >
+      <ToggleButton value="advisory">Advisory</ToggleButton>
+      <ToggleButton value="visa">Visa</ToggleButton>
+    </ToggleButtonGroup>
   );
 }

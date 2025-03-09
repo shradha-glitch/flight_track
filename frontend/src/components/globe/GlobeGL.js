@@ -147,10 +147,14 @@ const getVisaRequirementFromTrips = (feature, tripsData) => {
       } else if (req < 0) {
         req = "home country";
       }
-    }
-    // Also check if req is a string that (case-insensitively) equals "home country"
-    if (typeof req === "string" && req.toLowerCase() === "home country") {
-      req = "home country";
+    } else if (typeof req === "string") {
+      // Attempt to extract numeric value (e.g. "60 days")
+      const num = parseInt(req, 10);
+      if (!isNaN(num)) {
+        req = num > 0 ? "visa with day limit" : num < 0 ? "home country" : req;
+      } else if (req.toLowerCase() === "home country") {
+        req = "home country";
+      }
     }
     if (req && visaPriority[req] > visaPriority[worst]) {
       worst = req;
@@ -475,10 +479,10 @@ const GlobeGL = ({ data = [] }) => {
         );
         setTooltipOpen(true);
       } else {
-        // Delay tooltip closure to smooth out rapid movements
+        // Delay tooltip closure to smooth out rapid movements (50ms)
         tooltipTimeoutRef.current = setTimeout(() => {
           setTooltipOpen(false);
-        }, 150);
+        }, 50);
       }
     });
     
@@ -489,6 +493,10 @@ const GlobeGL = ({ data = [] }) => {
           .height(globeRef.current.clientHeight);
       }
     };
+    
+    // Call resize handler immediately to ensure proper sizing
+    handleResize();
+    
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [countries, filteredCountries, colorScheme, advisoryData, visaData, data, countryNames, mousePosition]);
@@ -511,7 +519,7 @@ const GlobeGL = ({ data = [] }) => {
       
       <div
         ref={globeRef}
-        style={{ width: "100%", minHeight: "400px", height: "100%" }}
+        style={{ width: "100%", height: "100%" }}
         onMouseLeave={() => setTooltipOpen(false)}
       />
       {/* Material UI Tooltip using a virtual anchor via slotProps */}
@@ -520,6 +528,7 @@ const GlobeGL = ({ data = [] }) => {
         title={tooltipContent || ""}
         arrow
         placement="top"
+        TransitionProps={{ timeout: { enter: 50, exit: 50 } }}
         slotProps={{
           popper: {
             anchorEl: {

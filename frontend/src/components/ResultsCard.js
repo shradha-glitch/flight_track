@@ -6,7 +6,7 @@ const ResultsCard = ({ destinations = [], onSelectDestination, selectedDestinati
     return (
         <CustomCard>
             <Box sx={{ 
-                height: '500px',
+                height: '550px',
                 display: 'flex',
                 flexDirection: 'column',
                 p: 3
