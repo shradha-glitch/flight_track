@@ -526,14 +526,14 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                     .text("ℹ️")
                     .on("click", () => {
                         alert("Visa Requirements Information:\n\n" +
-                            "- unknown: No information available\n\n" +
-                            "- home country: Travel to or within home country\n\n" +
-                            "- visa free: No visa required\n\n" +
-                            "- visa with day limit: Visa required with a day limit\n\n" +
-                            "- eta: Electronic Travel Authorization required\n\n" +
-                            "- e-visa: Electronic visa required\n\n" +
-                            "- visa on arrival: Visa available on arrival\n\n" +
-                            "- visa required: Visa required before travel");
+                            "- Unknown: No information is available regarding visa requirements for the destination.\n\n" +
+                            "- Home country: Travel within or to your home country doesn’t require a visa.\n\n" +
+                            "- Visa free: No visa is required for entry to the destination.\n\n" +
+                            "- Visa with day limit: A visa is required, but there is a limit on the number of days you can stay.\n\n" +
+                            "- ETA: An Electronic Travel Authorization (ETA) is required before entry, usually for short visits.\n\n" +
+                            "- E-visa: An electronic visa must be obtained online before traveling.\n\n" +
+                            "- Visa on arrival: A visa can be obtained upon arrival at the destination.\n\n" +
+                            "- Visa required: A visa must be obtained before traveling to the destination.");
                     });
             });
 
