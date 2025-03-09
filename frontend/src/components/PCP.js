@@ -57,6 +57,7 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
     
 
 
+
     useEffect(() => {
         // fetch data from the API
         const fetchSourceCountry = async () => {
