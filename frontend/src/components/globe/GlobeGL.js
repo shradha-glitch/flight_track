@@ -1,9 +1,65 @@
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import Globe from "globe.gl";
-import { Box, Tooltip, Typography, Chip, Avatar, Divider } from "@mui/material";
+import { Box, Tooltip, Typography, Chip, Avatar, Divider, Paper } from "@mui/material";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import { GlobeColorSelector } from "./GlobeColorSelector";
 import * as d3 from "d3";
+
+// Colour legend component
+const ColorLegend = ({ colorScheme }) => {
+  const legendItems =
+    colorScheme === "visa"
+      ? [
+          { color: "#4CAF50", label: "Visa Free" },
+          { color: "#8BC34A", label: "Visa with Day Limit" },
+          { color: "#CDDC39", label: "ETA" },
+          { color: "#FFC107", label: "E-Visa" },
+          { color: "#FF9800", label: "Visa on Arrival" },
+          { color: "#F44336", label: "Visa Required" },
+          { color: "#2196F3", label: "Home Country" },
+          { color: "#9E9E9E", label: "Unknown" }
+        ]
+      : [
+          { color: "#5de362", label: "No Advisory" },
+          { color: "#dff235", label: "Advisory for Certain Areas" },
+          { color: "#f29913", label: "Advisory against Non-Essential Travel" },
+          { color: "#e6091c", label: "Advisory against All Travel" },
+          { color: "#9E9E9E", label: "Unknown" }
+        ];
+  
+  return (
+    <Paper 
+      elevation={3}
+      sx={{ 
+        bgcolor: 'rgba(0, 0, 0, 0.7)', 
+        color: 'white',
+        p: 1.5,
+        borderRadius: 1,
+        maxWidth: 220
+      }}
+    >
+      <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
+        {colorScheme === "visa" ? "Visa Requirements" : "Travel Advisory"}
+      </Typography>
+      {legendItems.map((item, index) => (
+        <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+          <Box 
+            sx={{ 
+              width: 12, 
+              height: 12, 
+              borderRadius: '50%', 
+              bgcolor: item.color,
+              mr: 1
+            }} 
+          />
+          <Typography variant="caption">
+            {item.label}
+          </Typography>
+        </Box>
+      ))}
+    </Paper>
+  );
+};
 
 // Fetch functions for advisory and visa data
 const fetchAdvisory = async (country_code) => {
@@ -48,6 +104,7 @@ const fetchWorldData = async () => {
 const getVisaRequirementFromTrips = (feature, tripsData) => {
   const countryName = feature.properties.name;
   const geoISO = feature.id; // assuming this is the ISO code
+  
   // Filter trips using ISO if available, otherwise use fuzzy name matching
   const matchingTrips = tripsData.filter(trip => {
     const tripISO = trip.destination_info?.iso_code;
@@ -84,8 +141,16 @@ const getVisaRequirementFromTrips = (feature, tripsData) => {
   let worst = "unknown";
   for (let key in visaDetails) {
     let req = visaDetails[key];
-    if (typeof req === "number" && req > 0) {
-      req = "visa with day limit";
+    if (typeof req === "number") {
+      if (req > 0) {
+        req = "visa with day limit";
+      } else if (req < 0) {
+        req = "home country";
+      }
+    }
+    // Also check if req is a string that (case-insensitively) equals "home country"
+    if (typeof req === "string" && req.toLowerCase() === "home country") {
+      req = "home country";
     }
     if (req && visaPriority[req] > visaPriority[worst]) {
       worst = req;
@@ -144,7 +209,7 @@ const GlobeGL = ({ data = [] }) => {
     return Array.from(countries);
   }, [data]);
   
-  // Old function using visaData – not used for visa coloring anymore
+  // (Old function using visaData is left here for reference, but not used for visa coloring)
   const getWorstVisaRequirement = (countryId) => {
     let worstRequirement = "unknown";
     const visaPriority = {
@@ -202,7 +267,6 @@ const GlobeGL = ({ data = [] }) => {
           : "#9E9E9E";
       }
       case "visa": {
-        // Use the trip data to compute visa requirement
         const visaRequirement = getVisaRequirementFromTrips(feat, data);
         return visaRequirement === "visa free" ? "#4CAF50" :
                visaRequirement === "visa with day limit" ? "#8BC34A" :
@@ -222,7 +286,7 @@ const GlobeGL = ({ data = [] }) => {
   const isCountryHighlighted = (feat) => {
     const countryName = feat.properties.name;
     const countryId = feat.id;
-    return (countryName && filteredCountries.has(countryName)) || 
+    return (countryName && filteredCountries.has(countryName)) ||
            (countryName && filteredCountries.has(countryName.toLowerCase())) ||
            (countryId && filteredCountries.has(countryId));
   };
@@ -439,6 +503,12 @@ const GlobeGL = ({ data = [] }) => {
       <Box sx={{ position: 'absolute', top: 10, left: 10, zIndex: 10 }}>
         <GlobeColorSelector onChange={handleColorSchemeChange} />
       </Box>
+      
+      {/* Add color legend in top right */}
+      <Box sx={{ position: 'absolute', top: 10, right: 10, zIndex: 10 }}>
+        <ColorLegend colorScheme={colorScheme} />
+      </Box>
+      
       <div
         ref={globeRef}
         style={{ width: "100%", minHeight: "400px", height: "100%" }}
