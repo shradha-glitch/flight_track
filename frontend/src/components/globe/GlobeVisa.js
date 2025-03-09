@@ -7,7 +7,7 @@ import { Tooltip, Typography, Chip, Box, Avatar } from "@mui/material";
 const FetchVisa = async (countryCode) => {
   try {
     const response = await fetch(
-      `http://127.0.0.1:8001/api/visa?country_codes=${countryCode}`
+      `https://flight-track.onrender.com/api/visa?country_codes=${countryCode}`
     );
     if (!response.ok) throw new Error("Network response did not work");
     const result = await response.json();

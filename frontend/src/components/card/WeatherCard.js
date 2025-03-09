@@ -20,7 +20,7 @@ const WeatherCard = ({ selectedDestination }) => {
 
         const fetchWeatherData = async () => {
             const { destination, departureDate, returnDate } = selectedDestination;
-            const apiUrl = `http://127.0.0.1:8001/api/weather/${destination}?departure_date=${departureDate}&return_date=${returnDate}`;
+            const apiUrl = `https://flight-track.onrender.com/api/weather/${destination}?departure_date=${departureDate}&return_date=${returnDate}`;
 
             try {
                 const response = await fetch(apiUrl);
