@@ -34,6 +34,7 @@ from datetime import datetime
 router = APIRouter()
 
 
+
 """
 @endpoint: GET /api/flights/forlondon
 @description: Get flights data with optional origin and destination filters
