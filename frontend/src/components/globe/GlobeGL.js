@@ -164,6 +164,7 @@ const getVisaRequirementFromTrips = (feature, tripsData) => {
 };
 
 const GlobeGL = ({ data = [] }) => {
+  // console.log("data", data)
   const globeRef = useRef();
   const globeEl = useRef();
   const [countries, setCountries] = useState([]);
@@ -177,6 +178,28 @@ const GlobeGL = ({ data = [] }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   // Ref to hold tooltip close timeout
   const tooltipTimeoutRef = useRef(null);
+  const [routes, setRoutes] = useState([]);
+  // console.log("Routes", routes)
+
+  const LONDON_COORDS = {
+    lat: 51.5074,
+    lng: -0.1278
+  };
+
+  //create routes data when filtered destinations change
+  useEffect(() => {
+    const newRoutes = data.map(destination => ({
+      startLat: LONDON_COORDS.lat,
+      startLng: LONDON_COORDS.lng,
+      endLat: destination.destination_info?.latitude,
+      endLng: destination.destination_info?.longitude,
+      color:'rgb(255, 7, 201)', // Amber color for routes
+      destination_info: destination.destination_info,
+    }));
+    setRoutes(newRoutes);
+
+  }, [data]);
+
   
   // Track mouse position globally
   useEffect(() => {
@@ -333,6 +356,21 @@ const GlobeGL = ({ data = [] }) => {
     fetchAllData();
   }, [countries]);
 
+  // Add a separate effect just for routes
+  useEffect(() => {
+    if (!globeEl.current) return;
+    globeEl.current
+      .arcColor('color')
+      .arcDashLength(1.5)
+      .arcDashGap(0.03)
+      .arcDashAnimateTime(2000)
+      .arcsData(routes)
+      .arcStroke(0.7)
+      .arcAltitude(0.5);
+  }, [routes]);
+
+
+
   // Initialize and update the globe
   useEffect(() => {
     if (!globeRef.current || countries.length === 0) return;
@@ -354,6 +392,8 @@ const GlobeGL = ({ data = [] }) => {
         .polygonStrokeColor(() => '#111')
         .polygonsTransitionDuration(300);
     }
+
+  
     
     // Update the globe with the countries data
     globeEl.current
