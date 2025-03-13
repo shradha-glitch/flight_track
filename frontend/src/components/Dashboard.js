@@ -49,7 +49,11 @@ const Dashboard = () => {
         {/* Wrap GlobeGL in CustomCard as it was previously */}
         <CustomCard>
           <Box sx={{ height: "600px", width: "100%" }}>
-            <GlobeGL data={filteredDestinations} />
+            <GlobeGL 
+            data={filteredDestinations} 
+            selectedDestination={selectedDestination}
+            onSelectedDestination={handleSelectDestination}
+            />
           </Box>
         </CustomCard>
         

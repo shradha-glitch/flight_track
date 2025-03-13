@@ -5,9 +5,11 @@ import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import { GlobeColorSelector } from "./GlobeColorSelector";
 import * as d3 from "d3";
 import {API_URL} from '../../constants';
+import { Switch, FormControlLabel } from "@mui/material";
 
 // Colour legend component
 const ColorLegend = ({ colorScheme }) => {
+  const [enableFreeDrag, setEnableFreeDrag] = useState(false);
   const legendItems =
     colorScheme === "visa"
       ? [
@@ -164,7 +166,8 @@ const getVisaRequirementFromTrips = (feature, tripsData) => {
   return worst;
 };
 
-const GlobeGL = ({ data = [] }) => {
+
+const GlobeGL = ({ data = [], onSelectedDestination, selectedDestination }) => {
   // console.log("data", data)
   const globeRef = useRef();
   const globeEl = useRef();
@@ -180,6 +183,7 @@ const GlobeGL = ({ data = [] }) => {
   // Ref to hold tooltip close timeout
   const tooltipTimeoutRef = useRef(null);
   const [routes, setRoutes] = useState([]);
+  const [enableFreeDrag, setEnableFreeDrag] = useState(false);
   // console.log("Routes", routes)
 
   const LONDON_COORDS = {
@@ -361,13 +365,25 @@ const GlobeGL = ({ data = [] }) => {
   useEffect(() => {
     if (!globeEl.current) return;
     globeEl.current
-      .arcColor('color')
+      // .arcColor('color')
+      .arcColor((arc, idx) => arc.__hover ? '#4CAF50' : 'rgb(255, 7, 201)')
       .arcDashLength(1.5)
       .arcDashGap(0.03)
       .arcDashAnimateTime(2000)
       .arcsData(routes)
+      .arcsTransitionDuration(1000)
       .arcStroke(0.7)
-      .arcAltitude(0.5);
+      .arcAltitude(0.5)
+      // .arcHoverPrecision(0.2)
+      .onArcHover((arc) => {
+        if (arc) {
+          arc.__hover = true;
+          globeEl.current.arcsData([...routes]);
+        } else {
+          routes.forEach(route => route.__hover = false);
+          globeEl.current.arcsData([...routes]);
+        }
+      });
   }, [routes]);
 
 
@@ -391,10 +407,24 @@ const GlobeGL = ({ data = [] }) => {
         .polygonAltitude(0.01)
         .polygonSideColor(() => 'rgba(0, 100, 0, 0.15)')
         .polygonStrokeColor(() => '#111')
-        .polygonsTransitionDuration(300);
+        .polygonsTransitionDuration(300)
+        .enablePointerInteraction(true)
+
+      // Set up controls
+      if (globeEl.current.controls()) {
+        globeEl.current.controls().enableZoom = true;
+        globeEl.current.controls().autoRotate = false;
+        globeEl.current.controls().enablePan = false;
+        globeEl.current.controls().enableRotate = true;
+        globeEl.current.controls().minPolarAngle = enableFreeDrag ? 0 : Math.PI / 3.5;
+        globeEl.current.controls().maxPolarAngle = enableFreeDrag ? Math.PI : Math.PI / 1.7;
+      }
     }
 
-  
+    if (globeEl.current && globeEl.current.controls()) {
+      globeEl.current.controls().minPolarAngle = enableFreeDrag ? 0 : Math.PI / 3.5;
+      globeEl.current.controls().maxPolarAngle = enableFreeDrag ? Math.PI : Math.PI / 1.7;
+    }
     
     // Update the globe with the countries data
     globeEl.current
@@ -402,6 +432,29 @@ const GlobeGL = ({ data = [] }) => {
       .polygonCapColor(feat => getCountryColor(feat, isCountryHighlighted(feat)))
       .polygonLabel(() => null);
     
+    globeEl.current
+      .onPolygonClick((polygon, event, {lat,lng}) => {
+        const closestDestination = data.find(dest => {
+          const destLat = dest.destination_info?.latitude;
+          const destLng = dest.destination_info?.longitude;
+          return Math.abs(destLat-lat) < 2 && Math.abs(destLng-lng) < 2;
+        });
+
+        if (closestDestination) {
+          onSelectedDestination(closestDestination);
+        }
+      })
+      .onArcClick((arc) => {
+        // Find the destination that matches this route
+        const clickedDestination = data.find(dest => 
+          dest.destination_info?.latitude === arc.endLat && 
+          dest.destination_info?.longitude === arc.endLng
+        );
+        
+        if (clickedDestination) {
+          onSelectedDestination(clickedDestination);
+        }
+      });
     // Modify onPolygonHover callback to update tooltip content based on trips
     globeEl.current.onPolygonHover((hoverD) => {
       // Clear any pending tooltip close
@@ -540,7 +593,7 @@ const GlobeGL = ({ data = [] }) => {
     
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [countries, filteredCountries, colorScheme, advisoryData, visaData, data, countryNames, mousePosition]);
+  }, [countries, filteredCountries, colorScheme, advisoryData, visaData, data, countryNames, mousePosition, onSelectedDestination, enableFreeDrag]);
   
   const handleColorSchemeChange = (scheme) => {
     setColorScheme(scheme);
@@ -551,6 +604,35 @@ const GlobeGL = ({ data = [] }) => {
       {/* Color selector in top left */}
       <Box sx={{ position: 'absolute', top: 10, left: 10, zIndex: 10 }}>
         <GlobeColorSelector onChange={handleColorSchemeChange} />
+        <FormControlLabel
+          sx={{
+            ml: 1,
+            '& .MuiSwitch-switchBase.Mui-checked': {
+              color: '#D8AD1D', // Switch thumb color when checked
+            },
+            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+              backgroundColor: '#D8AD1D', // Switch track color when checked
+            },
+            '& .MuiSwitch-switchBase': {
+              color: 'white', // Switch thumb color when unchecked
+            },
+            '& .MuiSwitch-track': {
+              backgroundColor: 'grey', // Switch track color when unchecked
+            }
+          }}
+          control={
+            <Switch
+              checked={enableFreeDrag}
+              onChange={(e) => setEnableFreeDrag(e.target.checked)}
+              color="primary"
+            />
+          }
+          label={
+            <Typography sx={{ color: 'white', textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}>
+              Free Rotation
+            </Typography>
+          }
+        />
       </Box>
       
       {/* Add color legend in top right */}

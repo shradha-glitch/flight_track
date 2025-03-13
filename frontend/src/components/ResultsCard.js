@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import CustomCard from "./card/Card";
 import { Box, Typography, Divider, Avatar, Radio } from "@mui/material";
 
 const ResultsCard = ({ destinations = [], onSelectDestination, selectedDestination }) => {
+    const scrollContainerRef = useRef(null);
+
+    useEffect(() => {
+        if (selectedDestination && scrollContainerRef.current) {
+            const selectedElement = scrollContainerRef.current.querySelector(
+                `[data-destination="${selectedDestination.destination}"]`
+            );
+            
+            if (selectedElement) {
+                selectedElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }
+    }, [selectedDestination]);
+
     return (
         <CustomCard>
             <Box sx={{ 
@@ -47,20 +64,31 @@ const ResultsCard = ({ destinations = [], onSelectDestination, selectedDestinati
                         </Box>
                         
                         {/* Scrollable Content */}
-                        <Box sx={{ 
-                            overflowY: 'auto',
-                            flexGrow: 1,
-                            mt: 1
+                        <Box 
+                            ref={scrollContainerRef}
+                            sx={{ 
+                                overflowY: 'auto',
+                                flexGrow: 1,
+                                mt: 1
                         }}>
                             {destinations.map((flight, index) => (
-                                <Box key={index} sx={{ 
-                                    display: 'grid', 
-                                    gridTemplateColumns: '0.2fr 1.5fr 1fr 1fr 1fr',
-                                    py: 1.5,
-                                    borderBottom: '1px solid #eee',
-                                    alignItems: 'center',
-                                    opacity: selectedDestination && selectedDestination.destination !== flight.destination ? 0.6 : 1,
-                                    transition: 'opacity 0.2s ease'
+                                <Box 
+                                    key={index}
+                                    data-destination={flight.destination} 
+                                    onClick={() => onSelectDestination(flight)}
+                                    sx={{ 
+                                        display: 'grid', 
+                                        gridTemplateColumns: '0.2fr 1.5fr 1fr 1fr 1fr',
+                                        py: 1.5,
+                                        borderBottom: '1px solid #eee',
+                                        alignItems: 'center',
+                                        opacity: selectedDestination && selectedDestination.destination !== flight.destination ? 0.6 : 1,
+                                        transition: 'opacity 0.2s ease',
+                                        cursor: 'pointer',
+                                        '&:hover': {
+                                            backgroundColor: '#f5f5f5',
+                                            opacity: 1
+                                        }
                                 }}>
                                     <Radio
                                         checked={selectedDestination?.destination === flight.destination}
