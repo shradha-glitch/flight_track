@@ -1,4 +1,4 @@
-import { Box, Container } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import PcpCard from "./card/PcpCard";
 import { useState } from 'react';
 import ResultsCard from "./ResultsCard";
@@ -63,6 +63,16 @@ const Dashboard = () => {
           selectedDestination={selectedDestination}
         />
         <WeatherCard selectedDestination={selectedDestination} />
+      </Box>
+      <Box sx={{ 
+        mt: 4, 
+        pt: 2, 
+        borderTop: '1px solid rgba(0, 0, 0, 0.12)',
+        textAlign: 'center' 
+      }}>
+        <Typography variant="body2" color="text.secondary">
+          © {new Date().getFullYear()} Journey. Amanda Arbinge, Amina-Kamra Maglić, Laieh Jwella, Kristín Hafsteinsdóttir, Shradha Retharekar.
+        </Typography>
       </Box>
     </Container>
   );
