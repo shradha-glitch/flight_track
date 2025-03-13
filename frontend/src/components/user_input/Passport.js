@@ -12,7 +12,7 @@ const PassportInput = ({ onChange, value }) => {
   const [search, setSearch] = useState("");
   const [countries, setCountries] = useState([]);
   const [selectedCountries, setSelectedCountries] = useState(value || []);
-  const [error, setError] = useState(false); // To manage the error state
+  const [error, setError] = useState(false); 
 
   useEffect(() => {
     fetch("/world.json")
@@ -20,7 +20,7 @@ const PassportInput = ({ onChange, value }) => {
       .then((data) => {
         const countryData = data.features.map((country) => ({
           label: country.properties.name,
-          iso2: country.id.toLowerCase(), // Ensure iso2 is correctly set
+          iso2: country.id.toLowerCase(), 
           callingCode: country.properties.callingCode || "",
         }));
         setCountries(countryData);
@@ -30,18 +30,17 @@ const PassportInput = ({ onChange, value }) => {
 
   const handleChange = (newValue) => {
     setSelectedCountries(newValue);
-    setError(newValue.length === 0); // Show error if no countries are selected
-    onChange?.(newValue); // Send the selected countries to the parent
+    setError(newValue.length === 0); 
+    onChange?.(newValue); 
   };
 
-  // Check for undefined or empty country objects
   const isValidCountry = (country) => country && country.iso2 && country.label;
 
   return (
     <Box
       sx={{
         flex: 1,
-        minWidth: "150px",
+        minWidth: "350px",
         flexDirection: "column",
         display: "flex",
       }}
@@ -58,7 +57,6 @@ const PassportInput = ({ onChange, value }) => {
             {...params}
             label="Passport"
             variant="outlined"
-            // Removed `required` here
             onChange={(e) => setSearch(e.target.value)}
             error={error}
             helperText={error ? "This field is required" : ""}
@@ -98,7 +96,7 @@ const PassportInput = ({ onChange, value }) => {
           if (value.length === 0) return null;
 
           return value
-            .filter(isValidCountry) // Ensure only valid countries are rendered
+            .filter(isValidCountry) 
             .map((country, index) => (
               <Chip
                 {...getTagProps({ index })}
