@@ -391,25 +391,10 @@ const GlobeGL = ({ data = [], onSelectedDestination, selectedDestination }) => {
   // Initialize and update the globe
   useEffect(() => {
     if (!globeRef.current || countries.length === 0) return;
+
     // Filter out Antarctica
     const filteredFeatures = countries.filter(d => d.properties.ISO_A2 !== 'AQ');
     
-    if (selectedDestination?.destination_info) {
-      const coords = {
-        lat: selectedDestination.destination_info.latitude,
-        lng: selectedDestination.destination_info.longitude
-      };
-
-      // Only rotate if we have valid coordinates
-      if (coords.lat && coords.lng) {
-        globeEl.current.pointOfView({
-          lat: coords.lat,
-          lng: coords.lng,
-          altitude: 2.5
-        }, 1000); // 1000ms animation duration
-      }
-    }
-
     // Initialize globe if it doesn't exist
     if (!globeEl.current) {
       globeEl.current = Globe()(globeRef.current);
@@ -608,7 +593,7 @@ const GlobeGL = ({ data = [], onSelectedDestination, selectedDestination }) => {
     
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [countries, filteredCountries, colorScheme, advisoryData, visaData, data, countryNames, mousePosition, onSelectedDestination, enableFreeDrag, selectedDestination]);
+  }, [countries, filteredCountries, colorScheme, advisoryData, visaData, data, countryNames, mousePosition, onSelectedDestination, enableFreeDrag]);
   
   const handleColorSchemeChange = (scheme) => {
     setColorScheme(scheme);
