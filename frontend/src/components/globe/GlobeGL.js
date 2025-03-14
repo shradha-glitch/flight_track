@@ -515,6 +515,7 @@ const GlobeGL = ({ data = [], onSelectedDestination, selectedDestination }) => {
   return (
     <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
       <Box sx={{ position: 'absolute', top: 10, left: 10, zIndex: 10 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2}}>
         <GlobeColorSelector onChange={handleColorSchemeChange} />
         <FormControlLabel
           sx={{
@@ -546,6 +547,7 @@ const GlobeGL = ({ data = [], onSelectedDestination, selectedDestination }) => {
           }
         />
       </Box>
+    </Box>
       
       <Box sx={{ position: 'absolute', top: 10, right: 10, zIndex: 10 }}>
         <ColorLegend colorScheme={colorScheme} />
