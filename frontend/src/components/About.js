@@ -1,13 +1,15 @@
-import { Box, Typography, Container, Avatar } from "@mui/material";
+import { Box, Typography, Container, Avatar, Link, List } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import CustomCard from "./card/Card";
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import ListItem from '@mui/material/ListItem';
 
 const About = () => {
     const team = [
         {
             name: "Amanda Arbinge",
             image: "/team/amanda.png",
-            role: ["bleh bleh", "blah blah"]
+            role: ["Frontend Lead", "API Calls, Data Processing"]
         },
         {
             name: "Amina-Kamra Maglić",
@@ -40,6 +42,8 @@ const About = () => {
           <Typography variant="body1" paragraph>
             Flight Track is a comprehensive flight planning and visualization tool that helps travelers explore destinations worldwide. Our platform combines interactive globe visualization with real-time weather data and travel advisory information.
           </Typography>
+            <Link target="_blank" color="#000"variant="body1" href="https://github.com/shradha-glitch/flight_track" sx={{ textDecoration: 'none' }}>Source code <OpenInNewIcon fontSize="10"></OpenInNewIcon>
+            </Link>
           <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
             Features
           </Typography>
@@ -103,12 +107,34 @@ const About = () => {
           <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
             Data Abstraction and Provenance
           </Typography>
+          <Box>
+          <List>
+            <ListItem>
+            <Link target="_blank" color="#000"variant="body1" href="https://drive.google.com/drive/folders/1EfyEaWFR_R5BLbl9Fp4jIZ_PYX_DP2J3?usp=sharing" sx={{ textDecoration: 'none' }}>Google Drive Folder containing all Data <OpenInNewIcon fontSize="10"></OpenInNewIcon></Link>
+            </ListItem>
+            <ListItem>
+          <Link target="_blank" color="#000"variant="body1" href="https://flagsapi.com/" sx={{ textDecoration: 'none' }}>Flags API <OpenInNewIcon fontSize="10"></OpenInNewIcon></Link>
+          </ListItem>
+          <ListItem>
+          <Link target="_blank" color="#000"variant="body1" href=" https://open-meteo.com/" sx={{ textDecoration: 'none' }}>Weather forecast API<OpenInNewIcon fontSize="10"></OpenInNewIcon></Link>
+          </ListItem>
+          </List>
+          </Box>
           <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
             Task Abstraction
           </Typography>
           <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
             References
           </Typography>
+          <Box>
+          <Typography variant="text" gutterBottom>
+            <List>
+            <ListItem> <Link target="_blank" color="#000"variant="body1" href="https://globe.gl/" sx={{ textDecoration: 'none' }}>Globe.GL. (n.d.). globe.gl. https://globe.gl/ Last accessed: 14/3-2025</Link> </ListItem>  
+            <ListItem><Link target="_blank" color="#000"variant="body1" href="https://vizhub.com/curran/parallel-coordinates-with-brushing" sx={{ textDecoration: 'none' }}>Parallel Coordinates with Brushing. (n.d.). VizHub. https://vizhub.com/curran/parallel-coordinates-with-brushing Last accessed: 14/3-2025</Link></ListItem> 
+            <ListItem><Link target="_blank" color="#000"variant="body1" href="https://link.springer.com/book/10.1007/978-3-540-74205-0" sx={{ textDecoration: 'none' }}>Xu, Y., Hong, W., Chen, N., Li, X., Liu, W., & Zhang, T. (2007). Parallel Filter: a visual classifier based on parallel coordinates and multivariate data analysis. In Lecture notes in computer science (pp. 1172–1183). https://doi.org/10.1007/978-3-540-74205-0_121  </Link></ListItem> 
+            </List>      
+            </Typography>
+          </Box>
           <Box sx={{ 
             mt: 4, 
             pt: 2, 
