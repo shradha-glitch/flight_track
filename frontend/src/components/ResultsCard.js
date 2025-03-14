@@ -43,7 +43,6 @@ const ResultsCard = ({ destinations = [], onSelectDestination, selectedDestinati
                         flexGrow: 1,
                         overflow: 'hidden'
                     }}>
-                        {/* Fixed Header */}
                         <Box sx={{ 
                             backgroundColor: 'white',
                             zIndex: 10,
@@ -63,7 +62,6 @@ const ResultsCard = ({ destinations = [], onSelectDestination, selectedDestinati
                             <Divider />
                         </Box>
                         
-                        {/* Scrollable Content */}
                         <Box 
                             ref={scrollContainerRef}
                             sx={{ 

@@ -34,7 +34,6 @@ import pycountry
 
 
 
-# Load airport data (IATA to ISO country code and city)
 airports = airportsdata.load('IATA')
 
 
@@ -46,16 +45,15 @@ def iata_to_location_info(iata_code):
         return {"city_name": None, "country_name": None, "iso_code": None}
 
     coords = get_airport_coords(iata_code)
-    # Set default values for coordinates
     latitude, longitude = None, None
     if coords:
         latitude, longitude = coords
 
-    airport = airports.get(iata_code.upper())  # Look up IATA code
+    airport = airports.get(iata_code.upper()) 
     if airport:
-        iso_code = airport.get("country")  # ISO 2-letter code
+        iso_code = airport.get("country")
         country_name = pycountry.countries.get(alpha_2=iso_code).name if iso_code else None
-        city_name = airport.get("city")  # Get city name from dataset
+        city_name = airport.get("city")
         return {
             "city_name": city_name,
             "country_name": country_name,
@@ -92,41 +90,37 @@ def load_visa_data():
 def load_flight_data():
     try:
         file_path = os.path.join(os.path.dirname(__file__), "..", "data", "Lon-other.json")
-        print(f"Looking for file at: {file_path}")  # Debug line
+        print(f"Looking for file at: {file_path}")  
         with open(file_path, "r", encoding="utf-8") as file:
             data = json.load(file)["data"]
             if not data:
                 return None
             return data
     except FileNotFoundError:
-        print("File not found!")  # Debug line
+        print("File not found!")  
         return None
     except json.JSONDecodeError:
-        print("Invalid JSON file!")  # Debug line
+        print("Invalid JSON file!")
         return None
 
 
-# Load airport data (includes IATA and country codes)
 airports = airportsdata.load('IATA')
 
 
 def iata_to_iso(iata_code):
-    airport = airports.get(iata_code.upper())  # Look up IATA code
-    return airport['country'] if airport else None  # Return ISO country code
+    airport = airports.get(iata_code.upper())  
+    return airport['country'] if airport else None  
 
 
-# Load airport data for coordinates
 AIRPORTS_URL = "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat"
 AIRPORTS_COLUMNS = [
     "ID", "Name", "City", "Country", "IATA", "ICAO", "Latitude", "Longitude",
     "Altitude", "Timezone", "DST", "TZ_DB", "Type", "Source"
 ]
 
-# Load airports data into a DataFrame
 airports_df = pd.read_csv(AIRPORTS_URL, names=AIRPORTS_COLUMNS, header=None)
 
 
-# Function to get airport coordinates by IATA code
 def get_airport_coords(iata_code: str) -> Optional[tuple[float, float]]:
     """
     Get latitude and longitude for an airport by IATA code.

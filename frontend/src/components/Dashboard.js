@@ -3,13 +3,13 @@ import PcpCard from "./card/PcpCard";
 import { useState } from 'react';
 import ResultsCard from "./ResultsCard";
 import WeatherCard from "./card/WeatherCard";
-import GlobeGL from "./globe/GlobeGL"; // Import the new GlobeGL component
-import CustomCard from "./card/Card"; // Import CustomCard
+import GlobeGL from "./globe/GlobeGL"; 
+import CustomCard from "./card/Card"; 
 
 const Dashboard = () => {
   const [filteredDestinations, setFilteredDestinations] = useState([]);
   const [selectedDestination, setSelectedDestination] = useState(null);
-  const [passportIsoCode, setPassportIsoCode] = useState([]); // State to store passport codes
+  const [passportIsoCode, setPassportIsoCode] = useState([]); 
 
   const handleCity = (city) => {
     console.log("City selected:", city);
@@ -24,7 +24,6 @@ const Dashboard = () => {
     setSelectedDestination(destination);
   };
 
-  // Pass the selected countries to the passportIsoCode state
   const handlePassportChange = (selectedCountries) => {
     setPassportIsoCode(selectedCountries.map((country) => country.iso2));
   };
@@ -42,11 +41,10 @@ const Dashboard = () => {
           <PcpCard 
             onSelect={handleCity} 
             onFilterChange={handleFilterChange}
-            onPassportChange={handlePassportChange} // Pass the passport change handler to PcpCard
+            onPassportChange={handlePassportChange} 
           />
         </Box>
         
-        {/* Wrap GlobeGL in CustomCard as it was previously */}
         <CustomCard>
           <Box sx={{ height: "600px", width: "100%" }}>
             <GlobeGL 

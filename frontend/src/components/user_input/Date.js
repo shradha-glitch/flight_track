@@ -4,26 +4,24 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TextField } from '@mui/material';
-import dayjs from 'dayjs'; // Import Day.js for formatting
+import dayjs from 'dayjs'; 
 
 const CustomDatePicker = ({label, onChange}) => {
   const [selectedDate, setSelectedDate] = React.useState(null);
 
   const handleDateChange = (newDate) => {
     if (newDate) {
-      const formattedDate = dayjs(newDate).format("YYYY-MM-DD"); // Format to dd-mm-yyyy
+      const formattedDate = dayjs(newDate).format("YYYY-MM-DD"); 
       setSelectedDate(newDate);
       if (onChange) {
-        onChange(formattedDate); // Pass formatted date to parent
+        onChange(formattedDate); 
       }
     }
   };
 
-  // Define the range
   const startDate = dayjs("2025-03-11");
   const endDate = dayjs("2025-03-31");
 
-  // Function to disable dates outside the range
   const shouldDisableDate = (date) => date.isBefore(startDate) || date.isAfter(endDate);
 
 
@@ -35,9 +33,9 @@ const CustomDatePicker = ({label, onChange}) => {
           value={selectedDate}
           onChange={handleDateChange}
           shouldDisableDate={shouldDisableDate}
-          minDate={startDate} // Prevents selecting dates before March 11, 2025
-          maxDate={endDate} // Prevents selecting dates after March 31, 2025
-          views={["year", "month", "day"]} // Restricts navigation to year, month, and day
+          minDate={startDate} 
+          maxDate={endDate} 
+          views={["year", "month", "day"]} 
           openTo="day"
           disableFuture={false}
           renderInput={(params) => <TextField {...params} required />}

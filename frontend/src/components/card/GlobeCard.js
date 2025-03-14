@@ -23,7 +23,6 @@ const GlobeCard = ({ destinations = [], countries = [] }) => {
           overflow: "hidden",
         }}
       >
-        {/* We don't need the tab buttons anymore since GlobeGL has its own selector */}
       </Box>
 
       {/* Replace the conditional rendering with just GlobeGL */}

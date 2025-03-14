@@ -19,10 +19,8 @@ from app.flight_controller import router as flight_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
-# Initialize FastAPI app
 app = FastAPI()
 
-# Include the flight router
 app.include_router(flight_router, prefix="/api")
 
 
@@ -32,11 +30,10 @@ async def root():
 
 
 
-# Enable CORS to allow requests from your frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Update this with your frontend's URL if needed
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"], 
+    allow_headers=["*"], 
 )
