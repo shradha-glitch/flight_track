@@ -10,25 +10,30 @@ const About = () => {
     {
       name: "Amanda Arbinge",
       image: "/team/amanda.png",
+      email: "aarbinge@kth.se",
       role: ["Front End", "API Calls", "Data Processing"],
     },
     {
       name: "Amina-Kamra Maglić",
+      email: "maglic@kth.se",
       image: "/team/kamra.png",
-      role: ["Visualisation design", "Front End", "User Testing"],
+      role: [ "Visualisation design", "Front End", "User Testing"],
     },
     {
       name: "Laieh Jwella",
+      email: "laieh@kth.se",
       image: "/team/laieh.png",
       role: ["Visualisation design", "Front End", "User Testing"],
     },
     {
       name: "Kristín Hafsteinsdóttir",
+      email: "khaf@kth.se",
       image: "/team/kristin.png",
       role: ["Front End", "API Calls", "Data Processing", "User Testing"],
     },
     {
       name: "Shradha Retharekar",
+      email: "shradha@kth.se",
       image: "/team/shradha.png",
       role: ["Backend", "Data Processing", "Hosting", "User Testing"],
     },
@@ -98,6 +103,19 @@ const About = () => {
                     }}
                   />
                   <Typography variant="h6"fontWeight="550">{member.name}</Typography>
+
+                  <Typography
+                   variant="body2"
+                    fontWeight="400"
+                    sx={{
+                      color: "#1B1B1B",
+                       mb: 0.5,
+                       fontSize: "0.9rem",
+                     }}
+                  >
+                    {member.email}
+                  </Typography>
+                  
                   {member.role.map((roleItem, index) => (
                     <Typography
                       key={index}
@@ -108,7 +126,7 @@ const About = () => {
                         mb: 0.5,
                         fontSize: "0.9rem",
                       }}
-                    >
+                      >
                       {roleItem}
                     </Typography>
                   ))}
@@ -119,6 +137,7 @@ const About = () => {
           <Typography variant="h5" fontWeight="550"gutterBottom sx={{ mt: 3 }}>
             Data Abstraction and Provenance
           </Typography>
+          
           <Box>
             <List>
               <ListItem>
@@ -231,6 +250,27 @@ const About = () => {
           <Typography variant="h5" fontWeight={"550"}gutterBottom sx={{ mt: 3 }}>
             Task Abstraction
           </Typography>
+
+          <Typography variant="body1" fontWeight={"550"} >Analyze:</Typography>
+          <Typography variant="body1" fontWeight="light"paragraph>
+          • Consume • Discover • Produce • Derive (average weather data, trip duration)
+          </Typography>
+
+          <Typography variant="body1" fontWeight={"550"} >Search:</Typography>
+          <Typography variant="body1" fontWeight="light"paragraph>
+          • Browse • Location (Filter preferences like price: Known) • Target (Specific flight: Unknown)
+          </Typography>
+
+          <Typography variant="body1" fontWeight={"550"} >Query:</Typography>
+          <Typography variant="body1" fontWeight="light"paragraph>
+          • Identify • Compare
+          </Typography>
+
+          <Typography variant="body1" fontWeight={"550"} >Target:</Typography>
+          <Typography variant="body1" fontWeight="light"paragraph>
+          • Extremes • Paths
+          </Typography>
+          
           <Typography variant="h5" fontWeight={"550"}gutterBottom sx={{ mt: 3 }}>
             References
           </Typography>
