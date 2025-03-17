@@ -10,37 +10,37 @@ const About = () => {
     {
       name: "Amanda Arbinge",
       image: "/team/amanda.png",
-      role: ["Frontend Lead", "API Calls, Data Processing"],
+      role: ["Front End", "API Calls", "Data Processing"],
     },
     {
       name: "Amina-Kamra Maglić",
       image: "/team/kamra.png",
-      role: ["bleh bleh", "blah blah"],
+      role: ["Visualisation design", "Front End", "User Testing"],
     },
     {
       name: "Laieh Jwella",
       image: "/team/laieh.png",
-      role: ["bleh bleh", "Blah blah"],
+      role: ["Visualisation design", "Front End", "User Testing"],
     },
     {
       name: "Kristín Hafsteinsdóttir",
       image: "/team/kristin.png",
-      role: ["Frontend", "API Calls", "Data processing", "User testing"],
+      role: ["Front End", "API Calls", "Data Processing", "User Testing"],
     },
     {
       name: "Shradha Retharekar",
       image: "/team/shradha.png",
-      role: ["bleh bleh", "blah blah"],
+      role: ["Backend", "Data Processing", "Hosting", "User Testing"],
     },
   ];
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <CustomCard sx={{ backgroundColor: "#CBC5B1" }}>
         <Box sx={{ p: 3 }}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h4" fontWeight="bold" gutterBottom>
             About Flight Track
           </Typography>
-          <Typography variant="body1" paragraph>
+          <Typography variant="body1" fontWeight="light"paragraph>
             Flight Track is a comprehensive flight planning and visualization
             tool that helps travelers explore destinations worldwide. Our
             platform combines interactive globe visualization with real-time
@@ -49,31 +49,32 @@ const About = () => {
           <Link
             target="_blank"
             color="#000"
-            variant="body1"
+            variant="body2"
+            fontWeight="light"
             href="https://github.com/shradha-glitch/flight_track"
             sx={{ textDecoration: "none" }}
           >
             Source code <OpenInNewIcon fontSize="10"></OpenInNewIcon>
           </Link>
-          <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+          <Typography variant="h5" fontWeight="550"gutterBottom sx={{ mt: 3 }}>
             Features
           </Typography>
-          <Typography variant="body1" paragraph>
+          <Typography variant="body1" fontWeight="light"paragraph>
             • Interactive 3D Globe Visualization • Real-time Weather Information
             • Travel Advisory Updates • Visa Requirement Details • Flight Route
             Planning
           </Typography>
-          <Typography variant="body1" paragraph>
+          <Typography variant="body1" fontWeight="light"paragraph>
             Built with Python, React, Material UI and D3.js, Flight Track aims
             to make travel planning more intuitive and informative.
           </Typography>
-          <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+          <Typography variant="h5" fontWeight="550"gutterBottom sx={{ mt: 3 }}>
             Demo Video
           </Typography>
-          <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+          <Typography variant="h5" fontWeight="550"gutterBottom sx={{ mt: 3 }}>
             The Team
-          </Typography>
-          <Grid container spacing={4} sx={{ mt: 2, mb: 4 }}>
+          </Typography >
+          <Grid container spacing={4} sx={{ mt: 2, mb: 4 }} >
             {team.map((member) => (
               <Grid item xs={12} sm={6} md={4} key={member.name}>
                 <Box
@@ -93,14 +94,15 @@ const About = () => {
                       width: 200,
                       height: 200,
                       mb: 2,
-                      border: "3px solid #fff",
+                      border: "3px solid #f8c424",
                     }}
                   />
-                  <Typography variant="h6">{member.name}</Typography>
+                  <Typography variant="h6"fontWeight="550">{member.name}</Typography>
                   {member.role.map((roleItem, index) => (
                     <Typography
                       key={index}
                       variant="body2"
+                      fontWeight="light"
                       sx={{
                         color: "#1B1B1B",
                         mb: 0.5,
@@ -114,13 +116,14 @@ const About = () => {
               </Grid>
             ))}
           </Grid>
-          <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+          <Typography variant="h5" fontWeight="550"gutterBottom sx={{ mt: 3 }}>
             Data Abstraction and Provenance
           </Typography>
           <Box>
             <List>
               <ListItem>
                 <Link
+                  fontWeight="light"
                   target="_blank"
                   color="#000"
                   variant="body1"
@@ -133,6 +136,7 @@ const About = () => {
               </ListItem>
               <ListItem>
                 <Link
+                fontWeight="light"
                   target="_blank"
                   color="#000"
                   variant="body1"
@@ -144,6 +148,7 @@ const About = () => {
               </ListItem>
               <ListItem>
                 <Link
+                fontWeight="light"  
                   target="_blank"
                   color="#000"
                   variant="body1"
@@ -154,24 +159,79 @@ const About = () => {
                   <OpenInNewIcon fontSize="10"></OpenInNewIcon>
                 </Link>
               </ListItem>
+              <ListItem>
+                <Link
+                fontWeight="light"  
+                  target="_blank"
+                  color="#000"
+                  variant="body1"
+                  href=" https://www.regeringen.se/ud-avrader/ "
+                  sx={{ textDecoration: "none" }}
+                >
+                  Safety Advisory
+                  <OpenInNewIcon fontSize="10"></OpenInNewIcon>
+                </Link>
+              </ListItem>
+              <ListItem>
+                <Link
+                fontWeight="light"  
+                  target="_blank"
+                  color="#000"
+                  variant="body1"
+                  href=" https://github.com/nickypangers/passport-visa-api  "
+                  sx={{ textDecoration: "none" }}
+                >
+                  Visa Requirements
+                  <OpenInNewIcon fontSize="10"></OpenInNewIcon>
+                </Link>
+              </ListItem>
+              <ListItem>
+                <Link
+                fontWeight="light"  
+                  target="_blank"
+                  color="#000"
+                  variant="body1"
+                  href=" https://developers.amadeus.com/self-service/category/flights/api-doc/flight-offers-search/api-reference "
+                  sx={{ textDecoration: "none" }}
+                >
+                  Amadeus Flights API
+                  <OpenInNewIcon fontSize="10"></OpenInNewIcon>
+                </Link>
+              </ListItem>
+              <ListItem>
+                <Link
+                fontWeight="light"  
+                  target="_blank"
+                  color="#000"
+                  variant="body1"
+                  href=" https://github.com/jpatokal/openflights/blob/master/data/airports.dat
+ "
+                  sx={{ textDecoration: "none" }}
+                >
+                  Airports API
+                  <OpenInNewIcon fontSize="10"></OpenInNewIcon>
+                </Link>
+              </ListItem>
             </List>
             <Box
               component={"img"}
+              
               src={"journey.png"}
               alt="Data Connection"
               sx={{
+
                 height: 400,
                 width: 500,
-                alignContent:"center",
+                alignContent:"center", 
                 maxHeight: { xs: 233, md: 300 },
                 maxWidth: { xs: 350, md: 500 },
               }}
             ></Box>
           </Box>
-          <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+          <Typography variant="h5" fontWeight={"550"}gutterBottom sx={{ mt: 3 }}>
             Task Abstraction
           </Typography>
-          <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+          <Typography variant="h5" fontWeight={"550"}gutterBottom sx={{ mt: 3 }}>
             References
           </Typography>
           <Box>
@@ -181,6 +241,7 @@ const About = () => {
                   {" "}
                   <Link
                     target="_blank"
+                    fontWeight={"light"}
                     color="#000"
                     variant="body1"
                     href="https://globe.gl/"
@@ -193,6 +254,7 @@ const About = () => {
                 <ListItem>
                   <Link
                     target="_blank"
+                    fontWeight={"light"}
                     color="#000"
                     variant="body1"
                     href="https://vizhub.com/curran/parallel-coordinates-with-brushing"
@@ -206,6 +268,7 @@ const About = () => {
                 <ListItem>
                   <Link
                     target="_blank"
+                    fontWeight={"light"}
                     color="#000"
                     variant="body1"
                     href="https://link.springer.com/book/10.1007/978-3-540-74205-0"
