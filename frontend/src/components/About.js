@@ -43,13 +43,13 @@ const About = () => {
       <CustomCard sx={{ backgroundColor: "#CBC5B1" }}>
         <Box sx={{ p: 3 }}>
           <Typography variant="h4" fontWeight="bold" gutterBottom>
-            About Flight Track
+            About Journey
           </Typography>
-          <Typography variant="body1" fontWeight="light"paragraph>
-            Flight Track is a comprehensive flight planning and visualization
+          <Typography variant="body1" fontWeight="light" paragraph>
+            Journey is a comprehensive flight planning and visualization
             tool that helps travelers explore destinations worldwide. Our
-            platform combines interactive globe visualization with real-time
-            weather data and travel advisory information.
+            platform combines flight data with interactive globe visualization, real-time
+            weather data, visa requirement and travel advisory information.
           </Typography>
           <Link
             target="_blank"
@@ -64,14 +64,14 @@ const About = () => {
           <Typography variant="h5" fontWeight="550"gutterBottom sx={{ mt: 3 }}>
             Features
           </Typography>
-          <Typography variant="body1" fontWeight="light"paragraph>
-            • Interactive 3D Globe Visualization • Real-time Weather Information
-            • Travel Advisory Updates • Visa Requirement Details • Flight Route
-            Planning
+          <Typography variant="body1" fontWeight="light" paragraph>
+            • Interactive 3D Globe Visualization and Parallel Coordinates Plot • Flight Routes
+             • Real-time Weather Information
+            • Travel Advisory Updates • Visa Requirement Details 
           </Typography>
-          <Typography variant="body1" fontWeight="light"paragraph>
-            Built with Python, React, Material UI and D3.js, Flight Track aims
-            to make travel planning more intuitive and informative.
+          <Typography variant="body1" fontWeight="light" paragraph>
+            Built with Python, React, Material UI, D3.js and GlobeGL, Journey aims
+            to make travel planning more intuitive and informative, without juggling multiple websites.
           </Typography>
           <Typography variant="h5" fontWeight="550"gutterBottom sx={{ mt: 3 }}>
             Demo Video
@@ -137,7 +137,13 @@ const About = () => {
           <Typography variant="h5" fontWeight="550"gutterBottom sx={{ mt: 3 }}>
             Data Abstraction and Provenance
           </Typography>
-          
+          <Typography variant="body1" paragraph>
+            The data is connected to gether either with AITA code, ISO2 code or Coordinates, see diagram below. 
+            The data was collected from various sources and then cleaned and transformed to fit our needs.
+            These transformation were for the weather data, transforming it into a categorical data, deriving the average from daily weather information. 
+            The trip duration is derived from departure and return date. 
+            Journey uses following data:
+          </Typography>
           <Box>
             <List>
               <ListItem>
@@ -251,22 +257,22 @@ const About = () => {
             Task Abstraction
           </Typography>
 
-          <Typography variant="body1" fontWeight={"550"} >Analyze:</Typography>
+          <Typography variant="body1" fontWeight={"550"} color="red" >Analyze:</Typography>
           <Typography variant="body1" fontWeight="light"paragraph>
           • Consume • Discover • Produce • Derive (average weather data, trip duration)
           </Typography>
 
-          <Typography variant="body1" fontWeight={"550"} >Search:</Typography>
+          <Typography variant="body1" fontWeight={"550"} color="green" >Search:</Typography>
           <Typography variant="body1" fontWeight="light"paragraph>
           • Browse • Location (Filter preferences like price: Known) • Target (Specific flight: Unknown)
           </Typography>
 
-          <Typography variant="body1" fontWeight={"550"} >Query:</Typography>
+          <Typography variant="body1" fontWeight={"550"} color="blue">Query:</Typography>
           <Typography variant="body1" fontWeight="light"paragraph>
           • Identify • Compare
           </Typography>
 
-          <Typography variant="body1" fontWeight={"550"} >Target:</Typography>
+          <Typography variant="body1" fontWeight={"550"} color="yellow" >Target:</Typography>
           <Typography variant="body1" fontWeight="light"paragraph>
           • Extremes • Paths
           </Typography>
