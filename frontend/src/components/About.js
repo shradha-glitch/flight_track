@@ -47,8 +47,9 @@ const About = () => {
           </Typography>
           <Typography variant="body1" fontWeight="light" paragraph>
             Journey is a comprehensive flight planning and visualization
-            tool that helps travelers explore destinations worldwide. Our
-            platform combines flight data with interactive globe visualization, real-time
+            tool that helps travelers explore destinations worldwide. You dont have to worry 
+            about juggling multiple website at once, our
+            platform combines flight data with interactive globe visualization (Globe.GL, n.d.), real-time
             weather data, visa requirement and travel advisory information.
           </Typography>
           <Link
@@ -70,8 +71,10 @@ const About = () => {
             • Travel Advisory Updates • Visa Requirement Details 
           </Typography>
           <Typography variant="body1" fontWeight="light" paragraph>
-            Built with Python, React, Material UI, D3.js and GlobeGL, Journey aims
-            to make travel planning more intuitive and informative, without juggling multiple websites.
+          Built with Python, React, Material UI, D3.js and GlobeGL, Journey aims
+          to make travel planning more intuitive and informative. The project is 
+          hosted using Vercel (Vercel, n.d.) for the frontend and Render (Render, n.d.)
+          for the backend, following deployment guides by Andy's Tech Tutorials (n.d.) and Neupane (n.d.).
           </Typography>
           <Typography variant="h5" fontWeight="550"gutterBottom sx={{ mt: 3 }}>
             Demo Video
@@ -138,7 +141,8 @@ const About = () => {
             Data Abstraction and Provenance
           </Typography>
           <Typography variant="body1" paragraph>
-            The data is connected to gether either with AITA code, ISO2 code or Coordinates, see diagram below. 
+            Most of the data is connected to each other in the parallel coordinates plot (Parallel Coordinates with Brushing, n.d.), (Xu et al., 2007) or the Globe (Globe.GL, n.d.).
+            The data is connected together either with AITA code, ISO2 code or Coordinates, see diagram below. 
             The data was collected from various sources and then cleaned and transformed to fit our needs.
             These transformation were for the weather data, transforming it into a categorical data, deriving the average from daily weather information. 
             The trip duration is derived from departure and return date. 
@@ -257,24 +261,29 @@ const About = () => {
             Task Abstraction
           </Typography>
 
-          <Typography variant="body1" fontWeight={"550"} color="red" >Analyze:</Typography>
+          <Typography variant="body1" fontWeight={"550"} color="red" >Analyze (Munzner, 2014):</Typography>
           <Typography variant="body1" fontWeight="light"paragraph>
-          • Consume • Discover • Produce • Derive (average weather data, trip duration)
+          • Consume: Users view and interpret flight data and travel information <br/>
+          • Discover: Users browse new destinations and travel possibilities <br/>
+          • Produce: System generates visualizations from raw data <br/>
+          • Derive: System calculates average weather conditions and trip durations from raw data <br/>
           </Typography>
 
-          <Typography variant="body1" fontWeight={"550"} color="green" >Search:</Typography>
+          <Typography variant="body1" fontWeight={"550"} color="green" >Search (Munzner, 2014):</Typography>
           <Typography variant="body1" fontWeight="light"paragraph>
-          • Browse • Location (Filter preferences like price: Known) • Target (Specific flight: Unknown)
+          • Browse: Users browse available destinations and flights freely. The users filter results based on known preferences or location of the data (price, weather, etc.). However, users search for specific flights without knowing exact details or target.
           </Typography>
 
-          <Typography variant="body1" fontWeight={"550"} color="blue">Query:</Typography>
+          <Typography variant="body1" fontWeight={"550"} color="blue">Query (Munzner, 2014):</Typography>
           <Typography variant="body1" fontWeight="light"paragraph>
-          • Identify • Compare
+          • Identify: Users can find specific details about flights, destinations, and travel requirements <br/>
+          • Compare: Users can evaluate different travel options, prices, and conditions <br/>
           </Typography>
 
-          <Typography variant="body1" fontWeight={"550"} color="yellow" >Target:</Typography>
+          <Typography variant="body1" fontWeight={"550"} color="yellow" >Target (Munzner, 2014):</Typography>
           <Typography variant="body1" fontWeight="light"paragraph>
-          • Extremes • Paths
+          • Extremes: Users can identify best/worst options based on their criteria on the parallel coordinates plot <br/>
+          • Paths: Users can visualize and analyze flight routes <br/>
           </Typography>
           
           <Typography variant="h5" fontWeight={"550"}gutterBottom sx={{ mt: 3 }}>
@@ -283,6 +292,19 @@ const About = () => {
           <Box>
             <Typography variant="text" gutterBottom>
               <List>
+              <ListItem>
+                  <Link
+                    target="_blank"
+                    fontWeight={"light"}
+                    color="#000"
+                    variant="body1"
+                    href="https://www.youtube.com/watch?v=UuRwz35cUoM"
+                    sx={{ textDecoration: "none" }}
+                  >
+                    Andy's Tech Tutorials. (n.d.). How to deploy a React app on Vercel for free [Video]. YouTube. https://www.youtube.com/watch?v=UuRwz35cUoM
+                    Last accessed: 18/3-2025
+                  </Link>
+                </ListItem>
                 <ListItem>
                   {" "}
                   <Link
@@ -303,12 +325,65 @@ const About = () => {
                     fontWeight={"light"}
                     color="#000"
                     variant="body1"
+                    href="https://doi.org/10.1201/b17511-3"
+                    sx={{ textDecoration: "none" }}
+                  >
+                  Munzner, T. (2014). Why: Task abstraction (1st ed.). A K Peters/CRC Press.
+                  https://doi.org/10.1201/b17511-3
+                  Last accessed: 18/3-2025
+                  </Link>
+                </ListItem>
+                <ListItem>
+                  <Link
+                    target="_blank"
+                    fontWeight={"light"}
+                    color="#000"
+                    variant="body1"
+                    href="https://www.youtube.com/watch?v=_COyD1CExKU"
+                    sx={{ textDecoration: "none" }}
+                  >
+                    Neupane, A. (n.d.). How to deploy FastAPI app for free on Render [Video]. YouTube. https://www.youtube.com/watch?v=_COyD1CExKU
+                    Last accessed: 18/3-2025
+                  </Link>
+                </ListItem>
+                <ListItem>
+                  <Link
+                    target="_blank"
+                    fontWeight={"light"}
+                    color="#000"
+                    variant="body1"
                     href="https://vizhub.com/curran/parallel-coordinates-with-brushing"
                     sx={{ textDecoration: "none" }}
                   >
                     Parallel Coordinates with Brushing. (n.d.). VizHub.
                     https://vizhub.com/curran/parallel-coordinates-with-brushing
                     Last accessed: 14/3-2025
+                  </Link>
+                </ListItem>
+                <ListItem>
+                  <Link
+                    target="_blank"
+                    fontWeight={"light"}
+                    color="#000"
+                    variant="body1"
+                    href="https://render.com/"
+                    sx={{ textDecoration: "none" }}
+                  >
+                    Render. (n.d.). Render - Cloud application hosting for developers. https://render.com/
+                    Last accessed: 18/3-2025
+                  </Link>
+                </ListItem>
+                <ListItem>
+                  <Link
+                    target="_blank"
+                    fontWeight={"light"}
+                    color="#000"
+                    variant="body1"
+                    href="https://vercel.com/"
+                    sx={{ textDecoration: "none" }}
+                  >
+                    Vercel. (n.d.). Vercel - Develop. Preview. Ship. https://vercel.com/
+                    Last accessed: 18/3-2025
                   </Link>
                 </ListItem>
                 <ListItem>
