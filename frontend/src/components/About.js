@@ -49,8 +49,10 @@ const About = () => {
             Journey is a comprehensive flight planning and visualization
             tool that helps travelers explore destinations worldwide. You dont have to worry 
             about juggling multiple website at once, our
-            platform combines flight data with interactive globe visualization (Globe.GL, n.d.), real-time
-            weather data, visa requirement and travel advisory information.
+            Users can book flights only from London between March 11 and March 31, 2025. 
+            Additionally, they can add their passport details and include multiple passports 
+            if traveling with international friends. This feature visually highlights destinations 
+            they can visit together based on their combined passport privileges.
           </Typography>
           <Link
             target="_blank"
