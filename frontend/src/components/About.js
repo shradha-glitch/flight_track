@@ -64,7 +64,7 @@ const About = () => {
           </Link>
 
           <Typography variant="h5" fontWeight="550" gutterBottom sx={{ mt: 3 }}>
-            How to Use
+            How to Use (Tips)
           </Typography>
          
           <Typography variant="body1" fontWeight="550">
@@ -84,8 +84,8 @@ const About = () => {
 
           <Typography variant="body1" fontWeight="light" paragraph>
           Use the parallel coordinates plot to compare multiple destinations. 
-          You can analyze visa requirements, weather conditions, or other factors 
-          across different countries.
+          You can analyze the relationships between price, weather conditions, or other factors 
+          by dragging the name of the axis left or right.
           </Typography>
 
           <Typography variant="body1" fontWeight="550">
