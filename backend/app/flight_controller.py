@@ -162,6 +162,8 @@ async def get_visa_requirements(
     - country_codes: Comma-separated list of ISO country codes (uppercase, e.g., 'US,GB,FR')
 @usage: curl http://localhost:8000/api/visa?country_codes=US,GB,FR
 """
+
+
 @router.get("/visa")
 async def get_visa_requirements(country_codes: str = Query(..., description="Comma-separated list of country codes")):
     """
