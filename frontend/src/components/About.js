@@ -51,10 +51,6 @@ const About = () => {
             that helps travelers explore destinations worldwide. You dont have
             to worry about juggling multiple website at once, our Users can book
             flights only from London between March 11 and March 31, 2025.
-            Additionally, they can add their passport details and include
-            multiple passports if traveling with international friends. This
-            feature visually highlights destinations they can visit together
-            based on their combined passport privileges.
           </Typography>
           <Link
             target="_blank"
@@ -66,6 +62,43 @@ const About = () => {
           >
             Source code <OpenInNewIcon fontSize="10"></OpenInNewIcon>
           </Link>
+
+          <Typography variant="h5" fontWeight="550" gutterBottom sx={{ mt: 3 }}>
+            How to Use
+          </Typography>
+         
+          <Typography variant="body1" fontWeight="550">
+          Planning a trip with friends? ✈️
+          </Typography>
+
+          <Typography variant="body1" fontWeight="light" paragraph>
+            You can add their passport details and include
+            multiple passports if traveling with international friends. This
+            feature visually highlights destinations you can visit together
+            based on your combined passport privileges.
+          </Typography>
+
+          <Typography variant="body1" fontWeight="550">
+          Compare Relationships on Axes 📈
+          </Typography>
+
+          <Typography variant="body1" fontWeight="light" paragraph>
+          Use the parallel coordinates plot to compare multiple destinations. 
+          You can analyze visa requirements, weather conditions, or other factors 
+          across different countries.
+          </Typography>
+
+          <Typography variant="body1" fontWeight="550">
+          Click on Destinations for Connections 🌍 
+          </Typography>
+
+          <Typography variant="body1" fontWeight="light" paragraph>
+          Click on a destination on the globe to highlight its connections 
+          in the results card. This helps you visually explore the best 
+          travel options.
+          </Typography>
+
+
           <Typography variant="h5" fontWeight="550" gutterBottom sx={{ mt: 3 }}>
             Features
           </Typography>
@@ -161,7 +194,7 @@ const About = () => {
           <Typography variant="h5" fontWeight="550" gutterBottom sx={{ mt: 3 }}>
             Data Abstraction and Provenance
           </Typography>
-          <Typography variant="body1" paragraph>
+          <Typography variant="body1" fontWeight={"light"}paragraph>
             Most of the data is connected to each other in the parallel
             coordinates plot (Parallel Coordinates with Brushing, n.d.), (Xu et
             al., 2007) or the Globe (Globe.GL, n.d.). The data is connected
