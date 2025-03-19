@@ -125,7 +125,7 @@ const About = () => {
             }}
           >
             <ReactPlayer
-              url="/JourneyDemoVideo.mp4"
+              url="https://vimeo.com/1067218107"
               width="650px"
               height="394px"
               controls
