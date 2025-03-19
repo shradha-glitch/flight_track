@@ -6,8 +6,8 @@ import PassportInput from "../user_input/Passport";
 import DatePicker from "../user_input/Date";
 import Header from "../Header";
 import SearchIcon from "@mui/icons-material/Search";
-import React, { useState, useEffect } from "react";
-import Logo from "../logo";  // Add this import
+import React, { useState } from "react";
+import Logo from "../logo";  
 
 const PcpCard = ({ onSelect, onFilterChange, onPassportChange }) => {
   const [isFormValid, setIsFormValid] = useState(false);
@@ -85,7 +85,7 @@ const PcpCard = ({ onSelect, onFilterChange, onPassportChange }) => {
               </Box>
             )}
           </Box>
-          <Box sx={{ width: { xs: "100%", sm: "45%", md: "30%", lg: "250px" }, minWidth: "200px" }}>
+          <Box sx={{ width: { xs: "100%", sm: "45%", md: "30%", lg: "450px" }, minWidth: "200px" }}>
             <PassportInput onChange={handlePassportChange} />
             {showPassportWarning && (
               <Box sx={{ color: "error.main", fontSize: "0.75rem", mt: 0.5, ml: 2, fontFamily: "Helvetica" }}>
@@ -110,7 +110,7 @@ const PcpCard = ({ onSelect, onFilterChange, onPassportChange }) => {
               "&:hover": {
                 backgroundColor: "#D8AD1C",
               },
-              mt: { xs: 1, sm: 0 }, // Add margin top on small screens
+              mt: { xs: 1, sm: 0 }, 
             }}
           >
             Search

@@ -1,24 +1,21 @@
-import { useEffect, useRef, useState } from "react"; // Import hooks for managing side effects and references
-import * as d3 from "d3"; // Import D3.js for data visualization
+import { useEffect, useRef, useState } from "react"; 
+import * as d3 from "d3";
 import LinearProgress from '@mui/material/LinearProgress';
-import InfoIcon from '@mui/icons-material/Info';
 import { Typography } from '@mui/material';
 import { API_URL } from '../constants';
 
 const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} ) => {
-    const chartRef = useRef(); // Reference to the div container where the chart will be drawn
-    const [data, setData] = useState([]); // State to store data from the API
-    // Update the screen dimensions calculation
-    const [screenDimensions, setScreenDimensions] = useState({
-        width: Math.max(window.innerWidth * 0.85, 800),  // Minimum width of 800px
-        height: Math.max(window.innerHeight * 0.65, 500) // Minimum height of 500px
-    });
+    const chartRef = useRef();
+    const [data, setData] = useState([]); 
     const [originalFlightData, setOriginalFlightData] = useState([]);
+    const [screenDimensions, setScreenDimensions] = useState({
+        width: Math.max(window.innerWidth * 0.85, 800),  
+        height: Math.max(window.innerHeight * 0.65, 500) 
+    });
     const [visaDetails, setVisaDetails] = useState([]);
 
     const [loading, setLoading] = useState(true);
     
-    // Update the resize handler
     useEffect(() => {
         const handleResize = () => {
             setScreenDimensions({
@@ -31,13 +28,12 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
         return () => window.removeEventListener("resize", handleResize);
     }, []);
     
-    // Update the margin and styling in the chart creation
     useEffect(() => {
         if (data.length === 0) return;
     
         const { width, height } = screenDimensions;
         const margin = { 
-            top: Math.max(height * 0.08, 40),     // Responsive margins
+            top: Math.max(height * 0.08, 40),    
             right: Math.max(width * 0.06, 80),
             bottom: Math.max(height * 0.1, 50),
             left: Math.max(width * 0.04, 45)
@@ -59,25 +55,20 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
 
 
     useEffect(() => {
-        // fetch data from the API
         const fetchSourceCountry = async () => {
             try {
                 const response = await fetch(`${API_URL}/api/flights/forlondon?departure_date=${departureDate}`);
                 const result = await response.json();
                 setOriginalFlightData(result);
                 
-                // Extract destination IATA codes and dates
                 const isoCodes = result.map(item => item.destination_info.iso_code);
                 const iataCodes = result.map(item => item.destination);
                 const departureDates = result.map(item => item.departureDate);
                 const returnDates = result.map(item => item.returnDate);
 
-                // Fetch all weather data in a single API call
                 const weatherResponse = await fetch(`${API_URL}/api/neooneweather?departure_date=${departureDate}`);
                 const allWeatherData = await weatherResponse.json();
                 
-
-               // Process weather data for each destination
                 const weatherData = iataCodes.map(iataCode => {
                 const destinationWeather = allWeatherData.destinations[iataCode];
                 if (!destinationWeather) return { iataCode, temperature: Math.random() * 40, climate: "None" };
@@ -95,12 +86,9 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                 };
             });
 
-
-                // Fetch all travel advisory data in a single API call
                 const advisoryResponse = await fetch(`${API_URL}/api/destinations/travel-advisory/`);
                 const advisoryData = await advisoryResponse.json();
 
-                // Process advisory data for each destination
                 const advisoryInfo = iataCodes.map(iataCode => {
                     if (!advisoryData.advisories || !advisoryData.advisories[iataCode]) {
                         return { iataCode, advisory: "None" };
@@ -116,11 +104,9 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                 });
 
 
-                // Fetch visa data in a single API call
                 const visaResponse = await fetch(`${API_URL}/api/pcpvisa?country_codes=${passportIsoCode.join(',')}&departure_date=${departureDate}`);
                 const allVisaData = await visaResponse.json();
 
-                // Process visa data for each destination
                 const visaData = iataCodes.map(iataCode => {
                     const destinationRequirements = allVisaData.destination_requirements[iataCode] || {};
                     return {
@@ -146,7 +132,6 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                 });
                 setData(updatedData);
                 setLoading(false);
-                // Store visa details by country code
                 const extractedVisaDetails = {};
                 visaData.forEach((data, index) => {
                     const visaRequirements = data.visaRequirements;
@@ -174,10 +159,9 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
     }, [passportIsoCode, departureDate]);
 
 
-    // Function to determine the worst visa requirement
     const getWorstVisaRequirement = (visaData) => { 
         const visaRequirements = visaData.visaRequirements; 
-        let worstVisa = "unknown"; // Default to visa free
+        let worstVisa = "unknown"; 
         const visaPriority = {
             "unknown": 0,
             "home country": 1,
@@ -190,7 +174,6 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
         };
 
 
-    // Loop through the visaRequirements object
         for (let countryCode in visaRequirements) {
             let visaRequirement = visaRequirements[countryCode];
 
@@ -199,98 +182,71 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
             } else if (!isNaN(visaRequirement)) {
                 visaRequirement = "visa with day limit";
             }
-
-            // Compare and update worstVisa if the current visa has a worse priority
             if (visaPriority[visaRequirement] > visaPriority[worstVisa]) {
                 worstVisa = visaRequirement;  // Update worstVisa
             }
         }
-        // console.log("Worst visa requirement:", worstVisa);
         return worstVisa;
     };
 
     
 
     useEffect(() => {
-        if (data.length === 0) return; // Do nothing if data is not loaded yet
+        if (data.length === 0) return;
 
-        // ----------------------
-        // 2. Chart Screen Dimensions (Balanced Margins for Centering)
-        // ----------------------
-        const { width, height } = screenDimensions; // Container dimensions
-        const margin = { top: 40, right: 80, bottom: 50, left: 45 }; // Space around the chart
-        // ----------------------
-        // 3. Clear Existing Chart Before Redrawing
-        // ----------------------
-        d3.select(chartRef.current).selectAll("*").remove(); // Remove previous chart if it exists
+        const { width, height } = screenDimensions; 
+        const margin = { top: 40, right: 80, bottom: 50, left: 45 }; 
+       
+        d3.select(chartRef.current).selectAll("*").remove(); 
 
-        // ----------------------
-        // 4. Create SVG Element
-        // ----------------------
-        const svg = d3.select(chartRef.current) // Select the container div
-            .append("svg") // Append an SVG element
-            .attr("width", width) // Set width
-            .attr("height", height) // Set height
-            .append("g") // Append a group element for margins
-            .attr("transform", `translate(${margin.left},${margin.top})`); // Adjust for margins
+        const svg = d3.select(chartRef.current) 
+            .append("svg")
+            .attr("width", width) 
+            .attr("height", height) 
+            .append("g") 
+            .attr("transform", `translate(${margin.left},${margin.top})`); 
 
-        // ----------------------
-        // 5. Define Scales for Each Axis
-        // ----------------------
-        const dimensions = Object.keys(data[0]).filter(d => d !== "name" && d !== "originalFlight"); // Exclude "name" field
-        const yScales = {}; // Object to store y-scales for each dimension
+        const dimensions = Object.keys(data[0]).filter(d => d !== "name" && d !== "originalFlight"); 
+        const yScales = {};
 
         dimensions.forEach(dim => {
             if (dim === "C") {
-                // Use ordinal scale for weather category
                 yScales[dim] = d3.scalePoint()
                     .domain(["None", "Sunny", "Partly Clouded", "Cloudy", "Rainy", "Snowy"])
-                    .range([height - margin.bottom, margin.top]); // Flip so higher numbers are at the top
+                    .range([height - margin.bottom, margin.top]); 
             }else if (dim === "D") {
-                // Use ordinal scale for advisory category
                 yScales[dim] = d3.scalePoint()
                     .domain(["None", "No advisory", "Advisory against travel to certain areas", "Advisory against non-essential travel", "Advisory against all travel"])
-                    .range([height - margin.bottom, margin.top]); // Flip so higher numbers are at the top
+                    .range([height - margin.bottom, margin.top]);
             }
             else if (dim === "E") {
-                // Use ordinal scale for visa category
                 yScales[dim] = d3.scalePoint()
                     .domain(["unknown", "home country", "visa free", "visa with day limit", "eta", "e-visa", "visa on arrival", "visa required"])
-                    .range([height - margin.bottom, margin.top]); // Flip so higher numbers are at the top
+                    .range([height - margin.bottom, margin.top]); 
             } else {
                 yScales[dim] = d3.scaleLinear()
-                    .domain(d3.extent(data, d => d[dim])) // Get min/max values
+                    .domain(d3.extent(data, d => d[dim])) 
                     .range([height - margin.bottom, margin.top]);
             }
         });
 
-        // ----------------------
-        // 6. Define X-Axis Scale for Dimension Placement
-        // ----------------------
         const xScale = d3.scalePoint()
             .domain(dimensions)
-            .range([margin.left + 30, width - margin.right - 30]); // Add padding on both sides
+            .range([margin.left + 30, width - margin.right - 30]); 
 
-        // ----------------------
-        // 7. Tooltip for Hover Effect
-        // ----------------------
         const tooltip = d3.select(chartRef.current)
             .append("div")
             .style("position", "absolute")
             .style("visibility", "hidden")
-            .style("background", "#e0e0e0") // Light gray background
-            .style("color", "black") // Black text
+            .style("background", "#e0e0e0") 
+            .style("color", "black") 
             .style("border", "1px solid black")
             .style("padding", "8px")
             .style("border-radius", "4px")
             .style("font-size", "14px")
             .style("box-shadow", "2px 2px 10px rgba(0,0,0,0.2)");
 
-        // ----------------------
-        // 8. Draw Lines (Paths) for Each Data Entry
-        // ----------------------
-        const colorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, data.length - 1]); // Color scale for lines
-        // Modify the mouseover, mouseout events in the path creation section
+        const colorScale = d3.scaleSequential(d3.interpolateWarm).domain([0, data.length - 1]);
         svg.selectAll("path")
             .data(data)
             .enter()
@@ -298,15 +254,14 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
             .attr("fill", "none")
             .attr("stroke", (d, i) => colorScale(i))
             .attr("opacity", 0.75)
-            .attr("stroke-width", 1) // Slightly thicker lines for better visibility
+            .attr("stroke-width", 1) 
             .attr("d", d => d3.line()(dimensions.map(dim => [xScale(dim), yScales[dim](d[dim])])))
             .on("mouseover", function (event, d) {
-                // Only highlight if the line is already visible (part of filtered results)
+                
                 if (this.getAttribute("opacity") === "1") {
                     d3.select(this)
                         .attr("stroke-width", 4)
                         .attr("opacity", 1);
-    
                     tooltip.style("visibility", "visible")
                     .html(`<strong>${d.originalFlight.destination_info.city_name}, ${d.originalFlight.destination_info.iso_code}</strong>`)
                     .style("top", `${event.pageY - 10}px`)
@@ -328,11 +283,6 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
                     tooltip.style("visibility", "hidden");
                 }
             });
-
-        // ----------------------
-        // 9. Draw Axes for Each Dimension
-        // ----------------------
-
         
         const brush = d3.brushY()
         .extent([[ -10, margin.top], [10, height - margin.bottom]]) 
@@ -354,27 +304,27 @@ const ParallelCoordinates = ( {onFilterChange, passportIsoCode, departureDate} )
             }) 
             .append("g") 
             .attr("class", "brush")
-            .each(function(d) {  // Pass dimension `d` properly to each brush
+            .each(function(d) { 
                 d3.select(this)
                     .call(brush) 
                     .on("brush end", function(event) { 
-                        brushed(event, d);  // Ensure dimension `d` is passed correctly
+                        brushed(event, d);  
                     });
             })
-            .style("stroke", "#ccc") // Reset to original color
-            .style("stroke-width", "1px") // Restore original thickness
-            .style("opacity", 0.8) // Slight fade-out for smooth effect
+            .style("stroke", "#ccc") 
+            .style("stroke-width", "1px") 
+            .style("opacity", 0.8) 
             .on("mouseover", function () {
                 d3.select(this)
-                    .style("stroke", "#CBC5B1") // Change stroke color for highlight
-                    .style("stroke-width", "2px") // Slightly thicker for visibility
-                    .style("opacity", 1); // Ensure visibility
+                    .style("stroke", "#CBC5B1") 
+                    .style("stroke-width", "2px")
+                    .style("opacity", 1); 
             })
             .on("mouseout", function () {
                 d3.select(this)
-                    .style("stroke", "#ccc") // Reset to original color
-                    .style("stroke-width", "1px") // Restore original thickness
-                    .style("opacity", 0.8); // Slight fade-out for smooth effect
+                    .style("stroke", "#ccc") 
+                    .style("stroke-width", "1px") 
+                    .style("opacity", 0.8); 
             });
 
           const activeFilters = {};

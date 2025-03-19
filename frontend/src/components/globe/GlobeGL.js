@@ -3,10 +3,9 @@ import Globe from "globe.gl";
 import { Box, Tooltip, Typography, Chip, Avatar, Divider, Paper } from "@mui/material";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import { GlobeColorSelector } from "./GlobeColorSelector";
-import * as d3 from "d3";
 import {API_URL} from '../../constants';
+import { Switch, FormControlLabel } from "@mui/material";
 
-// Colour legend component
 const ColorLegend = ({ colorScheme }) => {
   const legendItems =
     colorScheme === "visa"
@@ -62,7 +61,6 @@ const ColorLegend = ({ colorScheme }) => {
   );
 };
 
-// Fetch functions for advisory and visa data
 const fetchAdvisory = async (country_code) => {
   try {
     const response = await fetch(`${API_URL}/api/advisory/${country_code}`);
@@ -71,19 +69,6 @@ const fetchAdvisory = async (country_code) => {
     return data;
   } catch (error) {
     console.error(`Fetching advisory for ${country_code} failed:`, error);
-    return null;
-  }
-};
-
-const fetchVisa = async (countryCode) => {
-  try {
-    const response = await fetch(
-      `${API_URL}/api/visa?country_codes=${countryCode}`
-    );
-    if (!response.ok) throw new Error("Network response did not work");
-    const result = await response.json();
-    return result;
-  } catch (error) {
     return null;
   }
 };
@@ -101,12 +86,10 @@ const fetchWorldData = async () => {
   }
 };
 
-// Helper: determine worst visa requirement from visaDetails in trip data
 const getVisaRequirementFromTrips = (feature, tripsData) => {
   const countryName = feature.properties.name;
-  const geoISO = feature.id; // assuming this is the ISO code
+  const geoISO = feature.id; 
   
-  // Filter trips using ISO if available, otherwise use fuzzy name matching
   const matchingTrips = tripsData.filter(trip => {
     const tripISO = trip.destination_info?.iso_code;
     if (tripISO && geoISO) {
@@ -127,7 +110,6 @@ const getVisaRequirementFromTrips = (feature, tripsData) => {
   const visaDetails = matchingTrips[0].pcp?.visaDetails;
   if (!visaDetails) return "unknown";
   
-  // Priority order for visa requirements
   const visaPriority = {
     "unknown": 0,
     "home country": 1,
@@ -149,7 +131,6 @@ const getVisaRequirementFromTrips = (feature, tripsData) => {
         req = "home country";
       }
     } else if (typeof req === "string") {
-      // Attempt to extract numeric value (e.g. "60 days")
       const num = parseInt(req, 10);
       if (!isNaN(num)) {
         req = num > 0 ? "visa with day limit" : num < 0 ? "home country" : req;
@@ -164,8 +145,8 @@ const getVisaRequirementFromTrips = (feature, tripsData) => {
   return worst;
 };
 
-const GlobeGL = ({ data = [] }) => {
-  // console.log("data", data)
+
+const GlobeGL = ({ data = [], onSelectedDestination, selectedDestination }) => {
   const globeRef = useRef();
   const globeEl = useRef();
   const [countries, setCountries] = useState([]);
@@ -173,28 +154,25 @@ const GlobeGL = ({ data = [] }) => {
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [colorScheme, setColorScheme] = useState("advisory");
   const [advisoryData, setAdvisoryData] = useState({});
-  const [visaData, setVisaData] = useState({}); // not used for visa coloring anymore
+  const [visaData, setVisaData] = useState({});
   const [countryNames, setCountryNames] = useState({});
-  // Track mouse coordinates for a virtual anchor element
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  // Ref to hold tooltip close timeout
   const tooltipTimeoutRef = useRef(null);
   const [routes, setRoutes] = useState([]);
-  // console.log("Routes", routes)
+  const [enableFreeDrag, setEnableFreeDrag] = useState(false);
 
   const LONDON_COORDS = {
     lat: 51.5074,
     lng: -0.1278
   };
 
-  //create routes data when filtered destinations change
   useEffect(() => {
     const newRoutes = data.map(destination => ({
       startLat: LONDON_COORDS.lat,
       startLng: LONDON_COORDS.lng,
       endLat: destination.destination_info?.latitude,
       endLng: destination.destination_info?.longitude,
-      color:'rgb(255, 7, 201)', // Amber color for routes
+      color:'rgb(255, 7, 201)', 
       destination_info: destination.destination_info,
     }));
     setRoutes(newRoutes);
@@ -202,7 +180,6 @@ const GlobeGL = ({ data = [] }) => {
   }, [data]);
 
   
-  // Track mouse position globally
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -211,7 +188,6 @@ const GlobeGL = ({ data = [] }) => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
   
-  // Create a Set of filtered country names for easier lookup
   const filteredCountries = useMemo(() => {
     const countrySet = new Set();
     data.forEach(d => {
@@ -226,48 +202,6 @@ const GlobeGL = ({ data = [] }) => {
     return countrySet;
   }, [data]);
   
-  // Get passport countries from data (unused for visa coloring here)
-  const passportCountries = useMemo(() => {
-    const countries = new Set();
-    data.forEach(trip => {
-      if (trip.pcp?.visaDetails) {
-        Object.keys(trip.pcp.visaDetails).forEach(code => countries.add(code));
-      }
-    });
-    return Array.from(countries);
-  }, [data]);
-  
-  // (Old function using visaData is left here for reference, but not used for visa coloring)
-  const getWorstVisaRequirement = (countryId) => {
-    let worstRequirement = "unknown";
-    const visaPriority = {
-      "unknown": 0,
-      "home country": 1,
-      "visa free": 2,
-      "visa with day limit": 3,
-      "eta": 4,
-      "e-visa": 5,
-      "visa on arrival": 6,
-      "visa required": 7
-    };
-
-    for (let passportCode in visaData) {
-      const requirements = visaData[passportCode];
-      if (requirements && requirements[countryId]) {
-        const requirement = requirements[countryId];
-        const processedRequirement = typeof requirement === "number" && requirement > 0
-          ? "visa with day limit"
-          : requirement;
-        if (processedRequirement && visaPriority[processedRequirement] > visaPriority[worstRequirement]) {
-          worstRequirement = processedRequirement;
-        }
-      }
-    }
-  
-    return worstRequirement;
-  };
-
-  // Map country codes to names
   const mapCountryCodesToNames = (worldData) => {
     const countryMap = {};
     worldData.features.forEach((feature) => {
@@ -276,7 +210,6 @@ const GlobeGL = ({ data = [] }) => {
     setCountryNames(countryMap);
   };
 
-  // Determine country color based on color scheme
   const getCountryColor = (feat, isHighlighted) => {
     if (!isHighlighted) return "#4d4c60";
     switch (colorScheme) {
@@ -284,13 +217,13 @@ const GlobeGL = ({ data = [] }) => {
         const advisory = advisoryData[feat.id];
         return advisory
           ? advisory.advice === "No advisory"
-            ? "#5de362" // light green
+            ? "#5de362" 
             : advisory.advice === "Advisory against travel to certain areas"
-            ? "#dff235" // kinda yellow
+            ? "#dff235" 
             : advisory.advice === "Advisory against non-essential travel"
-            ? "#f29913" // orange
+            ? "#f29913" 
             : advisory.advice === "Advisory against all travel"
-            ? "#e6091c" // red
+            ? "#e6091c" 
             : "#9E9E9E"
           : "#9E9E9E";
       }
@@ -310,7 +243,6 @@ const GlobeGL = ({ data = [] }) => {
     }
   };
 
-  // Check if a country should be highlighted
   const isCountryHighlighted = (feat) => {
     const countryName = feat.properties.name;
     const countryId = feat.id;
@@ -319,7 +251,6 @@ const GlobeGL = ({ data = [] }) => {
            (countryId && filteredCountries.has(countryId));
   };
 
-  // Fetch world data when component mounts
   useEffect(() => {
     const loadWorldData = async () => {
       const worldData = await fetchWorldData();
@@ -331,7 +262,6 @@ const GlobeGL = ({ data = [] }) => {
     loadWorldData();
   }, []);
 
-  // Fetch advisory data when countries are loaded
   useEffect(() => {
     const fetchAllData = async () => {
       try {
@@ -357,29 +287,35 @@ const GlobeGL = ({ data = [] }) => {
     fetchAllData();
   }, [countries]);
 
-  // Add a separate effect just for routes
   useEffect(() => {
     if (!globeEl.current) return;
     globeEl.current
-      .arcColor('color')
+      .arcColor((arc, idx) => arc.__hover ? '#4CAF50' : 'rgb(255, 7, 201)')
       .arcDashLength(1.5)
       .arcDashGap(0.03)
       .arcDashAnimateTime(2000)
       .arcsData(routes)
+      .arcsTransitionDuration(1000)
       .arcStroke(0.7)
-      .arcAltitude(0.5);
+      .arcAltitude(0.5)
+      .onArcHover((arc) => {
+        if (arc) {
+          arc.__hover = true;
+          globeEl.current.arcsData([...routes]);
+        } else {
+          routes.forEach(route => route.__hover = false);
+          globeEl.current.arcsData([...routes]);
+        }
+      });
   }, [routes]);
 
 
 
-  // Initialize and update the globe
   useEffect(() => {
     if (!globeRef.current || countries.length === 0) return;
 
-    // Filter out Antarctica
     const filteredFeatures = countries.filter(d => d.properties.ISO_A2 !== 'AQ');
     
-    // Initialize globe if it doesn't exist
     if (!globeEl.current) {
       globeEl.current = Globe()(globeRef.current);
       globeEl.current
@@ -391,20 +327,52 @@ const GlobeGL = ({ data = [] }) => {
         .polygonAltitude(0.01)
         .polygonSideColor(() => 'rgba(0, 100, 0, 0.15)')
         .polygonStrokeColor(() => '#111')
-        .polygonsTransitionDuration(300);
+        .polygonsTransitionDuration(300)
+        .enablePointerInteraction(true)
+
+      if (globeEl.current.controls()) {
+        globeEl.current.controls().enableZoom = true;
+        globeEl.current.controls().autoRotate = false;
+        globeEl.current.controls().enablePan = false;
+        globeEl.current.controls().enableRotate = true;
+        globeEl.current.controls().minPolarAngle = enableFreeDrag ? 0 : Math.PI / 3.5;
+        globeEl.current.controls().maxPolarAngle = enableFreeDrag ? Math.PI : Math.PI / 1.7;
+      }
     }
 
-  
+    if (globeEl.current && globeEl.current.controls()) {
+      globeEl.current.controls().minPolarAngle = enableFreeDrag ? 0 : Math.PI / 3.5;
+      globeEl.current.controls().maxPolarAngle = enableFreeDrag ? Math.PI : Math.PI / 1.7;
+    }
     
-    // Update the globe with the countries data
     globeEl.current
       .polygonsData(filteredFeatures)
       .polygonCapColor(feat => getCountryColor(feat, isCountryHighlighted(feat)))
       .polygonLabel(() => null);
     
-    // Modify onPolygonHover callback to update tooltip content based on trips
+    globeEl.current
+      .onPolygonClick((polygon, event, {lat,lng}) => {
+        const closestDestination = data.find(dest => {
+          const destLat = dest.destination_info?.latitude;
+          const destLng = dest.destination_info?.longitude;
+          return Math.abs(destLat-lat) < 2 && Math.abs(destLng-lng) < 2;
+        });
+
+        if (closestDestination) {
+          onSelectedDestination(closestDestination);
+        }
+      })
+      .onArcClick((arc) => {
+        const clickedDestination = data.find(dest => 
+          dest.destination_info?.latitude === arc.endLat && 
+          dest.destination_info?.longitude === arc.endLng
+        );
+        
+        if (clickedDestination) {
+          onSelectedDestination(clickedDestination);
+        }
+      });
     globeEl.current.onPolygonHover((hoverD) => {
-      // Clear any pending tooltip close
       if (tooltipTimeoutRef.current) {
         clearTimeout(tooltipTimeoutRef.current);
         tooltipTimeoutRef.current = null;
@@ -520,7 +488,6 @@ const GlobeGL = ({ data = [] }) => {
         );
         setTooltipOpen(true);
       } else {
-        // Delay tooltip closure to smooth out rapid movements (50ms)
         tooltipTimeoutRef.current = setTimeout(() => {
           setTooltipOpen(false);
         }, 50);
@@ -535,12 +502,11 @@ const GlobeGL = ({ data = [] }) => {
       }
     };
     
-    // Call resize handler immediately to ensure proper sizing
     handleResize();
     
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [countries, filteredCountries, colorScheme, advisoryData, visaData, data, countryNames, mousePosition]);
+  }, [countries, filteredCountries, colorScheme, advisoryData, visaData, data, countryNames, mousePosition, onSelectedDestination, enableFreeDrag]);
   
   const handleColorSchemeChange = (scheme) => {
     setColorScheme(scheme);
@@ -548,12 +514,41 @@ const GlobeGL = ({ data = [] }) => {
 
   return (
     <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
-      {/* Color selector in top left */}
       <Box sx={{ position: 'absolute', top: 10, left: 10, zIndex: 10 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2}}>
         <GlobeColorSelector onChange={handleColorSchemeChange} />
+        <FormControlLabel
+          sx={{
+            ml: 1,
+            '& .MuiSwitch-switchBase.Mui-checked': {
+              color: '#D8AD1D', 
+            },
+            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+              backgroundColor: '#D8AD1D', 
+            },
+            '& .MuiSwitch-switchBase': {
+              color: 'white', 
+            },
+            '& .MuiSwitch-track': {
+              backgroundColor: 'grey', 
+            }
+          }}
+          control={
+            <Switch
+              checked={enableFreeDrag}
+              onChange={(e) => setEnableFreeDrag(e.target.checked)}
+              color="primary"
+            />
+          }
+          label={
+            <Typography sx={{ color: 'white', textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}>
+              Free Rotation
+            </Typography>
+          }
+        />
       </Box>
+    </Box>
       
-      {/* Add color legend in top right */}
       <Box sx={{ position: 'absolute', top: 10, right: 10, zIndex: 10 }}>
         <ColorLegend colorScheme={colorScheme} />
       </Box>
@@ -563,7 +558,6 @@ const GlobeGL = ({ data = [] }) => {
         style={{ width: "100%", height: "100%" }}
         onMouseLeave={() => setTooltipOpen(false)}
       />
-      {/* Material UI Tooltip using a virtual anchor via slotProps */}
       <Tooltip
         open={tooltipOpen}
         title={tooltipContent || ""}

@@ -27,7 +27,6 @@ const WeatherCard = ({ selectedDestination }) => {
                 const data = await response.json();
                 console.log("Fetched Weather Data:", data);
 
-                // Extract the specific destination's weather data from the response
                 const destinationWeather = data.destinations[destination];
 
                 if (destinationWeather && destinationWeather.daily_temperature && destinationWeather.daily_cloud_cover) {
@@ -105,11 +104,11 @@ const WeatherCard = ({ selectedDestination }) => {
             .curve(d3.curveMonotoneX);
 
         const datasets = [
-            { key: "temp", color: "#F1C120" }, // Temperature
-            { key: "cloudCover", color: "#A9A9A9" }, // Cloud Cover
-            { key: "radiation", color: "#FF5733" }, // Solar Radiation
-            { key: "rain", color: "#4682B4" }, // Rain
-            { key: "snowfall", color: "#E0FFFF" } // Snowfall
+            { key: "temp", color: "#F1C120" },
+            { key: "cloudCover", color: "#A9A9A9" },
+            { key: "radiation", color: "#FF5733" },
+            { key: "rain", color: "#4682B4" },
+            { key: "snowfall", color: "#E0FFFF" }
         ];
 
         svg.append("g")
@@ -128,61 +127,61 @@ const WeatherCard = ({ selectedDestination }) => {
                 .attr("d", lineGenerator(key));
         });
         const tooltip = d3.select("body").append("div")
-        .style("position", "absolute")
-        .style("background", "#757575") 
-        .style("border", "1px solid rgba(0, 0, 0, 0.12)") 
-        .style("padding", "8px 12px") 
-        .style("border-radius", "8px") 
-        .style("box-shadow", "0px 2px 6px rgba(0, 0, 0, 0.15)") 
-        .style("font-size", "13px") 
-        .style("font-family", "'Roboto', sans-serif") 
-        .style("color", "#fff") 
-        .style("pointer-events", "none")
-        .style("opacity", 0);
+            .style("position", "absolute")
+            .style("background", "#757575")
+            .style("border", "1px solid rgba(0, 0, 0, 0.12)")
+            .style("padding", "8px 12px")
+            .style("border-radius", "8px")
+            .style("box-shadow", "0px 2px 6px rgba(0, 0, 0, 0.15)")
+            .style("font-size", "13px")
+            .style("font-family", "'Roboto', sans-serif")
+            .style("color", "#fff")
+            .style("pointer-events", "none")
+            .style("opacity", 0);
 
-const labelMapping = {
-    temp: "Temperature",
-    cloudCover: "Cloud Cover",
-    radiation: "Solar Radiation",
-    rain: "Precipitation",
-    snowfall: "Snowfall"
-};
+        const labelMapping = {
+            temp: "Temperature",
+            cloudCover: "Cloud Cover",
+            radiation: "Solar Radiation",
+            rain: "Precipitation",
+            snowfall: "Snowfall"
+        };
 
-const unitMapping = {
-    temp: "°C",
-    cloudCover: "%",
-    radiation: "W/m²",
-    rain: "mm",
-    snowfall: "cm"
-};
+        const unitMapping = {
+            temp: "°C",
+            cloudCover: "%",
+            radiation: "W/m²",
+            rain: "mm",
+            snowfall: "cm"
+        };
 
-datasets.forEach(({ key, color }) => {
-    svg.selectAll(`.dot-${key}`)
-        .data(data)
-        .enter()
-        .append("circle")
-        .attr("class", `dot-${key}`)
-        .attr("cx", d => x(d.date))
-        .attr("cy", d => y(d[key]))
-        .attr("r", 3)
-        .attr("fill", color)
-        .on("mouseover", (event, d) => {
-            tooltip.style("opacity", 1)
-                .html(`
+        datasets.forEach(({ key, color }) => {
+            svg.selectAll(`.dot-${key}`)
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("class", `dot-${key}`)
+                .attr("cx", d => x(d.date))
+                .attr("cy", d => y(d[key]))
+                .attr("r", 3)
+                .attr("fill", color)
+                .on("mouseover", (event, d) => {
+                    tooltip.style("opacity", 1)
+                        .html(`
                     <strong>${d.date}</strong><br>
                     ${labelMapping[key]}: ${d[key].toFixed(2)} ${unitMapping[key]}
                 `)
-                .style("left", `${event.pageX + 10}px`)
-                .style("top", `${event.pageY - 20}px`);
-        })
-        .on("mousemove", (event) => {
-            tooltip.style("left", `${event.pageX + 10}px`)
-                .style("top", `${event.pageY - 20}px`);
-        })
-        .on("mouseout", () => {
-            tooltip.style("opacity", 0);
+                        .style("left", `${event.pageX + 10}px`)
+                        .style("top", `${event.pageY - 20}px`);
+                })
+                .on("mousemove", (event) => {
+                    tooltip.style("left", `${event.pageX + 10}px`)
+                        .style("top", `${event.pageY - 20}px`);
+                })
+                .on("mouseout", () => {
+                    tooltip.style("opacity", 0);
+                });
         });
-});
 
     }, [weatherData, selectedDestination]);
 
@@ -216,7 +215,7 @@ datasets.forEach(({ key, color }) => {
                         Weather Information
                     </Typography>
                 ) : null}
-                {!selectedDestination? (
+                {!selectedDestination ? (
                     <Typography color="text.secondary">
                         Select a destination in the "Filtered Destinations" list to view weather information.
                     </Typography>
@@ -284,27 +283,25 @@ datasets.forEach(({ key, color }) => {
                         <Box sx={{ mt: 4 }}>
                             <Typography variant="h6" fontWeight="bold" mb={2}>Weather Details</Typography>
                             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}>
-    {/* Graph Container */}
-    <Box sx={{ width: '65%', pr: 3 }}>
-        <svg ref={svgRef}></svg>
-    </Box>
+                                <Box sx={{ width: '65%', pr: 3 }}>
+                                    <svg ref={svgRef}></svg>
+                                </Box>
 
-    {/* Legend Container */}
-    <Box sx={{ width: '35%', display: 'flex', flexDirection: 'column', gap: 2, ml: 4 }}>
-        {[
-            { label: "Temperature", color: "#F1C120" },
-            { label: "Cloud Cover", color: "#A9A9A9" },
-            { label: "Solar Radiation", color: "#FF5733" },
-            { label: "Rain", color: "#4682B4" },
-            { label: "Snowfall", color: "#E0FFFF" }
-        ].map(({ label, color }) => (
-            <Box key={label} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                <Box sx={{ width: 10, height: 10, backgroundColor: color, borderRadius: '3px', flexShrink: 0 }}></Box>
-                <Typography variant="body2" sx={{ whiteSpace: 'nowrap', fontSize: '12px' }}>{label}</Typography>
-            </Box>
-        ))}
-    </Box>
-</Box>
+                                <Box sx={{ width: '35%', display: 'flex', flexDirection: 'column', gap: 2, ml: 4 }}>
+                                    {[
+                                        { label: "Temperature", color: "#F1C120" },
+                                        { label: "Cloud Cover", color: "#A9A9A9" },
+                                        { label: "Solar Radiation", color: "#FF5733" },
+                                        { label: "Rain", color: "#4682B4" },
+                                        { label: "Snowfall", color: "#E0FFFF" }
+                                    ].map(({ label, color }) => (
+                                        <Box key={label} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                            <Box sx={{ width: 10, height: 10, backgroundColor: color, borderRadius: '3px', flexShrink: 0 }}></Box>
+                                            <Typography variant="body2" sx={{ whiteSpace: 'nowrap', fontSize: '12px' }}>{label}</Typography>
+                                        </Box>
+                                    ))}
+                                </Box>
+                            </Box>
                         </Box>
                     </Box>
                 )}
