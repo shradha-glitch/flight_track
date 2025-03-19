@@ -163,7 +163,6 @@ async def get_visa_requirements(
 @usage: curl http://localhost:8000/api/visa?country_codes=US,GB,FR
 """
 
-
 @router.get("/visa")
 async def get_visa_requirements(country_codes: str = Query(..., description="Comma-separated list of country codes")):
     """
