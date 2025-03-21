@@ -321,8 +321,8 @@ const GlobeGL = ({ data = [], onSelectedDestination, selectedDestination }) => {
       globeEl.current
         .width(globeRef.current.clientWidth)
         .height(globeRef.current.clientHeight)
-        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-        .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+        .globeImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-blue-marble.jpg')
+        .backgroundImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/night-sky.png')
         .lineHoverPrecision(0)
         .polygonAltitude(0.01)
         .polygonSideColor(() => 'rgba(0, 100, 0, 0.15)')
@@ -547,7 +547,7 @@ const GlobeGL = ({ data = [], onSelectedDestination, selectedDestination }) => {
           }
         />
       </Box>
-    </Box>
+      </Box>
       
       <Box sx={{ position: 'absolute', top: 10, right: 10, zIndex: 10 }}>
         <ColorLegend colorScheme={colorScheme} />
